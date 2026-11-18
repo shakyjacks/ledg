@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="scoreboard">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d1117">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LEDG">
+<title>LEDG design directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Doto:wght@800;900&family=Barlow+Condensed:wght@500;600;700&family=Graduate&family=Archivo:wght@500;600;700;800&family=Big+Shoulders+Display:wght@800;900&family=Public+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;-webkit-font-smoothing:antialiased}
+.wrap{max-width:780px;margin:0 auto;padding:22px 16px 110px}
+table{width:100%;border-collapse:collapse}
+th.l,td.l{text-align:left}
+td,th{text-align:right;vertical-align:top}
+.hide-sm{}
+@media (max-width:560px){.hide-sm{display:none}}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+h1{margin:0}
+.matchups{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.side{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.mt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tablehead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.toggle{display:flex}
+.toggle button{border:0;cursor:pointer}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin:10px 2px 24px}
+.dot{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px}
+.groups .card{margin-bottom:12px}
+.groups h3{margin:0 0 6px}
+.groups ol{margin:8px 0 0;padding-left:22px}
+details summary{cursor:pointer}
+:focus-visible{outline:3px solid currentColor;outline-offset:2px}
+
+/* theme switcher (preview only) */
+.switch{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);display:flex;gap:4px;padding:5px;border-radius:999px;background:#fff;box-shadow:0 6px 24px rgba(0,0,0,.35);z-index:10;font:600 13px system-ui,sans-serif}
+.switch button{border:0;background:none;padding:9px 14px;border-radius:999px;cursor:pointer;color:#333;font:inherit}
+.switch button.on{background:#1b1b1b;color:#fff}
+
+/* =============== 1. SCOREBOARD =============== */
+[data-theme=scoreboard]{--bg:#0c1530;--panel:#121d3f;--well:#060b1c;--line:#223161;--text:#eef1fa;--muted:#8794bd;--amber:#ffb000;--amberdim:#7a5a17}
+[data-theme=scoreboard] body{background:radial-gradient(1200px 500px at 50% -200px,#1b2a5c,transparent),var(--bg);color:var(--text);font:500 16px/1.4 "Barlow Condensed",sans-serif}
+[data-theme=scoreboard] h1{font:900 72px/0.9 Doto,monospace;color:var(--amber);text-shadow:0 0 18px rgba(255,176,0,.45);letter-spacing:.02em}
+[data-theme=scoreboard] .pagetitle{font:600 26px "Barlow Condensed";letter-spacing:.06em;text-transform:uppercase;margin-top:6px}
+[data-theme=scoreboard] .sub{color:var(--muted);font-size:15px}
+[data-theme=scoreboard] .badge{font:700 14px "Barlow Condensed";letter-spacing:.08em;text-transform:uppercase;color:var(--amber);border:1px solid var(--amberdim);padding:4px 10px;border-radius:4px;background:var(--well)}
+[data-theme=scoreboard] h2{font:700 22px "Barlow Condensed";letter-spacing:.08em;text-transform:uppercase;margin:30px 0 12px;color:var(--text)}
+[data-theme=scoreboard] .mu{background:var(--well);border:1px solid var(--line);border-radius:6px;padding:8px 12px;box-shadow:inset 0 0 0 3px #0a1129}
+[data-theme=scoreboard] .side{padding:3px 0;color:var(--muted);font-size:18px}
+[data-theme=scoreboard] .mp{font:800 24px Doto,monospace;color:var(--amberdim)}
+[data-theme=scoreboard] .side.lead{color:var(--text)}
+[data-theme=scoreboard] .side.lead .mp{color:var(--amber);text-shadow:0 0 10px rgba(255,176,0,.5)}
+[data-theme=scoreboard] .toggle{background:var(--well);border:1px solid var(--line);border-radius:4px;padding:3px}
+[data-theme=scoreboard] .toggle button{background:none;color:var(--muted);font:700 14px "Barlow Condensed";text-transform:uppercase;letter-spacing:.06em;padding:5px 12px;border-radius:3px}
+[data-theme=scoreboard] .toggle button.on{background:var(--amber);color:#1a1200}
+[data-theme=scoreboard] .why{color:var(--muted);font-size:15px}
+[data-theme=scoreboard] .card{background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+[data-theme=scoreboard] th{font:600 13px "Barlow Condensed";letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:10px;border-bottom:1px solid var(--line)}
+[data-theme=scoreboard] td{padding:11px 10px;border-bottom:1px solid var(--line);font-size:17px}
+[data-theme=scoreboard] .rank{font:800 24px Doto,monospace;color:#4a5684;width:44px;text-align:center}
+[data-theme=scoreboard] tr.in .rank,[data-theme=scoreboard] tr.bye .rank{color:var(--amber);text-shadow:0 0 8px rgba(255,176,0,.4)}
+[data-theme=scoreboard] .team{font-weight:700;font-size:19px}
+[data-theme=scoreboard] .owner{color:var(--muted);font-size:14px}
+[data-theme=scoreboard] .tb{display:inline-block;margin-top:5px;font-size:13px;color:var(--amber);border:1px solid var(--amberdim);border-radius:3px;padding:1px 6px}
+[data-theme=scoreboard] td:not(.l):not(.rank){font:700 20px Doto,monospace}
+[data-theme=scoreboard] .rec{white-space:nowrap}
+[data-theme=scoreboard] tr.cut td{border-bottom:3px dotted var(--amber)}
+[data-theme=scoreboard] .cutlabel{font:700 13px "Barlow Condensed";letter-spacing:.12em;text-transform:uppercase;color:var(--amber);text-align:center;padding:5px}
+[data-theme=scoreboard] .legend{color:var(--muted);font-size:14px}
+[data-theme=scoreboard] .dot{border-radius:50%}
+[data-theme=scoreboard] .dot.bye{background:var(--amber);box-shadow:0 0 6px var(--amber)}
+[data-theme=scoreboard] .dot.in{background:var(--amberdim)}
+[data-theme=scoreboard] .groups .card{padding:14px 16px}
+[data-theme=scoreboard] .groups h3{font:700 19px "Barlow Condensed"}
+[data-theme=scoreboard] details{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 16px;font-size:16px}
+[data-theme=scoreboard] footer{color:var(--muted);font-size:13px;margin-top:24px}
+
+/* =============== 2. VARSITY =============== */
+[data-theme=varsity]{--bg:#f2f4f9;--panel:#fff;--ink:#121a3a;--royal:#1f3fbf;--red:#d1232f;--muted:#646d8e;--line:#e2e6f0}
+[data-theme=varsity] body{background:var(--bg);color:var(--ink);font:500 15px/1.45 Archivo,sans-serif}
+[data-theme=varsity] header{background:var(--royal);color:#fff;margin:-22px -16px 26px;padding:26px 20px 22px;position:relative;align-items:center}
+[data-theme=varsity] header::after{content:"";position:absolute;left:0;right:0;bottom:-14px;height:14px;background:linear-gradient(#fff 0 4px,var(--red) 4px 10px,#fff 10px 14px)}
+[data-theme=varsity] h1{font:400 64px/0.9 Graduate,serif;color:#fff;text-shadow:3px 3px 0 var(--red)}
+[data-theme=varsity] .pagetitle{font:700 18px Archivo;margin-top:8px;opacity:.9}
+[data-theme=varsity] .sub{color:#c9d3ff;font-size:13px}
+[data-theme=varsity] .badge{background:#fff;color:var(--royal);font:800 13px Archivo;padding:6px 12px;border-radius:999px}
+[data-theme=varsity] h2{font:400 22px Graduate,serif;color:var(--royal);margin:30px 0 12px}
+[data-theme=varsity] .mu{background:var(--panel);border-radius:10px;padding:8px 14px;border-left:6px solid var(--royal);box-shadow:0 1px 0 var(--line)}
+[data-theme=varsity] .side{padding:4px 0;color:var(--muted)}
+[data-theme=varsity] .mp{font:400 20px Graduate,serif}
+[data-theme=varsity] .side.lead{color:var(--ink);font-weight:700}
+[data-theme=varsity] .side.lead .mp{color:var(--red)}
+[data-theme=varsity] .toggle{background:#e3e7f3;border-radius:999px;padding:3px}
+[data-theme=varsity] .toggle button{background:none;color:var(--muted);font:700 13px Archivo;padding:6px 14px;border-radius:999px}
+[data-theme=varsity] .toggle button.on{background:var(--royal);color:#fff}
+[data-theme=varsity] .why{color:var(--muted);font-size:13.5px}
+[data-theme=varsity] .card{background:var(--panel);border-radius:12px;overflow:hidden;box-shadow:0 1px 0 var(--line)}
+[data-theme=varsity] th{font:700 12px Archivo;color:var(--muted);padding:10px;border-bottom:2px solid var(--line)}
+[data-theme=varsity] td{padding:12px 10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+[data-theme=varsity] .rank{font:400 24px Graduate,serif;color:#b7bdd2;width:46px;text-align:center}
+[data-theme=varsity] tr.in .rank{color:var(--royal)}
+[data-theme=varsity] tr.bye .rank{color:var(--red)}
+[data-theme=varsity] .team{font-weight:800;font-size:16px}
+[data-theme=varsity] .owner{color:var(--muted);font-size:12.5px}
+[data-theme=varsity] .tb{display:inline-block;margin-top:5px;font-size:12px;font-weight:600;color:var(--royal);background:#eaeefc;border-radius:6px;padding:2px 8px}
+[data-theme=varsity] .rec{font-weight:800}
+[data-theme=varsity] tr.cut td{border-bottom:0}
+[data-theme=varsity] .cutlabel{padding:0!important;height:22px;background:linear-gradient(var(--royal) 0 6px,#fff 6px 10px,var(--red) 10px 16px,#fff 16px);font:700 0/0 a;color:transparent}
+[data-theme=varsity] .legend{color:var(--muted);font-size:12.5px}
+[data-theme=varsity] .dot{border-radius:3px}
+[data-theme=varsity] .dot.bye{background:var(--red)}
+[data-theme=varsity] .dot.in{background:var(--royal)}
+[data-theme=varsity] .groups .card{padding:16px 18px}
+[data-theme=varsity] .groups h3{font:800 15px Archivo}
+[data-theme=varsity] details{background:var(--panel);border-radius:12px;padding:14px 18px}
+[data-theme=varsity] summary{font-weight:800;color:var(--royal)}
+[data-theme=varsity] footer{color:var(--muted);font-size:12px;margin-top:24px}
+
+/* =============== 3. TURF =============== */
+[data-theme=turf]{--chalk:#f7f7ef;--muted:#a9cdb2;--pylon:#ff6a13;--panel:rgba(6,32,17,.84);--line:rgba(247,247,239,.16)}
+[data-theme=turf] body{background:repeating-linear-gradient(180deg,#1c6636 0 64px,#217340 64px 128px);color:var(--chalk);font:500 15px/1.45 "Public Sans",sans-serif}
+[data-theme=turf] h1{font:900 76px/0.85 "Big Shoulders Display",sans-serif;color:var(--chalk);letter-spacing:.01em}
+[data-theme=turf] .pagetitle{font:800 26px "Big Shoulders Display";color:var(--pylon);margin-top:4px}
+[data-theme=turf] .sub{color:var(--muted);font-size:13px}
+[data-theme=turf] .badge{background:var(--pylon);color:#2a1000;font:800 15px "Big Shoulders Display";padding:5px 12px;border-radius:2px;transform:skew(-8deg)}
+[data-theme=turf] h2{font:900 30px "Big Shoulders Display";margin:32px 0 12px;padding-bottom:6px;border-bottom:3px solid var(--chalk)}
+[data-theme=turf] .mu{background:var(--panel);border-radius:4px;padding:8px 14px;border-top:3px solid var(--chalk)}
+[data-theme=turf] .side{padding:4px 0;color:var(--muted)}
+[data-theme=turf] .mp{font:800 24px "Big Shoulders Display"}
+[data-theme=turf] .side.lead{color:var(--chalk);font-weight:700}
+[data-theme=turf] .side.lead .mp{color:var(--pylon)}
+[data-theme=turf] .tablehead h2{flex:1}
+[data-theme=turf] .toggle{background:var(--panel);border-radius:2px;padding:3px}
+[data-theme=turf] .toggle button{background:none;color:var(--muted);font:800 15px "Big Shoulders Display";padding:5px 12px}
+[data-theme=turf] .toggle button.on{background:var(--chalk);color:#0b3a1c}
+[data-theme=turf] .why{color:var(--muted);font-size:13.5px}
+[data-theme=turf] .card{background:var(--panel);border-radius:4px;overflow:hidden}
+[data-theme=turf] th{font:800 14px "Big Shoulders Display";color:var(--muted);padding:10px;border-bottom:1px solid var(--line)}
+[data-theme=turf] td{padding:12px 10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+[data-theme=turf] .rank{font:900 28px/1 "Big Shoulders Display";color:rgba(247,247,239,.35);width:44px;text-align:center}
+[data-theme=turf] tr.in .rank{color:var(--chalk)}
+[data-theme=turf] tr.bye .rank{color:var(--pylon)}
+[data-theme=turf] .team{font-weight:700;font-size:16px}
+[data-theme=turf] .owner{color:var(--muted);font-size:12.5px}
+[data-theme=turf] .tb{display:inline-block;margin-top:5px;font-size:12px;color:var(--chalk);border-left:3px solid var(--pylon);padding:1px 7px;background:rgba(247,247,239,.08)}
+[data-theme=turf] .rec{font:800 19px "Big Shoulders Display";white-space:nowrap}
+[data-theme=turf] tr.cut td{border-bottom:0}
+[data-theme=turf] .cutlabel{background:var(--chalk);color:#0b3a1c;font:900 16px "Big Shoulders Display";text-align:center;padding:3px!important;letter-spacing:.04em}
+[data-theme=turf] .legend{color:var(--muted);font-size:12.5px}
+[data-theme=turf] .dot.bye{background:var(--pylon)}
+[data-theme=turf] .dot.in{background:var(--chalk)}
+[data-theme=turf] .groups .card{padding:16px 18px}
+[data-theme=turf] .groups h3{font:800 20px "Big Shoulders Display"}
+[data-theme=turf] details{background:var(--panel);border-radius:4px;padding:14px 18px}
+[data-theme=turf] summary{font:800 18px "Big Shoulders Display"}
+[data-theme=turf] footer{color:var(--muted);font-size:12px;margin-top:24px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>LEDG</h1><div class="pagetitle">Standings</div>
+      <div class="sub" id="asof"></div>
+    </div>
+    <span class="badge" id="status"></span>
+  </header>
+
+  <h2 id="mu-title">THIS WEEK</h2>
+  <div class="matchups" id="matchups"></div>
+
+  <div class="tablehead">
+    <h2>Standings</h2>
+    <div class="toggle" id="toggle"><button data-v="live">Live</button><button data-v="official">Official</button></div>
+  </div>
+  <div class="why" id="tbl-note" style="margin:-4px 2px 10px"></div>
+  <div class="card">
+    <table>
+      <thead><tr>
+        <th class="l">#</th><th class="l">Team</th><th>W-L</th><th>PF</th><th class="hide-sm">PA</th><th class="hide-sm">Strk</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div class="legend">
+    <span><span class="dot bye"></span>Top-2 seed (first-round bye)</span>
+    <span><span class="dot in"></span>Playoff spot (top 6)</span>
+  </div>
+
+  <h2>How the ties were broken</h2>
+  <div class="groups" id="groups"></div>
+
+  <details>
+    <summary>LEDG tiebreak rules</summary>
+    <ol>
+      <li><b>Two teams tied:</b> head-to-head record, then points scored.</li>
+      <li><b>Three or more tied:</b> a team that swept every other tied team wins the tiebreak; a team swept by every other tied team finishes last of the group. With no sweeps, points scored decides.</li>
+      <li>After a sweeper is placed, the teams still tied go through the same rules again (so if two remain, it's back to head-to-head).</li>
+    </ol>
+  </details>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+let DATA=null, VIEW='official';
+// ---------- ENGINE ----------
+function buildGames(data,throughWeek){
+  const games=[]; // {week,a,b,pa,pb}
+  for(const [wk,rows] of Object.entries(data.weeks)){
+    if(+wk>throughWeek) continue;
+    const byM={};
+    rows.forEach(([r,m,p])=>{(byM[m]=byM[m]||[]).push([r,p]);});
+    Object.values(byM).forEach(t=>{ if(t.length===2 && (t[0][1]>0||t[1][1]>0)) games.push({week:+wk,a:t[0][0],pa:t[0][1],b:t[1][0],pb:t[1][1]}); });
+  }
+  return games;
+}
+function buildTable(data,games){
+  const T={};
+  Object.keys(data.teams).forEach(id=>T[id]={id:+id,w:0,l:0,t:0,pf:0,pa:0,results:[]});
+  games.sort((x,y)=>x.week-y.week).forEach(g=>{
+    const A=T[g.a],B=T[g.b];
+    A.pf+=g.pa;A.pa+=g.pb;B.pf+=g.pb;B.pa+=g.pa;
+    if(g.pa>g.pb){A.w++;B.l++;A.results.push("W");B.results.push("L");}
+    else if(g.pb>g.pa){B.w++;A.l++;B.results.push("W");A.results.push("L");}
+    else{A.t++;B.t++;A.results.push("T");B.results.push("T");}
+  });
+  return T;
+}
+// head-to-head record of x vs y: [wins, losses, games]
+function h2h(games,x,y){
+  let w=0,l=0,n=0;
+  games.forEach(g=>{
+    let px,py;
+    if(g.a===x&&g.b===y){px=g.pa;py=g.pb}else if(g.a===y&&g.b===x){px=g.pb;py=g.pa}else return;
+    n++; if(px>py)w++; else if(py>px)l++;
+  });
+  return [w,l,n];
+}
+const byPts=(T)=>(a,b)=>T[b].pf-T[a].pf;
+const nm=id=>DATA.teams[id].team;
+
+// returns {order:[ids], notes:{id:text}, steps:[text]}
+function breakTie(ids,games,T){
+  const notes={}, steps=[];
+  function rec(group){
+    if(group.length===1) return group;
+    if(group.length===2){
+      const [a,b]=group; const [w,l,n]=h2h(games,a,b);
+      if(w!==l){
+        const [win,lose]=w>l?[a,b]:[b,a];
+        const rec=w>l?`${w}-${l}`:`${l}-${w}`;
+        notes[win]=`Won H2H vs ${nm(lose)} (${rec})`;
+        notes[lose]=notes[lose]||`Lost H2H to ${nm(win)}`;
+        steps.push(`${nm(win)} beat ${nm(lose)} head-to-head (${rec}).`);
+        return [win,lose];
+      }
+      const o=group.slice().sort(byPts(T));
+      const why=n?`split ${w}-${l} head-to-head`:`haven't played each other`;
+      notes[o[0]]=`Points tiebreak over ${nm(o[1])}`;
+      notes[o[1]]=notes[o[1]]||`Lost points tiebreak`;
+      steps.push(`${nm(o[0])} and ${nm(o[1])} ${why}, so points scored decides.`);
+      return o;
+    }
+    // 3+ teams: look for a sweeper / swept team
+    const swept=(x,dir)=>group.every(y=>{ if(y===x) return true; const [w,l,n]=h2h(games,x,y); return n>0 && (dir>0? (w===n):(l===n)); });
+    const sweeper=group.find(x=>swept(x,1));
+    if(sweeper){
+      notes[sweeper]=`Swept the other ${group.length-1} tied teams`;
+      steps.push(`${nm(sweeper)} beat every other team in the tie, so takes the top spot.`);
+      return [sweeper,...rec(group.filter(x=>x!==sweeper))];
+    }
+    const loser=group.find(x=>swept(x,-1));
+    if(loser){
+      notes[loser]=`Swept by the other ${group.length-1} tied teams`;
+      steps.push(`${nm(loser)} lost to every other team in the tie, so drops to the bottom.`);
+      return [...rec(group.filter(x=>x!==loser)),loser];
+    }
+    const o=group.slice().sort(byPts(T));
+    o.forEach((id,i)=>{ if(!notes[id]) notes[id]=`Points tiebreak (${i+1} of ${o.length})`; });
+    steps.push(`No team swept or was swept by the others, so points scored sets the order: ${o.map(nm).join(" → ")}.`);
+    return o;
+  }
+  return {order:rec(ids),notes,steps};
+}
+
+function standings(data,throughWeek){
+  const games=buildGames(data,throughWeek), T=buildTable(data,games);
+  const pct=t=>(t.w+0.5*t.t)/Math.max(1,t.w+t.l+t.t);
+  const ids=Object.keys(T).map(Number).sort((a,b)=>pct(T[b])-pct(T[a]));
+  const out=[], groups=[];
+  for(let i=0;i<ids.length;){
+    let j=i; while(j<ids.length && pct(T[ids[j]])===pct(T[ids[i]])) j++;
+    const g=ids.slice(i,j);
+    if(g.length>1){
+      const r=breakTie(g,games,T);
+      out.push(...r.order.map(id=>({...T[id],note:r.notes[id]})));
+      groups.push({rec:`${T[g[0]].w}-${T[g[0]].l}`,order:r.order,steps:r.steps,start:i+1});
+    } else out.push({...T[g[0]],note:null});
+    i=j;
+  }
+  return {rows:out,groups};
+}
+function streak(res){
+  if(!res.length) return "";
+  const last=res[res.length-1]; let n=0;
+  for(let i=res.length-1;i>=0&&res[i]===last;i--) n++;
+  return last+n;
+}
+
+
+// ---------- RENDER ----------
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function ago(iso){const m=Math.round((Date.now()-new Date(iso))/60000); if(m<1)return "just now"; if(m<60)return m+" min ago"; const h=Math.round(m/60); if(h<48)return h+" hr ago"; return Math.round(h/24)+" days ago";}
+function render(){
+  const D=DATA, live=D.liveWeek;
+  const through = (VIEW==='live'&&live)?live:D.lastFinalWeek;
+  const {rows,groups}=standings(D,through);
+  // header
+  document.getElementById("asof").textContent=`${D.season} season · updated ${ago(D.updatedAt)}`;
+  const st=document.getElementById("status");
+  st.textContent= live?`● LIVE · Week ${live}`:`Final through Week ${D.lastFinalWeek}`;
+  st.classList.toggle('live',!!live);
+  // toggle
+  const tg=document.getElementById("toggle");
+  tg.style.display=live?'flex':'none';
+  tg.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===VIEW));
+  document.getElementById("tbl-note").textContent = (VIEW==='live'&&live)
+    ? `If Week ${live} ended right now. Not official until the week is final.`
+    : `Official standings through Week ${D.lastFinalWeek}.`;
+  // matchups
+  const mw = live || D.lastFinalWeek;
+  const rowsW=(D.weeks[mw]||[]); const byM={};
+  rowsW.forEach(([r,m,p])=>(byM[m]=byM[m]||[]).push([r,p]));
+  document.getElementById("mu-title").textContent = live?`Week ${mw} live scores`:`Week ${mw} final scores`;
+  document.getElementById("matchups").innerHTML=Object.keys(byM).sort((a,b)=>a-b).map(m=>{
+    const t=byM[m]; if(t.length!==2) return "";
+    const lead = t[0][1]===t[1][1]?-1:(t[0][1]>t[1][1]?0:1);
+    return `<div class="mu">${t.map(([r,p],i)=>`<div class="side ${i===lead?'lead':''}"><span class="mt">${esc(D.teams[r].team)}</span><span class="mp">${p.toFixed(2)}</span></div>`).join("")}</div>`;
+  }).join("");
+  // table
+  document.getElementById("tbody").innerHTML=rows.map((r,i)=>{
+    const t=D.teams[r.id]; const seed=i+1;
+    const cls=[seed<=D.byes?"bye":seed<=D.playoffTeams?"in":"", seed===D.playoffTeams?"cut":""].join(" ");
+    return `<tr class="${cls}">
+      <td class="rank">${seed}</td>
+      <td class="l"><div class="team">${esc(t.team)}</div><div class="owner">${esc(t.owner)}</div>${r.note?`<span class="tb">${esc(r.note)}</span>`:""}</td>
+      <td class="rec">${r.w}-${r.l}${r.t?"-"+r.t:""}</td>
+      <td>${r.pf.toFixed(2)}</td>
+      <td class="hide-sm">${r.pa.toFixed(2)}</td>
+      <td class="hide-sm">${streak(r.results)}</td>
+    </tr>`+(seed===D.playoffTeams?`<tr><td colspan="6" class="cutlabel">Playoff line</td></tr>`:"");
+  }).join("");
+  document.getElementById("groups").innerHTML=groups.length?groups.map(g=>`
+    <div class="card">
+      <h3>Tied at ${g.rec} <span class="why">· spots ${g.start}–${g.start+g.order.length-1}</span></h3>
+      ${g.steps.map(s=>`<div class="why">${esc(s)}</div>`).join("")}
+      <ol start="${g.start}">${g.order.map(id=>`<li>${esc(nm(id))}</li>`).join("")}</ol>
+    </div>`).join(""):`<div class="why">No ties right now.</div>`;
+  document.getElementById("foot").textContent=`Data from Sleeper league ${D.league_id}. Live from Sleeper; updates every minute while open.`;
+}
+document.getElementById("toggle").addEventListener("click",e=>{const v=e.target.dataset&&e.target.dataset.v; if(v){VIEW=v;render();}});
+DATA={"league_id": "1365331592909705216", "season": 2026, "regularSeasonWeeks": 14, "playoffTeams": 6, "byes": 2, "lastFinalWeek": 10, "liveWeek": null, "updatedAt": "2026-11-18T05:10:00Z", "teams": {"1": {"team": "Titsburgh Feelers", "owner": "SamSpringli"}, "2": {"team": "Chaddy Pussies", "owner": "AdamChadwick"}, "3": {"team": "Chasing Five.", "owner": "MikeArmon"}, "4": {"team": "Gotcho $", "owner": "GotchoMoney"}, "5": {"team": "Westside Heat", "owner": "CDAliens"}, "6": {"team": "Little Chubby's Return", "owner": "SimplyNato"}, "7": {"team": "LeGarrens Cunts", "owner": "Garren"}, "8": {"team": "Simp Lord", "owner": "Nubzz"}, "9": {"team": "King Tutenkhamun", "owner": "SpencerCarter"}, "10": {"team": "Mole-Mack Moom-Mammer", "owner": "BigPoppaHugeTime"}, "11": {"team": "Pi$$ Missiles \ud83d\ude80", "owner": "EStein"}, "12": {"team": "B3tterLu8eUp", "owner": "240"}}, "weeks": {"1": [[1, 2, 130.42], [2, 1, 171.86], [3, 3, 132.62], [4, 3, 76.86], [5, 4, 118.2], [6, 1, 120.04], [7, 5, 90.4], [8, 4, 159.2], [9, 2, 117.06], [10, 6, 133.96], [11, 6, 132.86], [12, 5, 157.86]], "2": [[1, 3, 104.52], [2, 2, 153.72], [3, 4, 119.26], [4, 6, 109.08], [5, 5, 115.38], [6, 1, 117.72], [7, 4, 137.98], [8, 3, 134.16], [9, 5, 124.58], [10, 1, 91.9], [11, 2, 104.64], [12, 6, 112.82]], "3": [[1, 3, 117.56], [2, 2, 131.66], [3, 4, 119.92], [4, 6, 94.44], [5, 5, 120.68], [6, 1, 119.48], [7, 5, 122.6], [8, 1, 140.74], [9, 2, 162.82], [10, 3, 121.74], [11, 6, 106.44], [12, 4, 108.9]], "4": [[1, 3, 136.48], [2, 2, 82.12], [3, 4, 113.88], [4, 6, 129.96], [5, 3, 138.52], [6, 1, 113.92], [7, 1, 156.8], [8, 2, 143.3], [9, 6, 101.82], [10, 5, 175.78], [11, 4, 111.26], [12, 5, 154.14]], "5": [[1, 3, 165.54], [2, 2, 154.8], [3, 2, 145.84], [4, 4, 146.42], [5, 4, 117.14], [6, 1, 122.5], [7, 3, 148.12], [8, 5, 80.34], [9, 6, 137.4], [10, 6, 109.38], [11, 1, 151.86], [12, 5, 83.24]], "6": [[1, 2, 117.82], [2, 2, 97.2], [3, 3, 152.24], [4, 1, 108.18], [5, 4, 125.26], [6, 1, 135.2], [7, 5, 120.88], [8, 6, 114.92], [9, 4, 118.82], [10, 3, 89.64], [11, 6, 136.5], [12, 5, 102.3]], "7": [[1, 3, 177.02], [2, 2, 116.98], [3, 4, 134.7], [4, 5, 90.82], [5, 1, 94.72], [6, 1, 115.88], [7, 6, 146.2], [8, 4, 114.78], [9, 6, 126.38], [10, 5, 119.56], [11, 2, 131.14], [12, 3, 119.52]], "8": [[1, 3, 137.84], [2, 2, 158.36], [3, 3, 146.6], [4, 6, 61.6], [5, 4, 124.46], [6, 1, 148.18], [7, 6, 87.08], [8, 4, 91.5], [9, 2, 185.18], [10, 1, 58.7], [11, 5, 88.46], [12, 5, 100.98]], "9": [[1, 3, 142.9], [2, 2, 123.54], [3, 4, 161.98], [4, 4, 110.46], [5, 5, 130.68], [6, 1, 107.26], [7, 1, 122.88], [8, 6, 123], [9, 6, 144.94], [10, 5, 144.68], [11, 3, 125.56], [12, 2, 108.96]], "10": [[1, 1, 100.92], [2, 2, 134.74], [3, 3, 186.68], [4, 4, 86.24], [5, 4, 167.96], [6, 1, 103.86], [7, 6, 143.42], [8, 2, 172.72], [9, 5, 173.76], [10, 6, 108.5], [11, 3, 92.72], [12, 5, 92.18]]}};
+document.getElementById("asof").textContent="";
+render(); document.getElementById("asof").textContent="2026 season · final through Week 10";
+const sw=document.createElement("div"); sw.className="switch"; sw.setAttribute("role","group"); sw.setAttribute("aria-label","Design direction");
+[["scoreboard","Scoreboard"],["varsity","Varsity"],["turf","Turf"]].forEach(([k,l])=>{const b=document.createElement("button");b.textContent=l;b.dataset.t=k;b.onclick=()=>setT(k);sw.appendChild(b);});
+document.body.appendChild(sw);
+function setT(k){document.documentElement.dataset.theme=k;sw.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.t===k));try{location.hash=k}catch(e){}}
+setT(["scoreboard","varsity","turf"].includes(location.hash.slice(1))?location.hash.slice(1):"scoreboard");
+window.addEventListener("hashchange",()=>{const h=location.hash.slice(1); if(["scoreboard","varsity","turf"].includes(h)) setT(h);});
+</script>
+</body>
+</html>
