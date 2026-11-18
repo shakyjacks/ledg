@@ -58,13 +58,13 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 .seg button.on{background:var(--white);color:var(--bg)}
 
 /* standings list */
-.cols,.row>button{display:grid;grid-template-columns:28px minmax(0,1fr) 46px 58px 46px;align-items:center;column-gap:8px}
+.cols,.row>button{display:grid;grid-template-columns:28px minmax(0,1fr) 44px 66px 46px;align-items:center;column-gap:8px}
 .cols{padding:0 2px 6px;border-bottom:1px solid var(--line);color:var(--faint);font-size:11px;font-weight:700}
 .cols span{text-align:right}
 .cols span:nth-child(2){text-align:left}
 .list{list-style:none;margin:0;padding:0}
 .row{border-bottom:1px solid var(--line)}
-.row>button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:28px minmax(0,1fr) 46px 58px 46px;align-items:center;column-gap:8px;width:100%;padding:11px 2px;cursor:pointer}
+.row>button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:28px minmax(0,1fr) 44px 66px 46px;align-items:center;column-gap:8px;width:100%;padding:11px 2px;cursor:pointer}
 .seed{font:600 24px/1 Teko,sans-serif;text-align:center;color:var(--faint);padding-top:3px}
 .in .seed{color:var(--white)}
 .bye .seed{color:var(--gold)}
@@ -426,9 +426,9 @@ function render(){
 
     html.push(`<li class="row ${cls} ${open.has(r.id)?"open":""}" data-id="${r.id}">
       <button aria-expanded="${open.has(r.id)}"><span class="seed">${seed}</span>
-        <span class="who"><span class="name">${esc(t.team)}</span>${r.note?`<span class="tie">${esc(shortNote(r.note))}</span>`:""}</span>
+        <span class="who"><span class="name">${esc(t.team)}</span>${r.note?`<span class="tie">(${esc(shortNote(r.note))})</span>`:""}</span>
         <span class="num">${r.w}-${r.l}${r.t?"-"+r.t:""}</span>
-        <span class="num pf">${r.pf.toFixed(1)}</span>
+        <span class="num pf">${r.pf.toFixed(2)}</span>
         <span class="num odds ${o&&o.po<0.1?"lo":""}">${pct(o&&o.po)}</span></button>
       <div class="more"><div class="tname">${esc(t.teamName)}</div><dl><dt>Points for</dt><dt>Points against</dt><dt>Streak</dt><dt>Bye odds</dt><dd>${f2(r.pf)}</dd><dd>${f2(r.pa)}</dd><dd>${streak(r.results)||"–"}</dd><dd>${pct(o&&o.bye)}</dd></dl>
         ${r.note?`<div class="why">${esc(r.note)}.</div>`:""}</div></li>`);
