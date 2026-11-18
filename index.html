@@ -60,19 +60,19 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 .seg.gameson button[data-v=live]{color:var(--red)}
 
 /* standings list */
-.cols,.row>button{display:grid;grid-template-columns:24px minmax(0,1fr) 40px 64px 46px;align-items:center;column-gap:12px}
+.cols,.row>button{display:grid;grid-template-columns:24px minmax(0,1fr) 40px 64px 46px;align-items:center;column-gap:11px}
 .cols{padding:0 2px 6px;border-bottom:1px solid var(--line);color:var(--faint);font-size:11px;font-weight:700}
 .cols span{text-align:right}
 .cols span:nth-child(2){text-align:left}
 .list{list-style:none;margin:0;padding:0}
 .row{border-bottom:1px solid var(--line)}
-.row>button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:24px minmax(0,1fr) 40px 64px 46px;align-items:center;column-gap:12px;width:100%;padding:11px 2px;cursor:pointer}
+.row>button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:24px minmax(0,1fr) 40px 64px 46px;align-items:center;column-gap:11px;width:100%;padding:11px 2px;cursor:pointer}
 .seed{font:600 15px/1 "Chakra Petch",sans-serif;text-align:center;color:var(--faint)}
 .in .seed{color:var(--white)}
 .bye .seed{color:var(--gold)}
 .molebye .seed{color:var(--red)}
 .who{min-width:0}
-.who{display:flex;align-items:baseline;gap:6px;min-width:0}
+.who{display:flex;align-items:center;gap:4px;min-width:0}
 .name{font-weight:800;font-size:16px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .who>.name{flex:none;max-width:100%}
 .who .tie{flex:1 1 auto;min-width:0;font-size:11.5px;font-weight:700;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -131,6 +131,11 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 .mx-bar i{display:block;height:100%;background:var(--white);border-radius:999px 0 0 999px;transition:width .6s ease}
 .mx-p{display:flex;justify-content:space-between;margin-top:3px;font:400 11.5px "Chakra Petch",sans-serif;color:var(--muted)}
 @media (prefers-reduced-motion:reduce){.mx-bar i{transition:none}}
+
+/* score pill next to names */
+.sp{flex:0 1 auto;min-width:0;overflow:hidden;white-space:nowrap;font:400 11px/1 "Chakra Petch",sans-serif;padding:3px 5px;border-radius:999px;background:rgba(255,255,255,.08);color:var(--muted)}
+.sp.up{color:#4ade80}
+.sp.down{color:var(--red)}
 </style>
 </head>
 <body>
@@ -390,6 +395,12 @@ function buildMatch(D,mu,SD,liveT){
   }
   return out;
 }
+// Small score pill beside a name: team's score first; green if ahead, red if behind. Shown once the matchup has scores.
+function scorePill(id){
+  const m=MATCH&&MATCH[id]; if(!m || m.status==="upcoming" || (m.me<=0 && m.them<=0)) return "";
+  const c= m.me>m.them?"up" : m.me<m.them?"down" : "even";
+  return `<span class="sp ${c}" aria-label="Current matchup ${m.me.toFixed(2)} to ${m.them.toFixed(2)}">${Math.round(m.me)}–${Math.round(m.them)}</span>`;
+}
 function matchHTML(D,id){
   const m=MATCH&&MATCH[id]; if(!m) return "";
   const lab= m.status==="final"?`Week ${m.w} · Final` : m.status==="live"?`Week ${m.w} · <b>Live</b>` : `Week ${m.w}`;
@@ -480,7 +491,7 @@ function render(){
 
     html.push(`<li class="row ${cls} ${open.has(r.id)?"open":""}" data-id="${r.id}">
       <button aria-expanded="${open.has(r.id)}"><span class="seed">${seed}</span>
-        <span class="who"><span class="name">${esc(t.team)}</span></span>
+        <span class="who"><span class="name">${esc(t.team)}</span>${scorePill(r.id)}</span>
         <span class="num">${r.w}-${r.l}${r.t?"-"+r.t:""}</span>
         <span class="num pf">${r.pf.toFixed(2)}</span>
         <span class="num odds ${o&&o.po<0.1?"lo":""}">${pct(o&&o.po)}</span></button>
