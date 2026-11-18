@@ -61,12 +61,12 @@ details summary{cursor:pointer}
 [data-theme=scoreboard] .card{background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden}
 [data-theme=scoreboard] th{font:600 13px "Barlow Condensed";letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:10px;border-bottom:1px solid var(--line)}
 [data-theme=scoreboard] td{padding:11px 10px;border-bottom:1px solid var(--line);font-size:17px}
-[data-theme=scoreboard] .rank{font:800 24px Doto,monospace;color:#4a5684;width:44px;text-align:center}
+[data-theme=scoreboard] .rank{font:800 22px Doto,monospace;color:#4a5684;width:34px;text-align:center;padding-left:6px;padding-right:2px}
 [data-theme=scoreboard] tr.in .rank,[data-theme=scoreboard] tr.bye .rank{color:var(--amber);text-shadow:0 0 8px rgba(255,176,0,.4)}
-[data-theme=scoreboard] .team{font-weight:700;font-size:19px}
+[data-theme=scoreboard] .team{font-weight:700;font-size:18px;line-height:1.15}
 [data-theme=scoreboard] .owner{color:var(--muted);font-size:14px}
 [data-theme=scoreboard] .tb{display:inline-block;margin-top:5px;font-size:13px;color:var(--amber);border:1px solid var(--amberdim);border-radius:3px;padding:1px 6px}
-[data-theme=scoreboard] td:not(.l):not(.rank){font:700 20px Doto,monospace}
+[data-theme=scoreboard] td:not(.l):not(.rank){font:700 16px Doto,monospace;padding-left:4px;padding-right:6px}
 [data-theme=scoreboard] .rec{white-space:nowrap}
 [data-theme=scoreboard] tr.cut td{border-bottom:3px dotted var(--amber)}
 [data-theme=scoreboard] .cutlabel{font:700 13px "Barlow Condensed";letter-spacing:.12em;text-transform:uppercase;color:var(--amber);text-align:center;padding:5px}
@@ -107,7 +107,7 @@ details summary{cursor:pointer}
 [data-theme=varsity] .team{font-weight:800;font-size:16px}
 [data-theme=varsity] .owner{color:var(--muted);font-size:12.5px}
 [data-theme=varsity] .tb{display:inline-block;margin-top:5px;font-size:12px;font-weight:600;color:var(--royal);background:#eaeefc;border-radius:6px;padding:2px 8px}
-[data-theme=varsity] .rec{font-weight:800}
+[data-theme=varsity] .rec{font-weight:800;white-space:nowrap}
 [data-theme=varsity] tr.cut td{border-bottom:0}
 [data-theme=varsity] .cutlabel{padding:0!important;height:22px;background:linear-gradient(var(--royal) 0 6px,#fff 6px 10px,var(--red) 10px 16px,#fff 16px);font:700 0/0 a;color:transparent}
 [data-theme=varsity] .legend{color:var(--muted);font-size:12.5px}
@@ -366,7 +366,7 @@ function render(){
 document.getElementById("toggle").addEventListener("click",e=>{const v=e.target.dataset&&e.target.dataset.v; if(v){VIEW=v;render();}});
 DATA={"league_id": "1365331592909705216", "season": 2026, "regularSeasonWeeks": 14, "playoffTeams": 6, "byes": 2, "lastFinalWeek": 10, "liveWeek": null, "updatedAt": "2026-11-18T05:10:00Z", "teams": {"1": {"team": "Titsburgh Feelers", "owner": "SamSpringli"}, "2": {"team": "Chaddy Pussies", "owner": "AdamChadwick"}, "3": {"team": "Chasing Five.", "owner": "MikeArmon"}, "4": {"team": "Gotcho $", "owner": "GotchoMoney"}, "5": {"team": "Westside Heat", "owner": "CDAliens"}, "6": {"team": "Little Chubby's Return", "owner": "SimplyNato"}, "7": {"team": "LeGarrens Cunts", "owner": "Garren"}, "8": {"team": "Simp Lord", "owner": "Nubzz"}, "9": {"team": "King Tutenkhamun", "owner": "SpencerCarter"}, "10": {"team": "Mole-Mack Moom-Mammer", "owner": "BigPoppaHugeTime"}, "11": {"team": "Pi$$ Missiles \ud83d\ude80", "owner": "EStein"}, "12": {"team": "B3tterLu8eUp", "owner": "240"}}, "weeks": {"1": [[1, 2, 130.42], [2, 1, 171.86], [3, 3, 132.62], [4, 3, 76.86], [5, 4, 118.2], [6, 1, 120.04], [7, 5, 90.4], [8, 4, 159.2], [9, 2, 117.06], [10, 6, 133.96], [11, 6, 132.86], [12, 5, 157.86]], "2": [[1, 3, 104.52], [2, 2, 153.72], [3, 4, 119.26], [4, 6, 109.08], [5, 5, 115.38], [6, 1, 117.72], [7, 4, 137.98], [8, 3, 134.16], [9, 5, 124.58], [10, 1, 91.9], [11, 2, 104.64], [12, 6, 112.82]], "3": [[1, 3, 117.56], [2, 2, 131.66], [3, 4, 119.92], [4, 6, 94.44], [5, 5, 120.68], [6, 1, 119.48], [7, 5, 122.6], [8, 1, 140.74], [9, 2, 162.82], [10, 3, 121.74], [11, 6, 106.44], [12, 4, 108.9]], "4": [[1, 3, 136.48], [2, 2, 82.12], [3, 4, 113.88], [4, 6, 129.96], [5, 3, 138.52], [6, 1, 113.92], [7, 1, 156.8], [8, 2, 143.3], [9, 6, 101.82], [10, 5, 175.78], [11, 4, 111.26], [12, 5, 154.14]], "5": [[1, 3, 165.54], [2, 2, 154.8], [3, 2, 145.84], [4, 4, 146.42], [5, 4, 117.14], [6, 1, 122.5], [7, 3, 148.12], [8, 5, 80.34], [9, 6, 137.4], [10, 6, 109.38], [11, 1, 151.86], [12, 5, 83.24]], "6": [[1, 2, 117.82], [2, 2, 97.2], [3, 3, 152.24], [4, 1, 108.18], [5, 4, 125.26], [6, 1, 135.2], [7, 5, 120.88], [8, 6, 114.92], [9, 4, 118.82], [10, 3, 89.64], [11, 6, 136.5], [12, 5, 102.3]], "7": [[1, 3, 177.02], [2, 2, 116.98], [3, 4, 134.7], [4, 5, 90.82], [5, 1, 94.72], [6, 1, 115.88], [7, 6, 146.2], [8, 4, 114.78], [9, 6, 126.38], [10, 5, 119.56], [11, 2, 131.14], [12, 3, 119.52]], "8": [[1, 3, 137.84], [2, 2, 158.36], [3, 3, 146.6], [4, 6, 61.6], [5, 4, 124.46], [6, 1, 148.18], [7, 6, 87.08], [8, 4, 91.5], [9, 2, 185.18], [10, 1, 58.7], [11, 5, 88.46], [12, 5, 100.98]], "9": [[1, 3, 142.9], [2, 2, 123.54], [3, 4, 161.98], [4, 4, 110.46], [5, 5, 130.68], [6, 1, 107.26], [7, 1, 122.88], [8, 6, 123], [9, 6, 144.94], [10, 5, 144.68], [11, 3, 125.56], [12, 2, 108.96]], "10": [[1, 1, 100.92], [2, 2, 134.74], [3, 3, 186.68], [4, 4, 86.24], [5, 4, 167.96], [6, 1, 103.86], [7, 6, 143.42], [8, 2, 172.72], [9, 5, 173.76], [10, 6, 108.5], [11, 3, 92.72], [12, 5, 92.18]]}};
 document.getElementById("asof").textContent="";
-render(); document.getElementById("asof").textContent="2026 season · final through Week 10";
+render(); document.getElementById("asof").textContent="2026 season";
 const sw=document.createElement("div"); sw.className="switch"; sw.setAttribute("role","group"); sw.setAttribute("aria-label","Design direction");
 [["scoreboard","Scoreboard"],["varsity","Varsity"],["turf","Turf"]].forEach(([k,l])=>{const b=document.createElement("button");b.textContent=l;b.dataset.t=k;b.onclick=()=>setT(k);sw.appendChild(b);});
 document.body.appendChild(sw);
