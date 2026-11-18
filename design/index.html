@@ -63,7 +63,8 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 .who{min-width:0}
 .who{display:flex;align-items:baseline;gap:8px;min-width:0}
 .name{font-weight:800;font-size:16px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.who .tie{font-size:11.5px;font-weight:700;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who>.name{flex:none;max-width:100%}
+.who .tie{flex:1 1 auto;min-width:0;font-size:11.5px;font-weight:700;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .game .who{display:block}
 .tname{color:#dbe4f3;font-weight:700;margin-bottom:6px}
 .meta{color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -445,7 +446,7 @@ function shortNote(n){
   if(/^Lost H2H/.test(n)) return "Lost H2H";
   if(/^Swept the/.test(n)) return "Sweep";
   if(/^Swept by/.test(n)) return "Swept";
-  if(/Points tiebreak \(/.test(n)) return "Points tiebreak";
+  if(/Points tiebreak \(/.test(n)) return "On points";
   return "Tiebreak";
 }
 document.getElementById("list").addEventListener("click",e=>{
