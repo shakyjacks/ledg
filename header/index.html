@@ -128,6 +128,9 @@ html[data-h=m700] .bar h1{font:700 29px/1 Manrope,sans-serif;letter-spacing:-.01
 html[data-h=m600] .bar h1{font:600 29px/1 Manrope,sans-serif;letter-spacing:-.01em}
 html[data-h=m500] .bar h1{font:500 29px/1 Manrope,sans-serif;letter-spacing:-.01em}
 html[data-h=m400] .bar h1{font:400 29px/1 Manrope,sans-serif;letter-spacing:-.01em}
+html[data-h=m400s1] .bar h1{font:400 29px/1 Manrope,sans-serif;letter-spacing:.01em}
+html[data-h=m400s2] .bar h1{font:400 29px/1 Manrope,sans-serif;letter-spacing:.025em}
+html[data-h=m400s3] .bar h1{font:400 29px/1 Manrope,sans-serif;letter-spacing:.04em}
 html[data-h=bebas] .bar h1{font:400 42px/1 "Bebas Neue",sans-serif;letter-spacing:.02em;text-transform:uppercase;padding-top:4px}
 html[data-h=anton] .bar h1{font:400 34px/1 Anton,sans-serif;letter-spacing:.02em;text-transform:uppercase;padding-top:2px}
 html[data-h=league] .bar h1{font:400 44px/1 "League Gothic",sans-serif;letter-spacing:.03em;text-transform:uppercase;padding-top:3px}
@@ -150,7 +153,7 @@ html[data-h=sairax] .bar h1{font:700 40px/1 "Saira Extra Condensed",sans-serif;l
 
 <main>
   <div class="hpick" id="hpick" role="group" aria-label="Header font">
-    <button data-h="manrope">B · Manrope ExtraBold (800)</button><button data-h="m700">B2 · Manrope Bold (700)</button><button data-h="m600">B3 · Manrope SemiBold (600)</button><button data-h="m500">B4 · Manrope Medium (500)</button><button data-h="m400">B5 · Manrope Regular (400)</button><button data-h="bebas">F · Bebas Neue</button><button data-h="anton">G · Anton</button><button data-h="league">H · League Gothic</button><button data-h="oswald">I · Oswald</button><button data-h="sairax">J · Saira Extra Condensed</button><button data-h="now">Now · Chakra Petch Bold</button><button data-h="chakra500">A · Chakra Petch Medium</button><button data-h="saira">C · Saira</button><button data-h="exo">D · Exo 2 Italic</button><button data-h="kanit">E · Kanit</button>
+    <button data-h="manrope">B · Manrope ExtraBold (800)</button><button data-h="m700">B2 · Manrope Bold (700)</button><button data-h="m600">B3 · Manrope SemiBold (600)</button><button data-h="m500">B4 · Manrope Medium (500)</button><button data-h="m400">B5 · Regular (as is)</button><button data-h="m400s1">B5 + a touch more spacing</button><button data-h="m400s2">B5 + a little more</button><button data-h="m400s3">B5 + more</button><button data-h="bebas">F · Bebas Neue</button><button data-h="anton">G · Anton</button><button data-h="league">H · League Gothic</button><button data-h="oswald">I · Oswald</button><button data-h="sairax">J · Saira Extra Condensed</button><button data-h="now">Now · Chakra Petch Bold</button><button data-h="chakra500">A · Chakra Petch Medium</button><button data-h="saira">C · Saira</button><button data-h="exo">D · Exo 2 Italic</button><button data-h="kanit">E · Kanit</button>
   </div>
   <section class="view on" id="v-standings">
     <div class="subhead">
@@ -518,10 +521,10 @@ load(true);
 setInterval(()=>{ if(document.visibilityState==="visible") load(false); },60000);
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") load(false); });
 
-const HP=document.getElementById("hpick"), HS=["manrope","m700","m600","m500","m400","bebas","anton","league","oswald","sairax","now","chakra500","manrope","saira","exo","kanit"];
+const HP=document.getElementById("hpick"), HS=["m400s1","m400s2","m400s3","manrope","m700","m600","m500","m400","bebas","anton","league","oswald","sairax","now","chakra500","manrope","saira","exo","kanit"];
 function setH(h){ document.documentElement.dataset.h=h; HP.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.h===h)); try{history.replaceState(null,"","#"+h)}catch(e){} }
 HP.addEventListener("click",e=>{const b=e.target.closest("button"); if(b) setH(b.dataset.h);});
-setH(HS.includes(location.hash.slice(1))?location.hash.slice(1):"m600");
+setH(HS.includes(location.hash.slice(1))?location.hash.slice(1):"m400s1");
 </script>
 </body>
 </html>
