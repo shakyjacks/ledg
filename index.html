@@ -139,14 +139,15 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 
 /* Home: trade deadline countdown */
 html{overflow-x:clip}
-body[data-tab=home] .wave{background:var(--red)}
+body[data-tab=home][data-ann=on] .wave{background:var(--red)}
 .cd{text-align:center;background:var(--red);margin:-6px calc(50% - 50vw) 0;padding:20px 16px 22px}
 .cd-label{font:400 15px/1 Manrope,sans-serif;letter-spacing:.025em;color:rgba(255,255,255,.88);margin-bottom:16px}
 .cd-clock{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:360px;margin:0 auto}
 .cd-clock>div{display:flex;flex-direction:column;align-items:center;gap:6px}
 .cd-clock b{font:400 46px/1 "Chakra Petch",sans-serif;font-variant-numeric:tabular-nums;color:var(--white)}
 .cd-clock span{font-size:11.5px;font-weight:700;color:rgba(255,255,255,.82)}
-.cd-when{margin-top:18px;font-size:13px;color:var(--white)}
+.cd-when{margin-top:18px;font-size:13px;color:var(--white);white-space:pre-line}
+#ann-count[hidden]+.cd-when{margin-top:0;font-size:15px;line-height:1.45}
 .cd.past .cd-clock b{color:rgba(255,255,255,.55)}
 .cd-wave{display:block;height:14px;width:100vw;margin:0 calc(50% - 50vw);background:var(--bg)}
 
@@ -161,7 +162,7 @@ body[data-tab=home] .wave{background:var(--red)}
 .nfl-k{font:400 13.5px/1 "Chakra Petch",sans-serif;white-space:nowrap;text-align:right}
 </style>
 </head>
-<body data-tab="home">
+<body data-tab="home" data-ann="off">
 <header class="bar">
   <div class="bar-in">
     <img src="badge.png" alt="LEDG">
@@ -173,14 +174,18 @@ body[data-tab=home] .wave{background:var(--red)}
 
 <main>
   <section class="view on" id="v-home">
-    <div class="cd" id="cd">
-      <div class="cd-label">Trade Deadline</div>
-      <div class="cd-clock" id="cd-clock" role="timer" aria-live="off">
-        <div><b id="cd-d">–</b><span>days</span></div><div><b id="cd-h">–</b><span>hours</span></div><div><b id="cd-m">–</b><span>mins</span></div><div><b id="cd-s">–</b><span>secs</span></div>
+    <div class="ann" id="ann" hidden>
+      <div class="cd" id="cd">
+        <div class="cd-label" id="ann-title"></div>
+        <div id="ann-count" hidden>
+          <div class="cd-clock" id="cd-clock" role="timer" aria-live="off">
+            <div><b id="cd-d">–</b><span>days</span></div><div><b id="cd-h">–</b><span>hours</span></div><div><b id="cd-m">–</b><span>mins</span></div><div><b id="cd-s">–</b><span>secs</span></div>
+          </div>
+        </div>
+        <div class="cd-when" id="ann-text"></div>
       </div>
-      <div class="cd-when" id="cd-when">Finding the first Thanksgiving kickoff…</div>
+      <svg class="cd-wave" viewBox="0 0 400 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H400V4C330 -4 260 2 200 8C130 15 60 14 0 6Z" fill="#ff3131"/></svg>
     </div>
-    <svg class="cd-wave" viewBox="0 0 400 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H400V4C330 -4 260 2 200 8C130 15 60 14 0 6Z" fill="#ff3131"/></svg>
     <div class="nfl" id="nfl"></div>
   </section>
   <section class="view" id="v-standings">
@@ -587,25 +592,44 @@ async function getDeadline(year){
   }catch(e){ console.warn("deadline lookup failed",e); }
   return {t:Date.UTC(year,10,day,17,30),game:null,approx:true}; // usual 12:30 PM ET slot if the schedule can't be reached
 }
-function tickDeadline(){
-  if(!DEADLINE) return;
-  const left=DEADLINE.t-Date.now(), pad=n=>String(n).padStart(2,"0");
-  const when=new Date(DEADLINE.t).toLocaleString("en-US",{timeZone:"America/Los_Angeles",weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})+" PT";
-  const cd=document.getElementById("cd");
-  if(left<=0){
-    cd.classList.add("past");
-    ["d","h","m","s"].forEach(k=>document.getElementById("cd-"+k).textContent="00");
-    document.getElementById("cd-when").textContent=`The trade deadline has passed (${when}).`;
-    return;
-  }
-  const sec=Math.floor(left/1000);
-  document.getElementById("cd-d").textContent=Math.floor(sec/86400);
-  document.getElementById("cd-h").textContent=pad(Math.floor(sec%86400/3600));
-  document.getElementById("cd-m").textContent=pad(Math.floor(sec%3600/60));
-  document.getElementById("cd-s").textContent=pad(sec%60);
-  document.getElementById("cd-when").textContent= DEADLINE.game ? `Kickoff of ${DEADLINE.game} · ${when}` : `First Thanksgiving kickoff · ${when}${DEADLINE.approx?" (estimated)":""}`;
+// ---------- HOME: Important Announcement (the red band) ----------
+// The band shows the first announcement below that is active right now. If none is active,
+// the band is removed completely and the header wave goes back to navy.
+// To add one later, add an entry like:
+//   {title:"Rule Vote", text:"Vote on the 2027 rule changes by Sunday.", start:"2026-12-01T08:00:00-08:00", end:"2026-12-07T23:59:00-08:00"}
+// A {countdown:true} entry shows days/hours/mins/secs until `until`.
+function announcements(){
+  const list=[];
+  if(DEADLINE) list.push({title:"Trade Deadline", countdown:true, until:DEADLINE.t,
+    text: DEADLINE.game?`Kickoff of ${DEADLINE.game} · ${fmtPT(DEADLINE.t)}`:`First Thanksgiving kickoff · ${fmtPT(DEADLINE.t)}${DEADLINE.approx?" (estimated)":""}`});
+  return list;
 }
-(async()=>{ DEADLINE=await getDeadline(new Date().getFullYear()); tickDeadline(); setInterval(tickDeadline,1000); })();
+function fmtPT(t){ return new Date(t).toLocaleString("en-US",{timeZone:"America/Los_Angeles",weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})+" PT"; }
+function activeAnnouncement(){
+  const now=Date.now();
+  return announcements().find(a=>{
+    const st=a.start?new Date(a.start).getTime():-Infinity;
+    const en=a.countdown?a.until:(a.end?new Date(a.end).getTime():Infinity);
+    return now>=st && now<en;
+  })||null;
+}
+function tickAnnouncement(){
+  const a=activeAnnouncement(), band=document.getElementById("ann");
+  band.hidden=!a; document.body.dataset.ann=a?"on":"off";
+  if(!a) return;
+  document.getElementById("ann-title").textContent=a.title;
+  document.getElementById("ann-text").textContent=a.text||"";
+  document.getElementById("ann-count").hidden=!a.countdown;
+  if(a.countdown){
+    const sec=Math.max(0,Math.floor((a.until-Date.now())/1000)), pad=n=>String(n).padStart(2,"0");
+    document.getElementById("cd-d").textContent=Math.floor(sec/86400);
+    document.getElementById("cd-h").textContent=pad(Math.floor(sec%86400/3600));
+    document.getElementById("cd-m").textContent=pad(Math.floor(sec%3600/60));
+    document.getElementById("cd-s").textContent=pad(sec%60);
+  }
+}
+tickAnnouncement(); setInterval(tickAnnouncement,1000);
+(async()=>{ DEADLINE=await getDeadline(new Date().getFullYear()); tickAnnouncement(); })();
 
 // ---------- HOME: this week's NFL schedule (teams, kickoff PT, TV, stadium) ----------
 const VENUE_FIX={"Reliant Stadium":"NRG Stadium"}; // ESPN still uses some old stadium names
