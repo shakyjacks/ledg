@@ -121,7 +121,7 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 /* current matchup inside the tap-open details: compact, no box */
 .mx{margin:10px 0 0}
 .mx-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-.mx-h{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap}
+.mx-h{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap;margin-bottom:3px}
 .mx-h b{color:var(--red)}
 .mx-n{font-weight:800;font-size:13.5px;color:var(--white)}
 .mx-n.op{color:#dbe4f3}
@@ -392,11 +392,12 @@ function buildMatch(D,mu,SD,liveT){
 }
 function matchHTML(D,id){
   const m=MATCH&&MATCH[id]; if(!m) return "";
-  const lab= m.status==="final"?`Wk ${m.w} · Final` : m.status==="live"?`Wk ${m.w} · <b>Live</b>` : `Week ${m.w}`;
+  const lab= m.status==="final"?`Week ${m.w} · Final` : m.status==="live"?`Week ${m.w} · <b>Live</b>` : `Week ${m.w}`;
   const show=p=> m.status==="final" ? (p>=1?"Won":p<=0?"Lost":"Tie") : pct(p);
   const w=Math.round(m.p*1000)/10;
   return `<div class="mx ${m.status}">
-    <div class="mx-row"><span><span class="mx-n">${esc(D.teams[id].team)}</span> <span class="mx-s">${f2(m.me)}</span></span><span class="mx-h">${lab}</span><span><span class="mx-s op">${f2(m.them)}</span> <span class="mx-n op">${esc(D.teams[m.opp].team)}</span></span></div>
+    <div class="mx-h">${lab}</div>
+    <div class="mx-row"><span><span class="mx-n">${esc(D.teams[id].team)}</span> <span class="mx-s">${f2(m.me)}</span></span><span><span class="mx-s op">${f2(m.them)}</span> <span class="mx-n op">${esc(D.teams[m.opp].team)}</span></span></div>
     <div class="mx-bar" role="img" aria-label="${esc(D.teams[id].team)} ${show(m.p)}, ${esc(D.teams[m.opp].team)} ${show(1-m.p)}"><i style="width:${w}%"></i></div>
     <div class="mx-p"><span>${show(m.p)}</span><span>${show(1-m.p)}</span></div>
   </div>`;
