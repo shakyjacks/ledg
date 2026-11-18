@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="LEDG">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#031a3d;        /* deep LEDG navy */
@@ -38,7 +38,7 @@ button{font:inherit;color:inherit}
 @media (display-mode: standalone){ .bar{padding-top:calc(24px + env(safe-area-inset-top))} html{background:var(--brand)} }
 .bar-in{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:12px;padding-bottom:12px}
 .bar img{width:46px;height:auto;display:block}
-.bar h1{margin:0;font:600 42px/1 Teko,sans-serif;letter-spacing:.01em;padding-top:4px;flex:1}
+.bar h1{margin:0;font:700 31px/1 "Chakra Petch",sans-serif;letter-spacing:0;flex:1}
 .pill{font:700 12px Manrope;padding:6px 11px;border-radius:999px;background:rgba(255,255,255,.12);white-space:nowrap}
 .pill.live{background:var(--red)}
 .pill.live::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#fff;margin-right:7px;vertical-align:1px;animation:pulse 1.6s ease-in-out infinite}
@@ -58,14 +58,14 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 .seg button.on{background:var(--white);color:var(--bg)}
 
 /* standings list */
-.cols,.row>button{display:grid;grid-template-columns:24px minmax(0,1fr) 38px 62px 48px;align-items:center;column-gap:6px}
+.cols,.row>button{display:grid;grid-template-columns:24px minmax(0,1fr) 40px 64px 46px;align-items:center;column-gap:12px}
 .cols{padding:0 2px 6px;border-bottom:1px solid var(--line);color:var(--faint);font-size:11px;font-weight:700}
 .cols span{text-align:right}
 .cols span:nth-child(2){text-align:left}
 .list{list-style:none;margin:0;padding:0}
 .row{border-bottom:1px solid var(--line)}
-.row>button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:24px minmax(0,1fr) 38px 62px 48px;align-items:center;column-gap:6px;width:100%;padding:11px 2px;cursor:pointer}
-.seed{font:600 24px/1 Teko,sans-serif;text-align:center;color:var(--faint);padding-top:3px}
+.row>button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:24px minmax(0,1fr) 40px 64px 46px;align-items:center;column-gap:12px;width:100%;padding:11px 2px;cursor:pointer}
+.seed{font:600 15px/1 "Chakra Petch",sans-serif;text-align:center;color:var(--faint)}
 .in .seed{color:var(--white)}
 .bye .seed{color:var(--gold)}
 .molebye .seed{color:var(--red)}
@@ -78,7 +78,7 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 .tname{color:#dbe4f3;font-weight:700;margin-bottom:6px}
 .meta{color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .meta .tie{color:#cfdcf2;font-weight:700}
-.num{font:400 21px/1 Teko,sans-serif;text-align:right;padding-top:3px;white-space:nowrap}
+.num{font:400 15.5px/1 "Chakra Petch",sans-serif;text-align:right;white-space:nowrap}
 .num.pf{color:#dbe4f3}
 .num.odds{color:var(--white)}
 .num.odds.lo{color:var(--faint)}
@@ -87,7 +87,7 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 .row.open .more{display:block}
 .more dl{display:grid;grid-template-columns:repeat(4,auto);justify-content:start;gap:2px 20px;margin:0 0 6px}
 .more dt{font-size:11px}
-.more dd{margin:0;color:var(--white);font:400 19px/1 Teko}
+.more dd{margin:0;color:var(--white);font:400 15px/1.1 "Chakra Petch"}
 .more .why{color:#dbe4f3}
 /* playoff line: straight dashed red */
 .cut{list-style:none;border-top:2px dashed var(--red);margin:-1px 0 0;height:0}
@@ -102,7 +102,7 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 .side+.side{border-top:1px solid var(--line)}
 .side .name{font-size:15px}
 .side .meta{font-size:12px}
-.pts{font:400 30px/1 Teko,sans-serif;padding-top:4px;color:var(--muted)}
+.pts{font:400 22px/1 "Chakra Petch",sans-serif;color:var(--muted)}
 .side.win .pts{color:var(--white)}
 .side.win .name::after{content:"";display:inline-block;width:0;height:0;border:5px solid transparent;border-right-color:var(--red);margin-left:8px;vertical-align:1px}
 
@@ -426,7 +426,7 @@ function render(){
 
     html.push(`<li class="row ${cls} ${open.has(r.id)?"open":""}" data-id="${r.id}">
       <button aria-expanded="${open.has(r.id)}"><span class="seed">${seed}</span>
-        <span class="who"><span class="name">${esc(t.team)}</span>${r.note?`<span class="tie">(${esc(shortNote(r.note))})</span>`:""}</span>
+        <span class="who"><span class="name">${esc(t.team)}</span></span>
         <span class="num">${r.w}-${r.l}${r.t?"-"+r.t:""}</span>
         <span class="num pf">${r.pf.toFixed(2)}</span>
         <span class="num odds ${o&&o.po<0.1?"lo":""}">${pct(o&&o.po)}</span></button>
