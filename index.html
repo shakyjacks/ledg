@@ -3,121 +3,155 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0d1117">
+<meta name="theme-color" content="#031a3d">
+<title>LEDG</title>
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="LEDG">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="icon" type="image/png" href="icon-192.png">
-<title>LEDG Standings</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#0d1117; --panel:#161b22; --line:#262d36; --text:#e8edf2; --muted:#8b96a3;
-    --accent:#3ddc84; --accent2:#ffb020; --out:#5b6672;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 Inter,system-ui,sans-serif}
-  .wrap{max-width:820px;margin:0 auto;padding:calc(20px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right)) calc(48px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left))}
-  header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-  h1{font:700 40px/1 Oswald,sans-serif;letter-spacing:.04em;margin:0}
-  h1 span{color:var(--accent)}
-  .sub{color:var(--muted);font-size:13px}
-  .badge{display:inline-block;background:#1f2a20;color:var(--accent);border:1px solid #2e4a35;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-  table{width:100%;border-collapse:collapse}
-  th{font:500 12px Oswald,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:right;padding:10px 10px;border-bottom:1px solid var(--line)}
-  th.l,td.l{text-align:left}
-  td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;vertical-align:top}
-  tr:last-child td{border-bottom:none}
-  .rank{font:700 18px Oswald,sans-serif;color:var(--muted);width:34px;text-align:center}
-  tr.in .rank{color:var(--accent)}
-  tr.bye .rank{color:var(--accent2)}
-  .team{font-weight:600}
-  .owner{color:var(--muted);font-size:12px}
-  .tb{display:inline-block;margin-top:4px;font-size:11.5px;color:#c9d3dd;background:#202833;border-radius:6px;padding:2px 7px}
-  .rec{font-weight:600;white-space:nowrap}
-  tr.cut td{border-bottom:2px dashed var(--accent)}
-  .cutlabel{font-size:11px;color:var(--accent);text-align:center;padding:4px;letter-spacing:.06em;text-transform:uppercase;font-family:Oswald}
-  .legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin:10px 2px 22px}
-  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:middle}
-  h2{font:700 20px Oswald,sans-serif;letter-spacing:.04em;margin:26px 0 10px}
-  .groups .card{padding:14px 16px;margin-bottom:12px}
-  .groups h3{margin:0 0 6px;font:600 15px Inter}
-  .groups ol{margin:6px 0 0;padding-left:20px}
-  .groups li{margin:3px 0}
-  .why{color:var(--muted);font-size:13px}
-  details{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
-  summary{cursor:pointer;font-weight:600}
-  details ol{padding-left:20px;color:#c9d3dd}
-  .hide-sm{}
-  @media (max-width:560px){ .hide-sm{display:none} h1{font-size:32px} td,th{padding:9px 6px} }
-  .badge.live{background:#2a1d0c;color:var(--accent2);border-color:#5a3d12}
-  .matchups{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
-  .mu{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
-  .side{display:flex;justify-content:space-between;gap:10px;padding:4px 0;color:var(--muted)}
-  .side.lead{color:var(--text);font-weight:600}
-  .side.lead .mp{color:var(--accent)}
-  .mt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .mp{font-variant-numeric:tabular-nums}
-  .tablehead{display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .toggle{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px}
-  .toggle button{background:none;border:0;color:var(--muted);font:600 12px Inter;padding:5px 12px;border-radius:999px;cursor:pointer}
-  .toggle button.on{background:#263040;color:var(--text)}
-  footer{margin-top:26px;color:var(--muted);font-size:12px}
+:root{
+  --bg:#031a3d;        /* deep LEDG navy */
+  --surface:#082a5c;
+  --brand:#00357a;     /* LEDG navy */
+  --red:#ff3131;       /* LEDG red */
+  --gold:#ffd21f;      /* Founding Fathers gold */
+  --white:#ffffff;
+  --muted:#93a8cc;
+  --faint:#5c7299;
+  --line:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--white)}
+body{font:500 15px/1.4 Manrope,system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* app bar */
+.bar{position:sticky;top:0;z-index:5;background:var(--brand);padding:calc(10px + env(safe-area-inset-top)) 16px 0;}
+.bar-in{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:12px;padding-bottom:12px}
+.bar img{width:46px;height:auto;display:block}
+.bar h1{margin:0;font:600 42px/1 Teko,sans-serif;letter-spacing:.01em;padding-top:4px;flex:1}
+.pill{font:700 12px Manrope;padding:6px 11px;border-radius:999px;background:rgba(255,255,255,.12);white-space:nowrap}
+.pill.live{background:var(--red)}
+.pill.live::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#fff;margin-right:7px;vertical-align:1px;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.pill.live::before{animation:none}}
+/* the badge's wave, used once as the bar's edge */
+.wave{display:block;width:100%;height:14px;background:var(--bg)}
+
+main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-inset-bottom))}
+.view{display:none}.view.on{display:block}
+
+.subhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0 12px}
+.subhead p{margin:0;color:var(--muted);font-size:13px}
+.seg[hidden]{display:none}
+.seg{display:flex;background:var(--surface);border-radius:999px;padding:3px}
+.seg button{border:0;background:none;padding:6px 13px;border-radius:999px;font-weight:700;font-size:12.5px;color:var(--muted);cursor:pointer}
+.seg button.on{background:var(--white);color:var(--bg)}
+
+/* standings list */
+.cols,.row>button{display:grid;grid-template-columns:28px minmax(0,1fr) 46px 58px 46px;align-items:center;column-gap:8px}
+.cols{padding:0 2px 6px;border-bottom:1px solid var(--line);color:var(--faint);font-size:11px;font-weight:700}
+.cols span{text-align:right}
+.cols span:nth-child(2){text-align:left}
+.list{list-style:none;margin:0;padding:0}
+.row{border-bottom:1px solid var(--line)}
+.row>button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:28px minmax(0,1fr) 46px 58px 46px;align-items:center;column-gap:8px;width:100%;padding:11px 2px;cursor:pointer}
+.seed{font:600 24px/1 Teko,sans-serif;text-align:center;color:var(--faint);padding-top:3px}
+.in .seed{color:var(--white)}
+.bye .seed{color:var(--gold)}
+.who{min-width:0}
+.who{display:flex;align-items:baseline;gap:8px;min-width:0}
+.name{font-weight:800;font-size:16px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who>.name{flex:none;max-width:100%}
+.who .tie{flex:1 1 auto;min-width:0;font-size:11.5px;font-weight:700;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.game .who{display:block}
+.tname{color:#dbe4f3;font-weight:700;margin-bottom:6px}
+.meta{color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta .tie{color:#cfdcf2;font-weight:700}
+.num{font:600 21px/1 Teko,sans-serif;text-align:right;padding-top:3px;white-space:nowrap}
+.num.pf{color:#dbe4f3}
+.num.odds{color:var(--white)}
+.num.odds.lo{color:var(--faint)}
+.out .name{color:#dbe4f3}
+.more{display:none;padding:2px 2px 12px 38px;color:var(--muted);font-size:12.5px}
+.row.open .more{display:block}
+.more dl{display:grid;grid-template-columns:repeat(4,auto);justify-content:start;gap:2px 20px;margin:0 0 6px}
+.more dt{font-size:11px}
+.more dd{margin:0;color:var(--white);font:600 19px/1 Teko}
+.more .why{color:#dbe4f3}
+/* playoff line: straight dashed red */
+.cut{list-style:none;border-top:2px dashed var(--red);margin:-1px 0 0;height:0}
+.key{display:flex;flex-wrap:wrap;gap:6px 16px;color:var(--muted);font-size:11.5px;margin:12px 2px 0}
+.key i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.key b{display:inline-block;width:16px;border-top:2px dashed var(--red);margin-right:6px;vertical-align:3px}
+
+/* scores */
+.games{display:grid;gap:10px}
+.game{background:var(--surface);border-radius:14px;padding:6px 14px}
+.side{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:8px 0}
+.side+.side{border-top:1px solid var(--line)}
+.side .name{font-size:15px}
+.side .meta{font-size:12px}
+.pts{font:600 30px/1 Teko,sans-serif;padding-top:4px;color:var(--muted)}
+.side.win .pts{color:var(--white)}
+.side.win .name::after{content:"";display:inline-block;width:0;height:0;border:5px solid transparent;border-right-color:var(--red);margin-left:8px;vertical-align:1px}
+
+/* bottom tabs */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;background:rgba(3,26,61,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
+.tabs-in{max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.tabs button{border:0;background:none;padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:700;color:var(--faint);cursor:pointer}
+.tabs button svg{width:22px;height:22px}
+.tabs button.on{color:var(--white)}
+.tabs button.on svg{color:var(--red)}
+.tabs button[disabled]{opacity:.45;cursor:default}
+.note{color:var(--faint);font-size:12px;margin-top:22px}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div>
-      <h1>LEDG <span>STANDINGS</span></h1>
-      <div class="sub" id="asof"></div>
+<header class="bar">
+  <div class="bar-in">
+    <img src="badge.png" alt="LEDG">
+    <h1 id="title">Standings</h1>
+    <span class="pill" id="pill">Loading</span>
+  </div>
+</header>
+<svg class="wave" viewBox="0 0 400 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H400V4C330 -4 260 2 200 8C130 15 60 14 0 6Z" fill="#00357a"/></svg>
+
+<main>
+  <section class="view on" id="v-standings">
+    <div class="subhead">
+      <p id="std-note"></p>
+      <div class="seg" id="seg" hidden><button data-v="live">Live</button><button data-v="official">Official</button></div>
     </div>
-    <span class="badge" id="status"></span>
-  </header>
+    <div class="cols" aria-hidden="true"><span></span><span>Team</span><span>Record</span><span>PF</span><span>Odds</span></div>
+    <ul class="list" id="list"></ul>
+    <div class="key"><span><i style="background:var(--gold)"></i>Bye (top 2)</span><span><i style="background:var(--white)"></i>Playoffs (top 6)</span><span><b></b>Playoff line</span><span id="odds-note">Odds: calculating…</span></div>
+  </section>
+  <section class="view" id="v-scores">
+    <div class="subhead"><p id="sc-note"></p></div>
+    <div class="games" id="games"></div>
+  </section>
+  <p class="note" id="foot"></p>
+</main>
 
-  <h2 id="mu-title">THIS WEEK</h2>
-  <div class="matchups" id="matchups"></div>
-
-  <div class="tablehead">
-    <h2>STANDINGS</h2>
-    <div class="toggle" id="toggle"><button data-v="live">Live</button><button data-v="official">Official</button></div>
+<nav class="tabs" aria-label="Pages">
+  <div class="tabs-in">
+    <button class="on" data-tab="standings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Standings</button>
+    <button data-tab="scores"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M12 5v14"/></svg>Scores</button>
+    <button disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19l5-6 4 3 7-9"/></svg>Odds · soon</button>
+    <button disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 0 1-8 0zM6 5H4v2a3 3 0 0 0 3 3M18 5h2v2a3 3 0 0 1-3 3M12 13v4M8 20h8"/></svg>History · soon</button>
   </div>
-  <div class="why" id="tbl-note" style="margin:-4px 2px 10px"></div>
-  <div class="card">
-    <table>
-      <thead><tr>
-        <th class="l">#</th><th class="l">Team</th><th>W-L</th><th>PF</th><th class="hide-sm">PA</th><th class="hide-sm">Strk</th>
-      </tr></thead>
-      <tbody id="tbody"></tbody>
-    </table>
-  </div>
-  <div class="legend">
-    <span><span class="dot" style="background:var(--accent2)"></span>Top-2 seed (first-round bye)</span>
-    <span><span class="dot" style="background:var(--accent)"></span>Playoff spot (top 6)</span>
-  </div>
-
-  <h2>HOW THE TIES WERE BROKEN</h2>
-  <div class="groups" id="groups"></div>
-
-  <details>
-    <summary>LEDG tiebreak rules</summary>
-    <ol>
-      <li><b>Two teams tied:</b> head-to-head record, then points scored.</li>
-      <li><b>Three or more tied:</b> a team that swept every other tied team wins the tiebreak; a team swept by every other tied team finishes last of the group. With no sweeps, points scored decides.</li>
-      <li>After a sweeper is placed, the teams still tied go through the same rules again (so if two remain, it's back to head-to-head).</li>
-    </ol>
-  </details>
-
-  <footer id="foot"></footer>
-</div>
+</nav>
 
 <script>
-let DATA=null, VIEW='official';
+let DATA=null, VIEW='official', TAB='standings';
 // ---------- ENGINE ----------
 function buildGames(data,throughWeek){
   const games=[]; // {week,a,b,pa,pb}
@@ -198,8 +232,9 @@ function breakTie(ids,games,T){
   return {order:rec(ids),notes,steps};
 }
 
-function standings(data,throughWeek){
-  const games=buildGames(data,throughWeek), T=buildTable(data,games);
+function standings(data,throughWeek){ return standingsG(data,buildGames(data,throughWeek)); }
+function standingsG(data,games){
+  const T=buildTable(data,games);
   const pct=t=>(t.w+0.5*t.t)/Math.max(1,t.w+t.l+t.t);
   const ids=Object.keys(T).map(Number).sort((a,b)=>pct(T[b])-pct(T[a]));
   const out=[], groups=[];
@@ -223,103 +258,233 @@ function streak(res){
 }
 
 
-// ---------- RENDER ----------
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-function ago(iso){const m=Math.round((Date.now()-new Date(iso))/60000); if(m<1)return "just now"; if(m<60)return m+" min ago"; const h=Math.round(m/60); if(h<48)return h+" hr ago"; return Math.round(h/24)+" days ago";}
-function render(){
-  const D=DATA, live=D.liveWeek;
-  const through = (VIEW==='live'&&live)?live:D.lastFinalWeek;
-  const {rows,groups}=standings(D,through);
-  // header
-  document.getElementById("asof").textContent=`${D.season} season · updated ${ago(D.updatedAt)}`;
-  const st=document.getElementById("status");
-  st.textContent= live?`● LIVE · Week ${live}`:`Final through Week ${D.lastFinalWeek}`;
-  st.classList.toggle('live',!!live);
-  // toggle
-  const tg=document.getElementById("toggle");
-  tg.style.display=live?'flex':'none';
-  tg.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===VIEW));
-  document.getElementById("tbl-note").textContent = (VIEW==='live'&&live)
-    ? `If Week ${live} ended right now. Not official until the week is final.`
-    : `Official standings through Week ${D.lastFinalWeek}.`;
-  // matchups
-  const mw = live || D.lastFinalWeek;
-  const rowsW=(D.weeks[mw]||[]); const byM={};
-  rowsW.forEach(([r,m,p])=>(byM[m]=byM[m]||[]).push([r,p]));
-  document.getElementById("mu-title").textContent = live?`WEEK ${mw} · LIVE SCORES`:`WEEK ${mw} · FINAL SCORES`;
-  document.getElementById("matchups").innerHTML=Object.keys(byM).sort((a,b)=>a-b).map(m=>{
-    const t=byM[m]; if(t.length!==2) return "";
-    const lead = t[0][1]===t[1][1]?-1:(t[0][1]>t[1][1]?0:1);
-    return `<div class="mu">${t.map(([r,p],i)=>`<div class="side ${i===lead?'lead':''}"><span class="mt">${esc(D.teams[r].team)}</span><span class="mp">${p.toFixed(2)}</span></div>`).join("")}</div>`;
-  }).join("");
-  // table
-  document.getElementById("tbody").innerHTML=rows.map((r,i)=>{
-    const t=D.teams[r.id]; const seed=i+1;
-    const cls=[seed<=D.byes?"bye":seed<=D.playoffTeams?"in":"", seed===D.playoffTeams?"cut":""].join(" ");
-    return `<tr class="${cls}">
-      <td class="rank">${seed}</td>
-      <td class="l"><div class="team">${esc(t.team)}</div><div class="owner">${esc(t.owner)}</div>${r.note?`<span class="tb">${esc(r.note)}</span>`:""}</td>
-      <td class="rec">${r.w}-${r.l}${r.t?"-"+r.t:""}</td>
-      <td>${r.pf.toFixed(2)}</td>
-      <td class="hide-sm">${r.pa.toFixed(2)}</td>
-      <td class="hide-sm">${streak(r.results)}</td>
-    </tr>`+(seed===D.playoffTeams?`<tr><td colspan="6" class="cutlabel">Playoff line</td></tr>`:"");
-  }).join("");
-  document.getElementById("groups").innerHTML=groups.length?groups.map(g=>`
-    <div class="card">
-      <h3>Tied at ${g.rec} <span class="why">· spots ${g.start}–${g.start+g.order.length-1}</span></h3>
-      ${g.steps.map(s=>`<div class="why">${esc(s)}</div>`).join("")}
-      <ol start="${g.start}">${g.order.map(id=>`<li>${esc(nm(id))}</li>`).join("")}</ol>
-    </div>`).join(""):`<div class="why">No ties right now.</div>`;
-  document.getElementById("foot").textContent=`Data from Sleeper league ${D.league_id}. Live from Sleeper; updates every minute while open.`;
-}
-document.getElementById("toggle").addEventListener("click",e=>{const v=e.target.dataset&&e.target.dataset.v; if(v){VIEW=v;render();}});
+
 const LEAGUE="1365331592909705216", API="https://api.sleeper.app/v1";
+// Manager first names, keyed by Sleeper user ID (stays correct if a team is renamed).
+// Source: LEDG Rosters_2026 sheet. Anyone not listed falls back to their Sleeper username.
+const FIRST_NAMES={
+  "469998618388983808":"Adam",   "470343392950218752":"Alex",   "470326654703497216":"Calvin",
+  "470661060890718208":"Eric",   "470318097929072640":"Garren", "470818989858091008":"Jay",
+  "470033981471977472":"Jeremy", "430414976025382912":"Jon",    "470011176206462976":"Mike",
+  "470085616994873344":"Nathan", "459504076976025600":"Sam",    "470330315559137280":"Spencer"
+};
+// League tradition: last season's last-place finisher is called "Mole" everywhere.
+// Keyed by season -> Sleeper user ID. Add next year's Mole after the Mole Bowl.
+const MOLE={ "2026":"470343392950218752" }; // Alex Cory, last place 2025
 async function j(path){const r=await fetch(API+path,{cache:"no-store"}); if(!r.ok) throw new Error(path+" "+r.status); return r.json();}
 const pts=m=>(m.custom_points!=null?m.custom_points:(m.points||0));
 async function fetchSleeper(prev){
-  const [league,users,rosters]=await Promise.all([j(`/league/${LEAGUE}`),j(`/league/${LEAGUE}/users`),j(`/league/${LEAGUE}/rosters`)]);
+  const [state,league,users,rosters]=await Promise.all([j(`/state/nfl`),j(`/league/${LEAGUE}`),j(`/league/${LEAGUE}/users`),j(`/league/${LEAGUE}/rosters`)]);
   const s=league.settings||{};
   const regEnd=(s.playoff_week_start||15)-1;
   const G=Math.max(0,...rosters.map(r=>(r.settings.wins||0)+(r.settings.losses||0)+(r.settings.ties||0)));
-  const lastFetch=Math.min(regEnd,G+1);
   const uById={}; users.forEach(u=>uById[u.user_id]=u);
   const teams={};
-  rosters.forEach(r=>{const u=uById[r.owner_id]||{}; teams[r.roster_id]={team:((u.metadata&&u.metadata.team_name)||u.display_name||("Team "+r.roster_id)).trim(),owner:u.display_name||""};});
-  // reuse weeks we already have that were final before; refetch the rest
-  const weeks={};
-  const need=[];
-  for(let w=1;w<=lastFetch;w++){
-    if(prev && prev.season===league.season && w<=prev.lastFinalWeek && prev.weeks[w]) weeks[w]=prev.weeks[w];
+  rosters.forEach(r=>{const u=uById[r.owner_id]||{}; const tn=((u.metadata&&u.metadata.team_name)||u.display_name||("Team "+r.roster_id)).trim(); teams[r.roster_id]={team:(MOLE[league.season]===r.owner_id?"Mole":null)||FIRST_NAMES[r.owner_id]||u.display_name||tn,teamName:tn};});
+  const same=prev&&prev.season===league.season;
+  const weeks={}, sched={}, need=[], pp={}, starters={};
+  for(let w=1;w<=regEnd;w++){
+    if(same && w<=prev.lastFinalWeek && prev.weeks[w] && prev.pp && prev.pp[w]){ weeks[w]=prev.weeks[w]; pp[w]=prev.pp[w]; }
+    else if(same && w>G+1 && prev.sched && prev.sched[w]) sched[w]=prev.sched[w];
     else need.push(w);
   }
   const got=await Promise.all(need.map(w=>j(`/league/${LEAGUE}/matchups/${w}`)));
-  need.forEach((w,i)=>{weeks[w]=(got[i]||[]).filter(m=>m.matchup_id!=null).map(m=>[m.roster_id,m.matchup_id,Math.round(pts(m)*100)/100]);});
+  need.forEach((w,i)=>{
+    const rows=(got[i]||[]).filter(m=>m.matchup_id!=null).map(m=>[m.roster_id,m.matchup_id,Math.round(pts(m)*100)/100]);
+    if(w<=G+1) weeks[w]=rows; else sched[w]=rows;
+    if(w<=G){ pp[w]={}; (got[i]||[]).forEach(m=>Object.assign(pp[w],m.players_points||{})); }
+    if(w===G+1) (got[i]||[]).forEach(m=>{ starters[m.roster_id]=(m.starters||[]).filter(x=>x&&x!=="0"); });
+  });
   let liveWeek=null;
   if(G+1<=regEnd && weeks[G+1] && weeks[G+1].some(x=>x[2]>0)) liveWeek=G+1;
-  if(!liveWeek) delete weeks[G+1];
-  return {league_id:LEAGUE,season:league.season,leagueName:league.name,regularSeasonWeeks:regEnd,
+  if(!liveWeek && weeks[G+1]){ sched[G+1]=weeks[G+1]; delete weeks[G+1]; }
+  if(liveWeek) sched[G+1]=weeks[G+1];
+  return {league_id:LEAGUE,season:league.season,seasonStart:state.season_start_date||null,regularSeasonWeeks:regEnd,
     playoffTeams:s.playoff_teams||6,byes:(s.playoff_teams||6)===6?2:0,
-    lastFinalWeek:G,liveWeek,updatedAt:new Date().toISOString(),teams,weeks};
+    lastFinalWeek:G,liveWeek,updatedAt:new Date().toISOString(),teams,weeks,sched,pp,starters};
 }
+
+// League week flips every Wednesday at 12:30 AM Pacific, counted from the season's start date.
+function leagueWeek(seasonStart){
+  const parts=Object.fromEntries(new Intl.DateTimeFormat("en-US",{timeZone:"America/Los_Angeles",year:"numeric",month:"numeric",day:"numeric",hour:"numeric",minute:"numeric",hourCycle:"h23"}).formatToParts(new Date()).map(p=>[p.type,p.value]));
+  const nowPT=Date.UTC(+parts.year,+parts.month-1,+parts.day,+parts.hour,+parts.minute);
+  const [y,m,d]=(seasonStart||"").split("-").map(Number); if(!y) return null;
+  let start=Date.UTC(y,m-1,d,0,30);
+  const dow=new Date(Date.UTC(y,m-1,d)).getUTCDay(); start-=((dow-3+7)%7)*86400000; // back up to that week's Wednesday
+  const wk=Math.floor((nowPT-start)/(7*86400000))+1;
+  return wk;
+}
+
+// ---------- LIVE GAME INPUTS ----------
+// Which NFL team each player is on: Sleeper's full player list is ~15 MB, so it is fetched at most
+// once a week and slimmed to {id:[team,pos]} (~55 KB), replacing the previous copy on the phone.
+async function getPlayers(){
+  try{ const c=JSON.parse(localStorage.getItem("ledg-players")||"null"); if(c && Date.now()-c.t<6*864e5) return c.map; }catch(e){}
+  const all=await j(`/players/nfl`), map={};
+  for(const id in all){ const p=all[id]; if(p&&p.team&&p.position) map[id]=[p.team,p.position]; }
+  try{ localStorage.setItem("ledg-players",JSON.stringify({t:Date.now(),map})); }catch(e){}
+  return map;
+}
+// Share of each NFL team's game still to play this week: 1 = not started, 0 = final or on bye.
+const ESPN_FIX={WSH:"WAS"};
+async function getGameClock(season,week){
+  const r=await fetch(`https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?seasontype=2&week=${week}&dates=${season}`,{cache:"no-store"});
+  if(!r.ok) throw new Error("espn "+r.status);
+  const d=await r.json(), rem={};
+  for(const e of d.events||[]){
+    const st=e.status||{}, t=st.type||{}, per=st.period||0, clk=st.clock||0;
+    let f= t.state==="pre"?1 : t.state==="post"?0 : per>4?0 : Math.max(0,Math.min(1,((4-per)*900+clk)/3600));
+    for(const c of (e.competitions&&e.competitions[0]&&e.competitions[0].competitors)||[]){ const a=c.team&&c.team.abbreviation; if(a) rem[ESPN_FIX[a]||a]=f; }
+  }
+  return rem;
+}
+
+// ---------- PLAYOFF ODDS ----------
+// Simulates the rest of the regular season many times. Each team's weekly score is drawn
+// from a normal curve centred on its scoring average (pulled part-way toward the league
+// average) with the league's typical week-to-week spread. LEDG tiebreaks decide every sim.
+// Tuned on LEDG history 2012-2025: pulling 10 games' worth toward the league average predicted best,
+// and past seasons did not predict future scoring (r=0.04), so only this season is used.
+let ODDS=null, ODDS_KEY=null;
+function randn(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+let RUN=0;
+function runOdds(D,LIVE,N=5000){
+  const lw=D.liveWeek;
+  const liveSig=lw&&LIVE?JSON.stringify([D.weeks[lw],LIVE.rem]):"";
+  const key=D.season+":"+D.lastFinalWeek+":"+Object.keys(D.sched).join(",")+":"+liveSig;
+  if(key===ODDS_KEY) return; ODDS_KEY=key; const run=++RUN;
+  const base=buildGames(D,D.lastFinalWeek);
+  const ids=Object.keys(D.teams).map(Number), sc={}; ids.forEach(i=>sc[i]=[]);
+  base.forEach(g=>{sc[g.a].push(g.pa);sc[g.b].push(g.pb);});
+  const all=[].concat(...ids.map(i=>sc[i])), M=all.reduce((a,b)=>a+b,0)/Math.max(1,all.length);
+  let ss=0,n=0; ids.forEach(i=>{const m=sc[i].reduce((a,b)=>a+b,0)/Math.max(1,sc[i].length); sc[i].m=m; sc[i].forEach(x=>{ss+=(x-m)**2;n++;});});
+  const SD=Math.sqrt(ss/Math.max(1,n-ids.length))||25, W=sc[ids[0]].length/(sc[ids[0]].length+10);
+  const mu={}; ids.forEach(i=>mu[i]=sc[i].length?W*sc[i].m+(1-W)*M:M);
+  // Live week: start each team from its current score and add only what its starters still have to play.
+  const liveT={};
+  if(lw&&LIVE){
+    const pav={}; for(const w in D.pp){ for(const id in D.pp[w]){ const v=D.pp[w][id]; if(v){ (pav[id]=pav[id]||[0,0]); pav[id][0]+=v; pav[id][1]++; } } }
+    const fr=Object.values(LIVE.rem), avgF=fr.length?fr.reduce((a,b)=>a+b,0)/fr.length:1;
+    const cur={}; (D.weeks[lw]||[]).forEach(([r,,p])=>cur[r]=p);
+    ids.forEach(r=>{
+      let full=0,E=0;
+      for(const id of D.starters[r]||[]){
+        const a=pav[id]?pav[id][0]/pav[id][1]:7;
+        const team=(LIVE.players[id]&&LIVE.players[id][0])||(/^[A-Z]{2,3}$/.test(id)?id:null);
+        const f=team==null?avgF:(team in LIVE.rem?LIVE.rem[team]:0);
+        full+=a; E+=a*f;
+      }
+      const share=full>0?E/full:avgF;
+      liveT[r]={cur:cur[r]||0, mean:mu[r]*share, sd:SD*Math.sqrt(share)};
+    });
+  }
+  const left=[]; for(let w=D.lastFinalWeek+1;w<=D.regularSeasonWeeks;w++){ const byM={}; (D.sched[w]||[]).forEach(([r,m])=>(byM[m]=byM[m]||[]).push(r)); Object.values(byM).forEach(p=>{if(p.length===2) left.push([w,p[0],p[1]]);}); }
+  const inC={},byeC={}; ids.forEach(i=>{inC[i]=0;byeC[i]=0;});
+  let done=0;
+  (function chunk(){
+    const stop=Math.min(N,done+250);
+    for(;done<stop;done++){
+      const games=base.slice();
+      for(const [w,a,b] of left){
+        if(w===lw && liveT[a]){ const A=liveT[a],B=liveT[b]; games.push({week:w,a,pa:A.cur+A.mean+A.sd*randn(),b,pb:B.cur+B.mean+B.sd*randn()}); }
+        else games.push({week:w,a,pa:mu[a]+SD*randn(),b,pb:mu[b]+SD*randn()});
+      }
+      const order=standingsG(D,games).rows;
+      for(let k=0;k<D.playoffTeams;k++){ inC[order[k].id]++; if(k<D.byes) byeC[order[k].id]++; }
+    }
+    if(run!==RUN) return;
+    if(done<N){ setTimeout(chunk,0); return; }
+    ODDS={}; ids.forEach(i=>ODDS[i]={po:inC[i]/N,bye:byeC[i]/N});
+    ODDS.left=left.length; ODDS.live=!!(lw&&LIVE); render();
+  })();
+}
+function pct(p){ if(p==null) return "…"; if(p>=0.995) return ">99%"; if(p<=0.005) return "<1%"; return Math.round(p*100)+"%"; }
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const f2=n=>n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+function ago(iso){const m=Math.round((Date.now()-new Date(iso))/60000); if(m<1)return "just now"; if(m<60)return m+" min ago"; const h=Math.round(m/60); return h<48?h+" hr ago":Math.round(h/24)+" days ago";}
+const WAVE='<svg viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true"><path d="M0 8C40 14 70 12 100 6S160 -1 200 4" fill="none" stroke="#ff3131" stroke-width="3"/></svg>';
+const open=new Set();
+
+function render(){
+  const D=DATA, live=D.liveWeek, through=(VIEW==='live'&&live)?live:D.lastFinalWeek;
+  const pill=document.getElementById("pill");
+  const lw=leagueWeek(D.seasonStart);
+  pill.textContent= lw>=1&&lw<=17?`Week ${lw}`:(lw>17?"Offseason":"Preseason");
+  pill.classList.toggle("live",!!live);
+  const seg=document.getElementById("seg"); seg.hidden=!live;
+  seg.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.v===VIEW));
+  document.getElementById("std-note").textContent=(VIEW==='live'&&live)?`If Week ${live} ended now`:`Official through Week ${D.lastFinalWeek}`;
+
+  const {rows}=standings(D,through);
+  const html=[];
+  rows.forEach((r,i)=>{
+    const seed=i+1, t=D.teams[r.id];
+    const cls=seed<=D.byes?"bye in":seed<=D.playoffTeams?"in":"out";
+    const o=ODDS&&ODDS[r.id];
+
+    html.push(`<li class="row ${cls} ${open.has(r.id)?"open":""}" data-id="${r.id}">
+      <button aria-expanded="${open.has(r.id)}"><span class="seed">${seed}</span>
+        <span class="who"><span class="name">${esc(t.team)}</span>${r.note?`<span class="tie">${esc(shortNote(r.note))}</span>`:""}</span>
+        <span class="num">${r.w}-${r.l}${r.t?"-"+r.t:""}</span>
+        <span class="num pf">${r.pf.toFixed(1)}</span>
+        <span class="num odds ${o&&o.po<0.1?"lo":""}">${pct(o&&o.po)}</span></button>
+      <div class="more"><div class="tname">${esc(t.teamName)}</div><dl><dt>Points for</dt><dt>Points against</dt><dt>Streak</dt><dt>Bye odds</dt><dd>${f2(r.pf)}</dd><dd>${f2(r.pa)}</dd><dd>${streak(r.results)||"–"}</dd><dd>${pct(o&&o.bye)}</dd></dl>
+        ${r.note?`<div class="why">${esc(r.note)}.</div>`:""}</div></li>`);
+    if(seed===D.playoffTeams) html.push(`<li class="cut" aria-label="Playoff line"></li>`);
+  });
+  document.getElementById("list").innerHTML=html.join("");
+  document.getElementById("odds-note").textContent= !ODDS?"Odds: calculating…" : !ODDS.left?"Odds: regular season complete" : ODDS.live?`Live odds: Week ${D.liveWeek} scores and game clocks included`:`Odds: 5,000 simulations of the ${ODDS.left} games left`;
+
+  // scores
+  const wk=live||D.lastFinalWeek, byM={};
+  (D.weeks[wk]||[]).forEach(([r,m,p])=>(byM[m]=byM[m]||[]).push([r,p]));
+  const T=buildTable(D,buildGames(D,D.lastFinalWeek));
+  document.getElementById("sc-note").textContent= live?`Week ${wk} · live, updates every minute`:`Week ${wk} · final`;
+  document.getElementById("games").innerHTML=Object.keys(byM).sort((a,b)=>a-b).map(m=>{
+    const g=byM[m]; if(g.length!==2) return "";
+    const lead=g[0][1]===g[1][1]?-1:g[0][1]>g[1][1]?0:1;
+    return `<div class="game">${g.map(([r,p],i)=>`<div class="side ${i===lead?"win":""}"><div class="who"><div class="name">${esc(D.teams[r].team)}</div><div class="meta">${T[r].w}-${T[r].l}</div></div><div class="pts">${f2(p)}</div></div>`).join("")}</div>`;
+  }).join("");
+  document.getElementById("foot").textContent=`Live from Sleeper · updated ${ago(D.updatedAt)}`;
+}
+function shortNote(n){
+  if(/^Won H2H/.test(n)) return "Won H2H";
+  if(/^Lost H2H/.test(n)) return "Lost H2H";
+  if(/^Swept the/.test(n)) return "Sweep";
+  if(/^Swept by/.test(n)) return "Swept";
+  if(/Points tiebreak \(/.test(n)) return "On points";
+  return "Tiebreak";
+}
+document.getElementById("list").addEventListener("click",e=>{
+  const li=e.target.closest(".row"); if(!li) return; const id=+li.dataset.id;
+  open.has(id)?open.delete(id):open.add(id);
+  li.classList.toggle("open"); li.querySelector("button").setAttribute("aria-expanded",open.has(id));
+});
+document.getElementById("seg").addEventListener("click",e=>{const v=e.target.dataset.v; if(v){VIEW=v;render();}});
+document.querySelector(".tabs").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-tab]"); if(!b) return; TAB=b.dataset.tab;
+  document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="v-"+TAB));
+  document.getElementById("title").textContent=TAB==="scores"?"Scores":"Standings";
+  window.scrollTo(0,0);
+});
 let busy=false;
 async function load(first){
   if(busy) return; busy=true;
   try{
-    if(first){ try{const c=JSON.parse(localStorage.getItem("ledg-cache")); if(c){DATA=c; VIEW=c.liveWeek?'live':'official'; render();}}catch(e){} }
+    if(first && !DATA){ try{ const c=JSON.parse(localStorage.getItem("ledg-cache2")||"null"); if(c){ DATA=c; render(); } }catch(e){} }
     const d=await fetchSleeper(DATA);
-    if(first && d.liveWeek) VIEW='live';
-    if(!d.liveWeek) VIEW='official';
+    if(first && d.liveWeek) VIEW='live'; if(!d.liveWeek) VIEW='official';
     DATA=d; render();
-    try{localStorage.setItem("ledg-cache",JSON.stringify(d));}catch(e){}
-  }catch(e){
-    console.error(e);
-    if(!DATA) document.getElementById("asof").textContent="Couldn't reach Sleeper. Check your connection and reload.";
-    else document.getElementById("asof").textContent=`${DATA.season} season · offline, showing data from ${ago(DATA.updatedAt)}`;
-  }finally{busy=false;}
+    try{ localStorage.setItem("ledg-cache2",JSON.stringify(d)); }catch(e){}
+    let LIVE=null;
+    if(d.liveWeek){ try{ const [players,rem]=await Promise.all([getPlayers(),getGameClock(d.season,d.liveWeek)]); LIVE={players,rem}; }catch(e){ console.warn("live inputs unavailable",e); } }
+    runOdds(d,LIVE);
+  }catch(e){ console.error(e); if(!DATA) document.getElementById("std-note").textContent="Couldn't reach Sleeper. Check your connection and reload."; }
+  finally{busy=false;}
 }
 load(true);
-setInterval(()=>{ if(document.visibilityState==="visible") load(false); }, 60000);
+setInterval(()=>{ if(document.visibilityState==="visible") load(false); },60000);
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") load(false); });
 if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
 </script>
