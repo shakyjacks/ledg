@@ -56,12 +56,16 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 .cols span:nth-child(2){text-align:left}
 .list{list-style:none;margin:0;padding:0}
 .row{border-bottom:1px solid var(--line)}
-.row>button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:28px minmax(0,1fr) 46px 58px 46px;align-items:center;column-gap:8px;width:100%;padding:7px 2px;cursor:pointer}
+.row>button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:28px minmax(0,1fr) 46px 58px 46px;align-items:center;column-gap:8px;width:100%;padding:11px 2px;cursor:pointer}
 .seed{font:600 24px/1 Teko,sans-serif;text-align:center;color:var(--faint);padding-top:3px}
 .in .seed{color:var(--white)}
 .bye .seed{color:var(--gold)}
 .who{min-width:0}
-.name{font-weight:800;font-size:14.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who{display:flex;align-items:baseline;gap:8px;min-width:0}
+.name{font-weight:800;font-size:16px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who .tie{font-size:11.5px;font-weight:700;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.game .who{display:block}
+.tname{color:#dbe4f3;font-weight:700;margin-bottom:6px}
 .meta{color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .meta .tie{color:#cfdcf2;font-weight:700}
 .num{font:600 21px/1 Teko,sans-serif;text-align:right;padding-top:3px;white-space:nowrap}
@@ -266,7 +270,7 @@ async function fetchSleeper(prev){
   const G=Math.max(0,...rosters.map(r=>(r.settings.wins||0)+(r.settings.losses||0)+(r.settings.ties||0)));
   const uById={}; users.forEach(u=>uById[u.user_id]=u);
   const teams={};
-  rosters.forEach(r=>{const u=uById[r.owner_id]||{}; teams[r.roster_id]={team:((u.metadata&&u.metadata.team_name)||u.display_name||("Team "+r.roster_id)).trim(),owner:FIRST_NAMES[r.owner_id]||u.display_name||""};});
+  rosters.forEach(r=>{const u=uById[r.owner_id]||{}; const tn=((u.metadata&&u.metadata.team_name)||u.display_name||("Team "+r.roster_id)).trim(); teams[r.roster_id]={team:FIRST_NAMES[r.owner_id]||u.display_name||tn,teamName:tn};});
   const same=prev&&prev.season===league.season;
   const weeks={}, sched={}, need=[], pp={}, starters={};
   for(let w=1;w<=regEnd;w++){
@@ -407,14 +411,14 @@ function render(){
     const seed=i+1, t=D.teams[r.id];
     const cls=seed<=D.byes?"bye in":seed<=D.playoffTeams?"in":"out";
     const o=ODDS&&ODDS[r.id];
-    const tie=r.note?` · <span class="tie">${esc(shortNote(r.note))}</span>`:"";
+
     html.push(`<li class="row ${cls} ${open.has(r.id)?"open":""}" data-id="${r.id}">
       <button aria-expanded="${open.has(r.id)}"><span class="seed">${seed}</span>
-        <span class="who"><div class="name">${esc(t.team)}</div><div class="meta">${esc(t.owner)}${tie}</div></span>
+        <span class="who"><span class="name">${esc(t.team)}</span>${r.note?`<span class="tie">${esc(shortNote(r.note))}</span>`:""}</span>
         <span class="num">${r.w}-${r.l}${r.t?"-"+r.t:""}</span>
         <span class="num pf">${r.pf.toFixed(1)}</span>
         <span class="num odds ${o&&o.po<0.1?"lo":""}">${pct(o&&o.po)}</span></button>
-      <div class="more"><dl><dt>Points for</dt><dt>Points against</dt><dt>Streak</dt><dt>Bye odds</dt><dd>${f2(r.pf)}</dd><dd>${f2(r.pa)}</dd><dd>${streak(r.results)||"–"}</dd><dd>${pct(o&&o.bye)}</dd></dl>
+      <div class="more"><div class="tname">${esc(t.teamName)}</div><dl><dt>Points for</dt><dt>Points against</dt><dt>Streak</dt><dt>Bye odds</dt><dd>${f2(r.pf)}</dd><dd>${f2(r.pa)}</dd><dd>${streak(r.results)||"–"}</dd><dd>${pct(o&&o.bye)}</dd></dl>
         ${r.note?`<div class="why">${esc(r.note)}.</div>`:""}</div></li>`);
     if(seed===D.playoffTeams) html.push(`<li class="cut" aria-label="Playoff line"></li>`);
   });
@@ -429,7 +433,7 @@ function render(){
   document.getElementById("games").innerHTML=Object.keys(byM).sort((a,b)=>a-b).map(m=>{
     const g=byM[m]; if(g.length!==2) return "";
     const lead=g[0][1]===g[1][1]?-1:g[0][1]>g[1][1]?0:1;
-    return `<div class="game">${g.map(([r,p],i)=>`<div class="side ${i===lead?"win":""}"><div class="who"><div class="name">${esc(D.teams[r].team)}</div><div class="meta">${T[r].w}-${T[r].l} · ${esc(D.teams[r].owner)}</div></div><div class="pts">${f2(p)}</div></div>`).join("")}</div>`;
+    return `<div class="game">${g.map(([r,p],i)=>`<div class="side ${i===lead?"win":""}"><div class="who"><div class="name">${esc(D.teams[r].team)}</div><div class="meta">${T[r].w}-${T[r].l}</div></div><div class="pts">${f2(p)}</div></div>`).join("")}</div>`;
   }).join("");
   document.getElementById("foot").textContent=`Live from Sleeper · updated ${ago(D.updatedAt)}`;
 }
