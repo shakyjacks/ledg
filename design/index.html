@@ -151,11 +151,11 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 .nfl{margin-top:30px}
 .nfl-title{font:400 15px/1 Manrope,sans-serif;letter-spacing:.025em;color:var(--muted);margin-bottom:6px}
 .nfl-day{font-size:12px;font-weight:800;color:var(--white);margin:16px 0 2px}
-.nfl-g{padding:8px 0;border-bottom:1px solid var(--line)}
-.nfl-r{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
-.nfl-t{font-weight:700;font-size:14.5px}
-.nfl-k{font:400 14.5px/1 "Chakra Petch",sans-serif;white-space:nowrap}
-.nfl-m{font-size:12px;color:var(--muted);margin-top:3px}
+.nfl-g{display:grid;grid-template-columns:76px minmax(0,1fr) auto 60px;align-items:baseline;column-gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.nfl-t{font-weight:700;font-size:13.5px;white-space:nowrap}
+.nfl-v{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nfl-n{font-size:12px;color:#dbe4f3;white-space:nowrap}
+.nfl-k{font:400 13.5px/1 "Chakra Petch",sans-serif;white-space:nowrap;text-align:right}
 </style>
 </head>
 <body>
@@ -605,6 +605,7 @@ function tickDeadline(){
 
 // ---------- HOME: this week's NFL schedule (teams, kickoff PT, TV, stadium) ----------
 const VENUE_FIX={"Reliant Stadium":"NRG Stadium"}; // ESPN still uses some old stadium names
+const NET_FIX={"Fox":"FOX"};
 let NFLWK=null;
 async function loadSchedule(){
   const season=(DATA&&DATA.season)||String(new Date().getFullYear());
@@ -620,10 +621,11 @@ async function loadSchedule(){
     let html=`<div class="nfl-title">Week ${wk} NFL schedule</div>`, cur="";
     for(const e of ev){
       const c=e.competitions[0], tm=k=>(c.competitors.find(x=>x.homeAway===k)||{}).team||{};
-      const tv=[...new Set((c.broadcasts||[]).flatMap(b=>b.names||[]))].join(", ");
+      const tv=[...new Set((c.broadcasts||[]).flatMap(b=>b.names||[]))].map(n=>NET_FIX[n]||n).join(", ");
       const venue=c.venue&&c.venue.fullName; const v=VENUE_FIX[venue]||venue||"";
       const d=day(e.date); if(d!==cur){ cur=d; html+=`<div class="nfl-day">${esc(d)}</div>`; }
-      html+=`<div class="nfl-g"><div class="nfl-r"><span class="nfl-t">${esc(tm("away").shortDisplayName||"")} @ ${esc(tm("home").shortDisplayName||"")}</span><span class="nfl-k">${time(e.date)}</span></div><div class="nfl-m">${esc([tv,v].filter(Boolean).join(" · "))}</div></div>`;
+      const ab=t=>t.abbreviation==="WSH"?"WAS":(t.abbreviation||"");
+      html+=`<div class="nfl-g"><span class="nfl-t" title="${esc((tm("away").displayName||"")+" at "+(tm("home").displayName||""))}">${esc(ab(tm("away")))} @ ${esc(ab(tm("home")))}</span><span class="nfl-v">${esc(v)}</span><span class="nfl-n">${esc(tv)}</span><span class="nfl-k">${time(e.date)}</span></div>`;
     }
     document.getElementById("nfl").innerHTML=html;
   }catch(e){ console.warn("schedule unavailable",e); }
