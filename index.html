@@ -118,18 +118,18 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 .tabs button[disabled]{opacity:.45;cursor:default}
 .note{color:var(--faint);font-size:12px;margin-top:22px}
 
-/* current matchup inside the tap-open details */
-.mx{background:var(--surface);border-radius:12px;padding:10px 12px 9px;margin:4px 0 12px}
-.mx-h{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px}
+/* current matchup inside the tap-open details: compact, no box */
+.mx{margin:10px 0 0}
+.mx-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.mx-h{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap}
 .mx-h b{color:var(--red)}
-.mx-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
-.mx-n{font-weight:800;font-size:14px;color:var(--white)}
+.mx-n{font-weight:800;font-size:13.5px;color:var(--white)}
 .mx-n.op{color:#dbe4f3}
-.mx-s{font:400 20px/1.25 "Chakra Petch",sans-serif;color:var(--white)}
+.mx-s{font:400 15px/1 "Chakra Petch",sans-serif;color:var(--white);margin:0 2px}
 .mx-s.op{color:#dbe4f3}
-.mx-bar{height:8px;border-radius:999px;background:#2c4677;overflow:hidden;margin-top:8px}
-.mx-bar i{display:block;height:100%;background:var(--white);border-radius:999px;transition:width .6s ease}
-.mx-p{display:flex;justify-content:space-between;margin-top:5px;font:400 12.5px "Chakra Petch",sans-serif;color:var(--muted)}
+.mx-bar{height:6px;border-radius:999px;background:rgba(255,49,49,.45);overflow:hidden;margin-top:6px}
+.mx-bar i{display:block;height:100%;background:var(--white);border-radius:999px 0 0 999px;transition:width .6s ease}
+.mx-p{display:flex;justify-content:space-between;margin-top:3px;font:400 11.5px "Chakra Petch",sans-serif;color:var(--muted)}
 @media (prefers-reduced-motion:reduce){.mx-bar i{transition:none}}
 </style>
 </head>
@@ -392,13 +392,11 @@ function buildMatch(D,mu,SD,liveT){
 }
 function matchHTML(D,id){
   const m=MATCH&&MATCH[id]; if(!m) return "";
-  const lab= m.status==="final"?`Week ${m.w} · Final` : m.status==="live"?`Week ${m.w} · <b>Live</b>` : `Week ${m.w} matchup`;
+  const lab= m.status==="final"?`Wk ${m.w} · Final` : m.status==="live"?`Wk ${m.w} · <b>Live</b>` : `Week ${m.w}`;
   const show=p=> m.status==="final" ? (p>=1?"Won":p<=0?"Lost":"Tie") : pct(p);
   const w=Math.round(m.p*1000)/10;
   return `<div class="mx ${m.status}">
-    <div class="mx-h">${lab}</div>
-    <div class="mx-row"><span class="mx-n">${esc(D.teams[id].team)}</span><span class="mx-n op">${esc(D.teams[m.opp].team)}</span></div>
-    <div class="mx-row"><span class="mx-s">${f2(m.me)}</span><span class="mx-s op">${f2(m.them)}</span></div>
+    <div class="mx-row"><span><span class="mx-n">${esc(D.teams[id].team)}</span> <span class="mx-s">${f2(m.me)}</span></span><span class="mx-h">${lab}</span><span><span class="mx-s op">${f2(m.them)}</span> <span class="mx-n op">${esc(D.teams[m.opp].team)}</span></span></div>
     <div class="mx-bar" role="img" aria-label="${esc(D.teams[id].team)} ${show(m.p)}, ${esc(D.teams[m.opp].team)} ${show(1-m.p)}"><i style="width:${w}%"></i></div>
     <div class="mx-p"><span>${show(m.p)}</span><span>${show(1-m.p)}</span></div>
   </div>`;
@@ -485,8 +483,8 @@ function render(){
         <span class="num">${r.w}-${r.l}${r.t?"-"+r.t:""}</span>
         <span class="num pf">${r.pf.toFixed(2)}</span>
         <span class="num odds ${o&&o.po<0.1?"lo":""}">${pct(o&&o.po)}</span></button>
-      <div class="more"><div class="tname">${esc(t.teamName)}</div>${matchHTML(D,r.id)}<dl><dt>Points for</dt><dt>Points against</dt><dt>Streak</dt><dt>Bye odds</dt><dd>${f2(r.pf)}</dd><dd>${f2(r.pa)}</dd><dd>${streak(r.results)||"–"}</dd><dd>${pct(o&&o.bye)}</dd></dl>
-        ${r.note?`<div class="why">${esc(r.note)}.</div>`:""}</div></li>`);
+      <div class="more"><div class="tname">${esc(t.teamName)}</div><dl><dt>Points for</dt><dt>Points against</dt><dt>Streak</dt><dt>Bye odds</dt><dd>${f2(r.pf)}</dd><dd>${f2(r.pa)}</dd><dd>${streak(r.results)||"–"}</dd><dd>${pct(o&&o.bye)}</dd></dl>
+        ${r.note?`<div class="why">${esc(r.note)}.</div>`:""}${matchHTML(D,r.id)}</div></li>`);
     if(seed===D.playoffTeams) html.push(`<li class="cut" aria-label="Playoff line"></li>`);
   });
   document.getElementById("list").innerHTML=html.join("");
