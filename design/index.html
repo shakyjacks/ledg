@@ -29,8 +29,8 @@ button{font:inherit;color:inherit}
 /* app bar */
 .bar{position:sticky;top:0;z-index:5;background:var(--brand);padding:calc(10px + env(safe-area-inset-top)) 16px 0;}
 .bar-in{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:12px;padding-bottom:12px}
-.bar img{width:40px;height:auto;display:block}
-.bar h1{margin:0;font:600 30px/1 Teko,sans-serif;letter-spacing:.01em;padding-top:4px;flex:1}
+.bar img{width:46px;height:auto;display:block}
+.bar h1{margin:0;font:600 42px/1 Teko,sans-serif;letter-spacing:.01em;padding-top:4px;flex:1}
 .pill{font:700 12px Manrope;padding:6px 11px;border-radius:999px;background:rgba(255,255,255,.12);white-space:nowrap}
 .pill.live{background:var(--red)}
 .pill.live::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#fff;margin-right:7px;vertical-align:1px;animation:pulse 1.6s ease-in-out infinite}
@@ -50,30 +50,36 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 .seg button.on{background:var(--white);color:var(--bg)}
 
 /* standings list */
+.cols,.row>button{display:grid;grid-template-columns:28px minmax(0,1fr) 46px 58px 46px;align-items:center;column-gap:8px}
+.cols{padding:0 2px 6px;border-bottom:1px solid var(--line);color:var(--faint);font-size:11px;font-weight:700}
+.cols span{text-align:right}
+.cols span:nth-child(2){text-align:left}
 .list{list-style:none;margin:0;padding:0}
 .row{border-bottom:1px solid var(--line)}
-.row>button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:10px;width:100%;padding:12px 2px;cursor:pointer}
-.seed{font:600 30px/1 Teko,sans-serif;text-align:center;color:var(--faint);padding-top:4px}
+.row>button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:28px minmax(0,1fr) 46px 58px 46px;align-items:center;column-gap:8px;width:100%;padding:7px 2px;cursor:pointer}
+.seed{font:600 24px/1 Teko,sans-serif;text-align:center;color:var(--faint);padding-top:3px}
 .in .seed{color:var(--white)}
 .bye .seed{color:var(--gold)}
 .who{min-width:0}
-.name{font-weight:800;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.meta{color:var(--muted);font-size:12.5px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.name{font-weight:800;font-size:14.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .meta .tie{color:#cfdcf2;font-weight:700}
-.rec{font:600 28px/1 Teko,sans-serif;text-align:right;padding-top:4px;letter-spacing:.01em}
+.num{font:600 21px/1 Teko,sans-serif;text-align:right;padding-top:3px;white-space:nowrap}
+.num.pf{color:#dbe4f3}
+.num.odds{color:var(--white)}
+.num.odds.lo{color:var(--faint)}
 .out .name{color:#dbe4f3}
-.more{display:none;padding:0 2px 14px 46px;color:var(--muted);font-size:13px}
+.more{display:none;padding:2px 2px 12px 38px;color:var(--muted);font-size:12.5px}
 .row.open .more{display:block}
-.more dl{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;gap:2px 22px;margin:0 0 8px}
-.more dt{font-size:11.5px}
-.more dd{margin:0;color:var(--white);font:600 20px/1 Teko}
+.more dl{display:grid;grid-template-columns:repeat(4,auto);justify-content:start;gap:2px 20px;margin:0 0 6px}
+.more dt{font-size:11px}
+.more dd{margin:0;color:var(--white);font:600 19px/1 Teko}
 .more .why{color:#dbe4f3}
-
-/* playoff line: the badge wave in LEDG red */
-.cut{list-style:none;display:flex;align-items:center;gap:10px;padding:8px 0;color:var(--red);font-weight:800;font-size:12px}
-.cut svg{flex:1;height:12px}
-.key{display:flex;gap:16px;color:var(--muted);font-size:12px;margin:14px 2px 0}
+/* playoff line: straight dashed red */
+.cut{list-style:none;border-top:2px dashed var(--red);margin:-1px 0 0;height:0}
+.key{display:flex;flex-wrap:wrap;gap:6px 16px;color:var(--muted);font-size:11.5px;margin:12px 2px 0}
 .key i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.key b{display:inline-block;width:16px;border-top:2px dashed var(--red);margin-right:6px;vertical-align:3px}
 
 /* scores */
 .games{display:grid;gap:10px}
@@ -113,8 +119,9 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
       <p id="std-note"></p>
       <div class="seg" id="seg" hidden><button data-v="live">Live</button><button data-v="official">Official</button></div>
     </div>
+    <div class="cols" aria-hidden="true"><span></span><span>Team</span><span>Record</span><span>PF</span><span>Odds</span></div>
     <ul class="list" id="list"></ul>
-    <div class="key"><span><i style="background:var(--gold)"></i>Bye (top 2)</span><span><i style="background:var(--white)"></i>Playoffs (top 6)</span></div>
+    <div class="key"><span><i style="background:var(--gold)"></i>Bye (top 2)</span><span><i style="background:var(--white)"></i>Playoffs (top 6)</span><span><b></b>Playoff line</span><span id="odds-note">Odds: calculating…</span></div>
   </section>
   <section class="view" id="v-scores">
     <div class="subhead"><p id="sc-note"></p></div>
@@ -214,8 +221,9 @@ function breakTie(ids,games,T){
   return {order:rec(ids),notes,steps};
 }
 
-function standings(data,throughWeek){
-  const games=buildGames(data,throughWeek), T=buildTable(data,games);
+function standings(data,throughWeek){ return standingsG(data,buildGames(data,throughWeek)); }
+function standingsG(data,games){
+  const T=buildTable(data,games);
   const pct=t=>(t.w+0.5*t.t)/Math.max(1,t.w+t.l+t.t);
   const ids=Object.keys(T).map(Number).sort((a,b)=>pct(T[b])-pct(T[a]));
   const out=[], groups=[];
@@ -244,31 +252,78 @@ const LEAGUE="1365331592909705216", API="https://api.sleeper.app/v1";
 async function j(path){const r=await fetch(API+path,{cache:"no-store"}); if(!r.ok) throw new Error(path+" "+r.status); return r.json();}
 const pts=m=>(m.custom_points!=null?m.custom_points:(m.points||0));
 async function fetchSleeper(prev){
-  const [league,users,rosters]=await Promise.all([j(`/league/${LEAGUE}`),j(`/league/${LEAGUE}/users`),j(`/league/${LEAGUE}/rosters`)]);
+  const [state,league,users,rosters]=await Promise.all([j(`/state/nfl`),j(`/league/${LEAGUE}`),j(`/league/${LEAGUE}/users`),j(`/league/${LEAGUE}/rosters`)]);
   const s=league.settings||{};
   const regEnd=(s.playoff_week_start||15)-1;
   const G=Math.max(0,...rosters.map(r=>(r.settings.wins||0)+(r.settings.losses||0)+(r.settings.ties||0)));
-  const lastFetch=Math.min(regEnd,G+1);
   const uById={}; users.forEach(u=>uById[u.user_id]=u);
   const teams={};
   rosters.forEach(r=>{const u=uById[r.owner_id]||{}; teams[r.roster_id]={team:((u.metadata&&u.metadata.team_name)||u.display_name||("Team "+r.roster_id)).trim(),owner:u.display_name||""};});
-  // reuse weeks we already have that were final before; refetch the rest
-  const weeks={};
-  const need=[];
-  for(let w=1;w<=lastFetch;w++){
-    if(prev && prev.season===league.season && w<=prev.lastFinalWeek && prev.weeks[w]) weeks[w]=prev.weeks[w];
+  const same=prev&&prev.season===league.season;
+  const weeks={}, sched={}, need=[];
+  for(let w=1;w<=regEnd;w++){
+    if(same && w<=prev.lastFinalWeek && prev.weeks[w]) weeks[w]=prev.weeks[w];
+    else if(same && w>G+1 && prev.sched && prev.sched[w]) sched[w]=prev.sched[w];
     else need.push(w);
   }
   const got=await Promise.all(need.map(w=>j(`/league/${LEAGUE}/matchups/${w}`)));
-  need.forEach((w,i)=>{weeks[w]=(got[i]||[]).filter(m=>m.matchup_id!=null).map(m=>[m.roster_id,m.matchup_id,Math.round(pts(m)*100)/100]);});
+  need.forEach((w,i)=>{
+    const rows=(got[i]||[]).filter(m=>m.matchup_id!=null).map(m=>[m.roster_id,m.matchup_id,Math.round(pts(m)*100)/100]);
+    if(w<=G+1) weeks[w]=rows; else sched[w]=rows;
+  });
   let liveWeek=null;
   if(G+1<=regEnd && weeks[G+1] && weeks[G+1].some(x=>x[2]>0)) liveWeek=G+1;
-  if(!liveWeek) delete weeks[G+1];
-  return {league_id:LEAGUE,season:league.season,leagueName:league.name,regularSeasonWeeks:regEnd,
+  if(!liveWeek && weeks[G+1]){ sched[G+1]=weeks[G+1]; delete weeks[G+1]; }
+  if(liveWeek) sched[G+1]=weeks[G+1];
+  return {league_id:LEAGUE,season:league.season,seasonStart:state.season_start_date||null,regularSeasonWeeks:regEnd,
     playoffTeams:s.playoff_teams||6,byes:(s.playoff_teams||6)===6?2:0,
-    lastFinalWeek:G,liveWeek,updatedAt:new Date().toISOString(),teams,weeks};
+    lastFinalWeek:G,liveWeek,updatedAt:new Date().toISOString(),teams,weeks,sched};
 }
 
+// League week flips every Wednesday at 12:30 AM Pacific, counted from the season's start date.
+function leagueWeek(seasonStart){
+  const parts=Object.fromEntries(new Intl.DateTimeFormat("en-US",{timeZone:"America/Los_Angeles",year:"numeric",month:"numeric",day:"numeric",hour:"numeric",minute:"numeric",hourCycle:"h23"}).formatToParts(new Date()).map(p=>[p.type,p.value]));
+  const nowPT=Date.UTC(+parts.year,+parts.month-1,+parts.day,+parts.hour,+parts.minute);
+  const [y,m,d]=(seasonStart||"").split("-").map(Number); if(!y) return null;
+  let start=Date.UTC(y,m-1,d,0,30);
+  const dow=new Date(Date.UTC(y,m-1,d)).getUTCDay(); start-=((dow-3+7)%7)*86400000; // back up to that week's Wednesday
+  const wk=Math.floor((nowPT-start)/(7*86400000))+1;
+  return wk;
+}
+
+// ---------- PLAYOFF ODDS ----------
+// Simulates the rest of the regular season many times. Each team's weekly score is drawn
+// from a normal curve centred on its scoring average (pulled part-way toward the league
+// average) with the league's typical week-to-week spread. LEDG tiebreaks decide every sim.
+let ODDS=null, ODDS_KEY=null;
+function randn(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function runOdds(D,N=5000){
+  const key=D.season+":"+D.lastFinalWeek+":"+Object.keys(D.sched).join(",");
+  if(key===ODDS_KEY) return; ODDS_KEY=key; ODDS=null;
+  const base=buildGames(D,D.lastFinalWeek);
+  const ids=Object.keys(D.teams).map(Number), sc={}; ids.forEach(i=>sc[i]=[]);
+  base.forEach(g=>{sc[g.a].push(g.pa);sc[g.b].push(g.pb);});
+  const all=[].concat(...ids.map(i=>sc[i])), M=all.reduce((a,b)=>a+b,0)/Math.max(1,all.length);
+  let ss=0,n=0; ids.forEach(i=>{const m=sc[i].reduce((a,b)=>a+b,0)/Math.max(1,sc[i].length); sc[i].m=m; sc[i].forEach(x=>{ss+=(x-m)**2;n++;});});
+  const SD=Math.sqrt(ss/Math.max(1,n-ids.length))||25, W=Math.min(1,sc[ids[0]].length/(sc[ids[0]].length+5));
+  const mu={}; ids.forEach(i=>mu[i]=sc[i].length?W*sc[i].m+(1-W)*M:M);
+  const left=[]; for(let w=D.lastFinalWeek+1;w<=D.regularSeasonWeeks;w++){ const byM={}; (D.sched[w]||[]).forEach(([r,m])=>(byM[m]=byM[m]||[]).push(r)); Object.values(byM).forEach(p=>{if(p.length===2) left.push([w,p[0],p[1]]);}); }
+  const inC={},byeC={}; ids.forEach(i=>{inC[i]=0;byeC[i]=0;});
+  let done=0;
+  (function chunk(){
+    const stop=Math.min(N,done+250);
+    for(;done<stop;done++){
+      const games=base.slice();
+      for(const [w,a,b] of left) games.push({week:w,a,pa:mu[a]+SD*randn(),b,pb:mu[b]+SD*randn()});
+      const order=standingsG(D,games).rows;
+      for(let k=0;k<D.playoffTeams;k++){ inC[order[k].id]++; if(k<D.byes) byeC[order[k].id]++; }
+    }
+    if(done<N){ setTimeout(chunk,0); return; }
+    ODDS={}; ids.forEach(i=>ODDS[i]={po:inC[i]/N,bye:byeC[i]/N});
+    ODDS.left=left.length; render();
+  })();
+}
+function pct(p){ if(p==null) return "…"; if(p>=0.995) return ">99%"; if(p<=0.005) return "<1%"; return Math.round(p*100)+"%"; }
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const f2=n=>n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 function ago(iso){const m=Math.round((Date.now()-new Date(iso))/60000); if(m<1)return "just now"; if(m<60)return m+" min ago"; const h=Math.round(m/60); return h<48?h+" hr ago":Math.round(h/24)+" days ago";}
@@ -278,7 +333,8 @@ const open=new Set();
 function render(){
   const D=DATA, live=D.liveWeek, through=(VIEW==='live'&&live)?live:D.lastFinalWeek;
   const pill=document.getElementById("pill");
-  pill.textContent= live?`Live · Week ${live}`:`Week ${D.lastFinalWeek} final`;
+  const lw=leagueWeek(D.seasonStart);
+  pill.textContent= lw>=1&&lw<=17?`Week ${lw}`:(lw>17?"Offseason":"Preseason");
   pill.classList.toggle("live",!!live);
   const seg=document.getElementById("seg"); seg.hidden=!live;
   seg.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.v===VIEW));
@@ -289,16 +345,20 @@ function render(){
   rows.forEach((r,i)=>{
     const seed=i+1, t=D.teams[r.id];
     const cls=seed<=D.byes?"bye in":seed<=D.playoffTeams?"in":"out";
+    const o=ODDS&&ODDS[r.id];
     const tie=r.note?` · <span class="tie">${esc(shortNote(r.note))}</span>`:"";
     html.push(`<li class="row ${cls} ${open.has(r.id)?"open":""}" data-id="${r.id}">
       <button aria-expanded="${open.has(r.id)}"><span class="seed">${seed}</span>
         <span class="who"><div class="name">${esc(t.team)}</div><div class="meta">${esc(t.owner)}${tie}</div></span>
-        <span class="rec">${r.w}-${r.l}${r.t?"-"+r.t:""}</span></button>
-      <div class="more"><dl><dt>Points for</dt><dt>Points against</dt><dt>Streak</dt><dd>${f2(r.pf)}</dd><dd>${f2(r.pa)}</dd><dd>${streak(r.results)||"–"}</dd></dl>
+        <span class="num">${r.w}-${r.l}${r.t?"-"+r.t:""}</span>
+        <span class="num pf">${r.pf.toFixed(1)}</span>
+        <span class="num odds ${o&&o.po<0.1?"lo":""}">${pct(o&&o.po)}</span></button>
+      <div class="more"><dl><dt>Points for</dt><dt>Points against</dt><dt>Streak</dt><dt>Bye odds</dt><dd>${f2(r.pf)}</dd><dd>${f2(r.pa)}</dd><dd>${streak(r.results)||"–"}</dd><dd>${pct(o&&o.bye)}</dd></dl>
         ${r.note?`<div class="why">${esc(r.note)}.</div>`:""}</div></li>`);
-    if(seed===D.playoffTeams) html.push(`<li class="cut">${WAVE}<span>Playoff line</span>${WAVE}</li>`);
+    if(seed===D.playoffTeams) html.push(`<li class="cut" aria-label="Playoff line"></li>`);
   });
   document.getElementById("list").innerHTML=html.join("");
+  document.getElementById("odds-note").textContent= ODDS?`Odds: ${ODDS.left?`5,000 simulations of the ${ODDS.left} games left`:"regular season complete"}`:"Odds: calculating…";
 
   // scores
   const wk=live||D.lastFinalWeek, byM={};
@@ -339,7 +399,7 @@ async function load(first){
   try{
     const d=await fetchSleeper(DATA);
     if(first && d.liveWeek) VIEW='live'; if(!d.liveWeek) VIEW='official';
-    DATA=d; render();
+    DATA=d; render(); runOdds(d);
   }catch(e){ console.error(e); if(!DATA) document.getElementById("std-note").textContent="Couldn't reach Sleeper. Check your connection and reload."; }
   finally{busy=false;}
 }
