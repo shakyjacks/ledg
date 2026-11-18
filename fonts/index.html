@@ -118,6 +118,7 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 
 /* ---- font options (test page only) ---- */
 html{--fd:Teko;--fb:Manrope;--k:1;--kt:1;--wn:400;--ws:500;--wt:600;--wname:800;--pt:3px}
+html[data-font=tekochakra]{--fd:Teko;--fb:"Chakra Petch";--k:1;--kt:1;--wn:400;--ws:500;--wt:600;--wname:700;--pt:3px}
 html[data-font=chakra]{--fd:"Chakra Petch";--fb:"Chakra Petch";--k:.74;--kt:.72;--wn:400;--ws:500;--wt:700;--wname:700;--pt:0px}
 html[data-font=saira]{--fd:"Saira Condensed";--fb:Saira;--k:.8;--kt:.84;--wn:400;--ws:500;--wt:700;--wname:700;--pt:0px}
 html[data-font=exo]{--fd:"Exo 2";--fb:"Exo 2";--k:.74;--kt:.74;--wn:400;--ws:500;--wt:800;--wname:700;--pt:0px}
@@ -139,7 +140,7 @@ html[data-font=kanit]{--fd:Kanit;--fb:Kanit;--k:.74;--kt:.76;--wn:400;--ws:500;-
 
 <main>
   <div class="fontpick" id="fontpick" role="group" aria-label="Font option">
-    <button data-f="teko">1 · Teko + Manrope (now)</button><button data-f="chakra">2 · Chakra Petch</button><button data-f="saira">3 · Saira</button><button data-f="exo">4 · Exo 2</button><button data-f="kanit">5 · Kanit</button>
+    <button data-f="tekochakra">6 · Teko + Chakra Petch</button><button data-f="teko">1 · Teko + Manrope (now)</button><button data-f="chakra">2 · Chakra Petch</button><button data-f="saira">3 · Saira</button><button data-f="exo">4 · Exo 2</button><button data-f="kanit">5 · Kanit</button>
   </div>
   <section class="view on" id="v-standings">
     <div class="subhead">
@@ -503,10 +504,10 @@ setInterval(()=>{ if(document.visibilityState==="visible") load(false); },60000)
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") load(false); });
 
 
-const FP=document.getElementById("fontpick"), FONTS=["teko","chakra","saira","exo","kanit"];
+const FP=document.getElementById("fontpick"), FONTS=["tekochakra","teko","chakra","saira","exo","kanit"];
 function setFont(f){ document.documentElement.dataset.font=f; FP.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.f===f)); try{history.replaceState(null,"","#"+f)}catch(e){} }
 FP.addEventListener("click",e=>{const b=e.target.closest("button"); if(b) setFont(b.dataset.f);});
-setFont(FONTS.includes(location.hash.slice(1))?location.hash.slice(1):"teko");
+setFont(FONTS.includes(location.hash.slice(1))?location.hash.slice(1):"tekochakra");
 </script>
 </body>
 </html>
