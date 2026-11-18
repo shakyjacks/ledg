@@ -34,6 +34,8 @@ button{font:inherit;color:inherit}
 
 /* app bar */
 .bar{position:sticky;top:0;z-index:5;background:var(--brand);padding:calc(10px + env(safe-area-inset-top)) 16px 0;}
+/* Home-screen app on iPhone: iOS lays a dark fade over the status-bar area; drop the header contents below it. */
+@media (display-mode: standalone){ .bar{padding-top:calc(24px + env(safe-area-inset-top))} html{background:var(--brand)} }
 .bar-in{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:12px;padding-bottom:12px}
 .bar img{width:46px;height:auto;display:block}
 .bar h1{margin:0;font:600 42px/1 Teko,sans-serif;letter-spacing:.01em;padding-top:4px;flex:1}
