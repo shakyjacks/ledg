@@ -68,6 +68,7 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 .seed{font:600 24px/1 Teko,sans-serif;text-align:center;color:var(--faint);padding-top:3px}
 .in .seed{color:var(--white)}
 .bye .seed{color:var(--gold)}
+.molebye .seed{color:var(--red)}
 .who{min-width:0}
 .who{display:flex;align-items:baseline;gap:8px;min-width:0}
 .name{font-weight:800;font-size:16px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -134,7 +135,7 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
     </div>
     <div class="cols" aria-hidden="true"><span></span><span>Team</span><span>Record</span><span>PF</span><span>Odds</span></div>
     <ul class="list" id="list"></ul>
-    <div class="key"><span><i style="background:var(--gold)"></i>Bye (top 2)</span><span><i style="background:var(--white)"></i>Playoffs (top 6)</span><span><b></b>Playoff line</span><span id="odds-note">Odds: calculating…</span></div>
+    <div class="key"><span><i style="background:var(--gold)"></i>Bye (top 2)</span><span><i style="background:var(--white)"></i>Playoffs (top 6)</span><span><i style="background:var(--red)"></i>Mole-offs bye (bottom 2)</span><span><b></b>Playoff line</span><span id="odds-note">Odds: calculating…</span></div>
   </section>
   <section class="view" id="v-scores">
     <div class="subhead"><p id="sc-note"></p></div>
@@ -420,7 +421,7 @@ function render(){
   const html=[];
   rows.forEach((r,i)=>{
     const seed=i+1, t=D.teams[r.id];
-    const cls=seed<=D.byes?"bye in":seed<=D.playoffTeams?"in":"out";
+    const n=rows.length, cls=seed<=D.byes?"bye in":seed<=D.playoffTeams?"in":seed>n-D.byes?"out molebye":"out";
     const o=ODDS&&ODDS[r.id];
 
     html.push(`<li class="row ${cls} ${open.has(r.id)?"open":""}" data-id="${r.id}">
