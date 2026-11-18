@@ -117,6 +117,20 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 .tabs button.on svg{color:var(--red)}
 .tabs button[disabled]{opacity:.45;cursor:default}
 .note{color:var(--faint);font-size:12px;margin-top:22px}
+
+/* current matchup inside the tap-open details */
+.mx{background:var(--surface);border-radius:12px;padding:10px 12px 9px;margin:4px 0 12px}
+.mx-h{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.mx-h b{color:var(--red)}
+.mx-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.mx-n{font-weight:800;font-size:14px;color:var(--white)}
+.mx-n.op{color:#dbe4f3}
+.mx-s{font:400 20px/1.25 "Chakra Petch",sans-serif;color:var(--white)}
+.mx-s.op{color:#dbe4f3}
+.mx-bar{height:8px;border-radius:999px;background:#2c4677;overflow:hidden;margin-top:8px}
+.mx-bar i{display:block;height:100%;background:var(--white);border-radius:999px;transition:width .6s ease}
+.mx-p{display:flex;justify-content:space-between;margin-top:5px;font:400 12.5px "Chakra Petch",sans-serif;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.mx-bar i{transition:none}}
 </style>
 </head>
 <body>
@@ -350,13 +364,51 @@ async function getGameClock(season,week){
 // average) with the league's typical week-to-week spread. LEDG tiebreaks decide every sim.
 // Tuned on LEDG history 2012-2025: pulling 10 games' worth toward the league average predicted best,
 // and past seasons did not predict future scoring (r=0.04), so only this season is used.
-let ODDS=null, ODDS_KEY=null;
+let ODDS=null, ODDS_KEY=null, MATCH=null;
+// ---------- CURRENT MATCHUP + WIN CHANCE ----------
+function Phi(x){ const t=1/(1+0.2316419*Math.abs(x)), d=0.3989423*Math.exp(-x*x/2), p=d*t*(0.3193815+t*(-0.3565638+t*(1.781478+t*(-1.821256+t*1.330274)))); return x>0?1-p:p; }
+// The week shown: the live week during games, otherwise the league week (flips Wed 12:30 AM PT). Regular season only.
+function matchWeek(D){ const w=D.liveWeek||leagueWeek(D.seasonStart); return (w&&w>=1&&w<=D.regularSeasonWeeks)?w:null; }
+function buildMatch(D,mu,SD,liveT){
+  const W=matchWeek(D); if(!W) return null;
+  const status= W<=D.lastFinalWeek?"final" : W===D.liveWeek?"live" : "upcoming";
+  const rows= status==="upcoming" ? (D.sched[W]||[]) : (D.weeks[W]||D.sched[W]||[]);
+  const byM={}; rows.forEach(([r,m,p])=>(byM[m]=byM[m]||[]).push([r,p||0]));
+  const out={};
+  for(const pr of Object.values(byM)){
+    if(pr.length!==2) continue;
+    const [[a,sa],[b,sb]]=pr; let p;
+    if(status==="final") p= sa>sb?1 : sa<sb?0 : .5;
+    else if(status==="live"){
+      const st=(r,c)=>liveT[r]||(()=>{const sh=Math.max(0,1-c/Math.max(1,mu[r])); return {cur:c,mean:mu[r]*sh,sd:SD*Math.sqrt(sh)};})();
+      const A=st(a,sa), B=st(b,sb), sd=Math.sqrt(A.sd*A.sd+B.sd*B.sd);
+      const diff=(A.cur+A.mean)-(B.cur+B.mean);
+      p= sd<0.5 ? (diff>0?1:diff<0?0:.5) : Phi(diff/sd);
+    } else p=Phi((mu[a]-mu[b])/(SD*Math.SQRT2));
+    out[a]={w:W,status,opp:b,me:sa,them:sb,p};
+    out[b]={w:W,status,opp:a,me:sb,them:sa,p:1-p};
+  }
+  return out;
+}
+function matchHTML(D,id){
+  const m=MATCH&&MATCH[id]; if(!m) return "";
+  const lab= m.status==="final"?`Week ${m.w} · Final` : m.status==="live"?`Week ${m.w} · <b>Live</b>` : `Week ${m.w} matchup`;
+  const show=p=> m.status==="final" ? (p>=1?"Won":p<=0?"Lost":"Tie") : pct(p);
+  const w=Math.round(m.p*1000)/10;
+  return `<div class="mx ${m.status}">
+    <div class="mx-h">${lab}</div>
+    <div class="mx-row"><span class="mx-n">${esc(D.teams[id].team)}</span><span class="mx-n op">${esc(D.teams[m.opp].team)}</span></div>
+    <div class="mx-row"><span class="mx-s">${f2(m.me)}</span><span class="mx-s op">${f2(m.them)}</span></div>
+    <div class="mx-bar" role="img" aria-label="${esc(D.teams[id].team)} ${show(m.p)}, ${esc(D.teams[m.opp].team)} ${show(1-m.p)}"><i style="width:${w}%"></i></div>
+    <div class="mx-p"><span>${show(m.p)}</span><span>${show(1-m.p)}</span></div>
+  </div>`;
+}
 function randn(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
 let RUN=0;
 function runOdds(D,LIVE,N=5000){
   const lw=D.liveWeek;
   const liveSig=lw&&LIVE?JSON.stringify([D.weeks[lw],LIVE.rem]):"";
-  const key=D.season+":"+D.lastFinalWeek+":"+Object.keys(D.sched).join(",")+":"+liveSig;
+  const key=D.season+":"+D.lastFinalWeek+":"+Object.keys(D.sched).join(",")+":"+liveSig+":"+matchWeek(D);
   if(key===ODDS_KEY) return; ODDS_KEY=key; const run=++RUN;
   const base=buildGames(D,D.lastFinalWeek);
   const ids=Object.keys(D.teams).map(Number), sc={}; ids.forEach(i=>sc[i]=[]);
@@ -383,6 +435,7 @@ function runOdds(D,LIVE,N=5000){
       liveT[r]={cur:cur[r]||0, mean:mu[r]*share, sd:SD*Math.sqrt(share)};
     });
   }
+  MATCH=buildMatch(D,mu,SD,liveT); render();
   const left=[]; for(let w=D.lastFinalWeek+1;w<=D.regularSeasonWeeks;w++){ const byM={}; (D.sched[w]||[]).forEach(([r,m])=>(byM[m]=byM[m]||[]).push(r)); Object.values(byM).forEach(p=>{if(p.length===2) left.push([w,p[0],p[1]]);}); }
   const inC={},byeC={}; ids.forEach(i=>{inC[i]=0;byeC[i]=0;});
   let done=0;
@@ -432,7 +485,7 @@ function render(){
         <span class="num">${r.w}-${r.l}${r.t?"-"+r.t:""}</span>
         <span class="num pf">${r.pf.toFixed(2)}</span>
         <span class="num odds ${o&&o.po<0.1?"lo":""}">${pct(o&&o.po)}</span></button>
-      <div class="more"><div class="tname">${esc(t.teamName)}</div><dl><dt>Points for</dt><dt>Points against</dt><dt>Streak</dt><dt>Bye odds</dt><dd>${f2(r.pf)}</dd><dd>${f2(r.pa)}</dd><dd>${streak(r.results)||"–"}</dd><dd>${pct(o&&o.bye)}</dd></dl>
+      <div class="more"><div class="tname">${esc(t.teamName)}</div>${matchHTML(D,r.id)}<dl><dt>Points for</dt><dt>Points against</dt><dt>Streak</dt><dt>Bye odds</dt><dd>${f2(r.pf)}</dd><dd>${f2(r.pa)}</dd><dd>${streak(r.results)||"–"}</dd><dd>${pct(o&&o.bye)}</dd></dl>
         ${r.note?`<div class="why">${esc(r.note)}.</div>`:""}</div></li>`);
     if(seed===D.playoffTeams) html.push(`<li class="cut" aria-label="Playoff line"></li>`);
   });
