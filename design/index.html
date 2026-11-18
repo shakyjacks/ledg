@@ -110,7 +110,7 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 
 /* bottom tabs */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;background:rgba(3,26,61,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:3px 8px max(4px, calc(env(safe-area-inset-bottom) - 12px))}
-.tabs-in{max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.tabs-in{max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
 .tabs button{border:0;background:none;padding:4px 0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:700;color:var(--faint);cursor:pointer}
 .tabs button svg{width:20px;height:20px}
 .tabs button.on{color:var(--white)}
@@ -136,20 +136,39 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 .sp{flex:0 1 auto;min-width:0;overflow:hidden;white-space:nowrap;font:400 11px/1 "Chakra Petch",sans-serif;padding:3px 5px;border-radius:999px;background:rgba(255,255,255,.08);color:var(--muted)}
 .sp.up{color:#4ade80}
 .sp.down{color:var(--red)}
+
+/* Home: trade deadline countdown */
+.cd{text-align:center;padding:34px 0 10px}
+.cd-label{font:400 15px/1 Manrope,sans-serif;letter-spacing:.025em;color:var(--muted);margin-bottom:16px}
+.cd-clock{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:360px;margin:0 auto}
+.cd-clock>div{display:flex;flex-direction:column;align-items:center;gap:6px}
+.cd-clock b{font:400 46px/1 "Chakra Petch",sans-serif;font-variant-numeric:tabular-nums;color:var(--white)}
+.cd-clock span{font-size:11.5px;font-weight:700;color:var(--muted)}
+.cd-when{margin-top:18px;font-size:13px;color:#dbe4f3}
+.cd.past .cd-clock b{color:var(--faint)}
 </style>
 </head>
 <body>
 <header class="bar">
   <div class="bar-in">
     <img src="../badge.png" alt="LEDG">
-    <h1 id="title">Standings</h1>
+    <h1 id="title">Home</h1>
     <span class="pill" id="pill">Loading</span>
   </div>
 </header>
 <svg class="wave" viewBox="0 0 400 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H400V4C330 -4 260 2 200 8C130 15 60 14 0 6Z" fill="#00357a"/></svg>
 
 <main>
-  <section class="view on" id="v-standings">
+  <section class="view on" id="v-home">
+    <div class="cd" id="cd">
+      <div class="cd-label">Trade deadline</div>
+      <div class="cd-clock" id="cd-clock" role="timer" aria-live="off">
+        <div><b id="cd-d">–</b><span>days</span></div><div><b id="cd-h">–</b><span>hours</span></div><div><b id="cd-m">–</b><span>mins</span></div><div><b id="cd-s">–</b><span>secs</span></div>
+      </div>
+      <div class="cd-when" id="cd-when">Finding the first Thanksgiving kickoff…</div>
+    </div>
+  </section>
+  <section class="view" id="v-standings">
     <div class="subhead">
       <div class="seg" id="seg" role="group" aria-label="Standings view"><button data-v="official">Official</button><button data-v="live">Live</button></div>
       <p id="std-note" hidden></p>
@@ -162,12 +181,13 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
     <div class="subhead"><p id="sc-note"></p></div>
     <div class="games" id="games"></div>
   </section>
-  <p class="note" id="foot"></p>
+  <p class="note" id="foot" hidden></p>
 </main>
 
 <nav class="tabs" aria-label="Pages">
   <div class="tabs-in">
-    <button class="on" data-tab="standings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Standings</button>
+    <button class="on" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
+    <button data-tab="standings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Standings</button>
     <button data-tab="scores" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M12 5v14"/></svg>Scores</button>
     <button disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19l5-6 4 3 7-9"/></svg>Odds</button>
     <button disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 0 1-8 0zM6 5H4v2a3 3 0 0 0 3 3M18 5h2v2a3 3 0 0 1-3 3M12 13v4M8 20h8"/></svg>History</button>
@@ -175,7 +195,7 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 </nav>
 
 <script>
-let DATA=null, VIEW='official', TAB='standings';
+let DATA=null, VIEW='official', TAB='home';
 // ---------- ENGINE ----------
 function buildGames(data,throughWeek){
   const games=[]; // {week,a,b,pa,pb}
@@ -532,9 +552,46 @@ document.querySelector(".tabs").addEventListener("click",e=>{
   const b=e.target.closest("button[data-tab]"); if(!b) return; TAB=b.dataset.tab;
   document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x===b));
   document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="v-"+TAB));
-  document.getElementById("title").textContent=TAB==="scores"?"Scores":"Standings";
+  document.getElementById("title").textContent={home:"Home",standings:"Standings",scores:"Scores"}[TAB]||"LEDG";
+  document.getElementById("foot").hidden=TAB==="home";
   window.scrollTo(0,0);
 });
+// ---------- HOME: trade deadline countdown ----------
+// LEDG rule: the trade deadline is kickoff of the first Thanksgiving Day game (not Sleeper's setting).
+// Thanksgiving = 4th Thursday of November; the kickoff time comes from the NFL schedule (ESPN) each season.
+let DEADLINE=null;
+async function getDeadline(year){
+  const first=new Date(Date.UTC(year,10,1)).getUTCDay(), day=1+((4-first+7)%7)+21;
+  const key="ledg-deadline-"+year;
+  try{ const c=JSON.parse(localStorage.getItem(key)||"null"); if(c) return c; }catch(e){}
+  const ymd=`${year}11${String(day).padStart(2,"0")}`;
+  try{
+    const r=await fetch(`https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=${ymd}`,{cache:"no-store"});
+    const ev=((await r.json()).events||[]).slice().sort((a,b)=>new Date(a.date)-new Date(b.date))[0];
+    if(ev){ const out={t:new Date(ev.date).getTime(),game:ev.name.replace(/ at /," at ")}; try{localStorage.setItem(key,JSON.stringify(out));}catch(e){} return out; }
+  }catch(e){ console.warn("deadline lookup failed",e); }
+  return {t:Date.UTC(year,10,day,17,30),game:null,approx:true}; // usual 12:30 PM ET slot if the schedule can't be reached
+}
+function tickDeadline(){
+  if(!DEADLINE) return;
+  const left=DEADLINE.t-Date.now(), pad=n=>String(n).padStart(2,"0");
+  const when=new Date(DEADLINE.t).toLocaleString("en-US",{timeZone:"America/Los_Angeles",weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})+" PT";
+  const cd=document.getElementById("cd");
+  if(left<=0){
+    cd.classList.add("past");
+    ["d","h","m","s"].forEach(k=>document.getElementById("cd-"+k).textContent="00");
+    document.getElementById("cd-when").textContent=`The trade deadline has passed (${when}).`;
+    return;
+  }
+  const sec=Math.floor(left/1000);
+  document.getElementById("cd-d").textContent=Math.floor(sec/86400);
+  document.getElementById("cd-h").textContent=pad(Math.floor(sec%86400/3600));
+  document.getElementById("cd-m").textContent=pad(Math.floor(sec%3600/60));
+  document.getElementById("cd-s").textContent=pad(sec%60);
+  document.getElementById("cd-when").textContent= DEADLINE.game ? `Kickoff of ${DEADLINE.game} · ${when}` : `First Thanksgiving kickoff · ${when}${DEADLINE.approx?" (estimated)":""}`;
+}
+(async()=>{ DEADLINE=await getDeadline(new Date().getFullYear()); tickDeadline(); setInterval(tickDeadline,1000); })();
+
 let busy=false;
 async function load(first){
   if(busy) return; busy=true;
