@@ -6,6 +6,12 @@
 <meta name="theme-color" content="#031a3d">
 <title>LEDG</title>
 <link rel="icon" type="image/png" href="../icon-192.png">
+
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LEDG">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -281,9 +287,9 @@ async function fetchSleeper(prev){
   const teams={};
   rosters.forEach(r=>{const u=uById[r.owner_id]||{}; const tn=((u.metadata&&u.metadata.team_name)||u.display_name||("Team "+r.roster_id)).trim(); teams[r.roster_id]={team:(MOLE[league.season]===r.owner_id?"Mole":null)||FIRST_NAMES[r.owner_id]||u.display_name||tn,teamName:tn};});
   const same=prev&&prev.season===league.season;
-  const weeks={}, sched={}, need=[], pp={}, starters={};
+  const weeks={}, sched={}, need=[], pp={}, starters={}; let ppLive=null;
   for(let w=1;w<=regEnd;w++){
-    if(same && w<=prev.lastFinalWeek && prev.weeks[w] && prev.pp && prev.pp[w]){ weeks[w]=prev.weeks[w]; pp[w]=prev.pp[w]; }
+    if(same && w<=(prev.sleeperFinal??prev.lastFinalWeek) && prev.weeks[w] && prev.pp && prev.pp[w]){ weeks[w]=prev.weeks[w]; pp[w]=prev.pp[w]; }
     else if(same && w>G+1 && prev.sched && prev.sched[w]) sched[w]=prev.sched[w];
     else need.push(w);
   }
@@ -292,7 +298,7 @@ async function fetchSleeper(prev){
     const rows=(got[i]||[]).filter(m=>m.matchup_id!=null).map(m=>[m.roster_id,m.matchup_id,Math.round(pts(m)*100)/100]);
     if(w<=G+1) weeks[w]=rows; else sched[w]=rows;
     if(w<=G){ pp[w]={}; (got[i]||[]).forEach(m=>Object.assign(pp[w],m.players_points||{})); }
-    if(w===G+1) (got[i]||[]).forEach(m=>{ starters[m.roster_id]=(m.starters||[]).filter(x=>x&&x!=="0"); });
+    if(w===G+1){ ppLive={}; (got[i]||[]).forEach(m=>{ starters[m.roster_id]=(m.starters||[]).filter(x=>x&&x!=="0"); Object.assign(ppLive,m.players_points||{}); }); }
   });
   let liveWeek=null;
   if(G+1<=regEnd && weeks[G+1] && weeks[G+1].some(x=>x[2]>0)) liveWeek=G+1;
@@ -300,7 +306,7 @@ async function fetchSleeper(prev){
   if(liveWeek) sched[G+1]=weeks[G+1];
   return {league_id:LEAGUE,season:league.season,seasonStart:state.season_start_date||null,regularSeasonWeeks:regEnd,
     playoffTeams:s.playoff_teams||6,byes:(s.playoff_teams||6)===6?2:0,
-    lastFinalWeek:G,liveWeek,updatedAt:new Date().toISOString(),teams,weeks,sched,pp,starters};
+    lastFinalWeek:G,sleeperFinal:G,liveWeek,updatedAt:new Date().toISOString(),teams,weeks,sched,pp,starters,ppLive};
 }
 
 // League week flips every Wednesday at 12:30 AM Pacific, counted from the season's start date.
@@ -470,17 +476,26 @@ let busy=false;
 async function load(first){
   if(busy) return; busy=true;
   try{
+    if(first && !DATA){ try{ const c=JSON.parse(localStorage.getItem("ledg-cache2")||"null"); if(c){ DATA=c; render(); } }catch(e){} }
     const d=await fetchSleeper(DATA);
-    if(first && d.liveWeek) VIEW='live';
-    DATA=d; render();
     let LIVE=null;
     if(d.liveWeek){ try{ const [players,rem]=await Promise.all([getPlayers(),getGameClock(d.season,d.liveWeek)]); LIVE={players,rem}; }catch(e){ console.warn("live inputs unavailable",e); } }
+    // LEDG rule: a week is official at the last game's final whistle, not when Sleeper processes it.
+    // Sleeper stat corrections still flow in, because that week keeps being re-fetched until Sleeper finalizes it.
+    if(d.liveWeek && LIVE && Object.keys(LIVE.rem).length && Object.values(LIVE.rem).every(f=>f===0)){
+      d.pp[d.liveWeek]=d.ppLive||{}; d.lastFinalWeek=d.liveWeek; d.liveWeek=null; LIVE=null;
+    }
+    if(first && d.liveWeek) VIEW='live';
+    DATA=d; render();
+    try{ localStorage.setItem("ledg-cache2",JSON.stringify(d)); }catch(e){}
     runOdds(d,LIVE);
   }catch(e){ console.error(e); if(!DATA){ const n=document.getElementById("std-note"); n.hidden=false; n.textContent="Couldn't reach Sleeper. Check your connection and reload."; } }
   finally{busy=false;}
 }
 load(true);
 setInterval(()=>{ if(document.visibilityState==="visible") load(false); },60000);
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") load(false); });
+
 </script>
 </body>
 </html>
