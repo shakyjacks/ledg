@@ -249,6 +249,14 @@ function streak(res){
 
 
 const LEAGUE="1365331592909705216", API="https://api.sleeper.app/v1";
+// Manager first names, keyed by Sleeper user ID (stays correct if a team is renamed).
+// Source: LEDG Rosters_2026 sheet. Anyone not listed falls back to their Sleeper username.
+const FIRST_NAMES={
+  "469998618388983808":"Adam",   "470343392950218752":"Alex",   "470326654703497216":"Calvin",
+  "470661060890718208":"Eric",   "470318097929072640":"Garren", "470818989858091008":"Jay",
+  "470033981471977472":"Jeremy", "430414976025382912":"Jon",    "470011176206462976":"Mike",
+  "470085616994873344":"Nathan", "459504076976025600":"Sam",    "470330315559137280":"Spencer"
+};
 async function j(path){const r=await fetch(API+path,{cache:"no-store"}); if(!r.ok) throw new Error(path+" "+r.status); return r.json();}
 const pts=m=>(m.custom_points!=null?m.custom_points:(m.points||0));
 async function fetchSleeper(prev){
@@ -258,7 +266,7 @@ async function fetchSleeper(prev){
   const G=Math.max(0,...rosters.map(r=>(r.settings.wins||0)+(r.settings.losses||0)+(r.settings.ties||0)));
   const uById={}; users.forEach(u=>uById[u.user_id]=u);
   const teams={};
-  rosters.forEach(r=>{const u=uById[r.owner_id]||{}; teams[r.roster_id]={team:((u.metadata&&u.metadata.team_name)||u.display_name||("Team "+r.roster_id)).trim(),owner:u.display_name||""};});
+  rosters.forEach(r=>{const u=uById[r.owner_id]||{}; teams[r.roster_id]={team:((u.metadata&&u.metadata.team_name)||u.display_name||("Team "+r.roster_id)).trim(),owner:FIRST_NAMES[r.owner_id]||u.display_name||""};});
   const same=prev&&prev.season===league.season;
   const weeks={}, sched={}, need=[], pp={}, starters={};
   for(let w=1;w<=regEnd;w++){
