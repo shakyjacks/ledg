@@ -146,6 +146,16 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 .cd-clock span{font-size:11.5px;font-weight:700;color:var(--muted)}
 .cd-when{margin-top:18px;font-size:13px;color:#dbe4f3}
 .cd.past .cd-clock b{color:var(--faint)}
+
+/* Home: this week's NFL schedule */
+.nfl{margin-top:30px}
+.nfl-title{font:400 15px/1 Manrope,sans-serif;letter-spacing:.025em;color:var(--muted);margin-bottom:6px}
+.nfl-day{font-size:12px;font-weight:800;color:var(--white);margin:16px 0 2px}
+.nfl-g{padding:8px 0;border-bottom:1px solid var(--line)}
+.nfl-r{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.nfl-t{font-weight:700;font-size:14.5px}
+.nfl-k{font:400 14.5px/1 "Chakra Petch",sans-serif;white-space:nowrap}
+.nfl-m{font-size:12px;color:var(--muted);margin-top:3px}
 </style>
 </head>
 <body>
@@ -167,6 +177,7 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
       </div>
       <div class="cd-when" id="cd-when">Finding the first Thanksgiving kickoff…</div>
     </div>
+    <div class="nfl" id="nfl"></div>
   </section>
   <section class="view" id="v-standings">
     <div class="subhead">
@@ -592,6 +603,32 @@ function tickDeadline(){
 }
 (async()=>{ DEADLINE=await getDeadline(new Date().getFullYear()); tickDeadline(); setInterval(tickDeadline,1000); })();
 
+// ---------- HOME: this week's NFL schedule (teams, kickoff PT, TV, stadium) ----------
+const VENUE_FIX={"Reliant Stadium":"NRG Stadium"}; // ESPN still uses some old stadium names
+let NFLWK=null;
+async function loadSchedule(){
+  const season=(DATA&&DATA.season)||String(new Date().getFullYear());
+  const wk=leagueWeek(DATA&&DATA.seasonStart);
+  if(!wk||wk<1||wk>18||NFLWK===season+":"+wk) return;
+  try{
+    const r=await fetch(`https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?seasontype=2&week=${wk}&dates=${season}`,{cache:"no-store"});
+    const ev=((await r.json()).events||[]).slice().sort((a,b)=>new Date(a.date)-new Date(b.date));
+    if(!ev.length) return;
+    NFLWK=season+":"+wk;
+    const day=d=>new Date(d).toLocaleDateString("en-US",{timeZone:"America/Los_Angeles",weekday:"long",month:"short",day:"numeric"});
+    const time=d=>new Date(d).toLocaleTimeString("en-US",{timeZone:"America/Los_Angeles",hour:"numeric",minute:"2-digit"});
+    let html=`<div class="nfl-title">Week ${wk} NFL schedule</div>`, cur="";
+    for(const e of ev){
+      const c=e.competitions[0], tm=k=>(c.competitors.find(x=>x.homeAway===k)||{}).team||{};
+      const tv=[...new Set((c.broadcasts||[]).flatMap(b=>b.names||[]))].join(", ");
+      const venue=c.venue&&c.venue.fullName; const v=VENUE_FIX[venue]||venue||"";
+      const d=day(e.date); if(d!==cur){ cur=d; html+=`<div class="nfl-day">${esc(d)}</div>`; }
+      html+=`<div class="nfl-g"><div class="nfl-r"><span class="nfl-t">${esc(tm("away").shortDisplayName||"")} @ ${esc(tm("home").shortDisplayName||"")}</span><span class="nfl-k">${time(e.date)}</span></div><div class="nfl-m">${esc([tv,v].filter(Boolean).join(" · "))}</div></div>`;
+    }
+    document.getElementById("nfl").innerHTML=html;
+  }catch(e){ console.warn("schedule unavailable",e); }
+}
+
 let busy=false;
 async function load(first){
   if(busy) return; busy=true;
@@ -606,7 +643,7 @@ async function load(first){
       d.pp[d.liveWeek]=d.ppLive||{}; d.lastFinalWeek=d.liveWeek; d.liveWeek=null; LIVE=null;
     }
     if(first && d.liveWeek) VIEW='live';
-    DATA=d; render();
+    DATA=d; render(); loadSchedule();
     try{ localStorage.setItem("ledg-cache2",JSON.stringify(d)); }catch(e){}
     runOdds(d,LIVE);
   }catch(e){ console.error(e); if(!DATA){ const n=document.getElementById("std-note"); n.hidden=false; n.textContent="Couldn't reach Sleeper. Check your connection and reload."; } }
