@@ -46,7 +46,7 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 
 .subhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0 12px}
 .subhead p{margin:0;color:var(--muted);font-size:13px}
-.seg[hidden]{display:none}
+#std-note{margin:8px 0 0;color:var(--muted);font-size:13px}
 .seg{display:flex;background:var(--surface);border-radius:999px;padding:3px}
 .seg button{border:0;background:none;padding:6px 13px;border-radius:999px;font-weight:700;font-size:12.5px;color:var(--muted);cursor:pointer}
 .seg button.on{background:var(--white);color:var(--bg)}
@@ -123,8 +123,8 @@ main{max-width:720px;margin:0 auto;padding:6px 16px calc(96px + env(safe-area-in
 <main>
   <section class="view on" id="v-standings">
     <div class="subhead">
-      <p id="std-note"></p>
-      <div class="seg" id="seg" hidden><button data-v="live">Live</button><button data-v="official">Official</button></div>
+      <div class="seg" id="seg" role="group" aria-label="Standings view"><button data-v="official">Official</button><button data-v="live">Live</button></div>
+      <p id="std-note" hidden></p>
     </div>
     <div class="cols" aria-hidden="true"><span></span><span>Team</span><span>Record</span><span>PF</span><span>Odds</span></div>
     <ul class="list" id="list"></ul>
@@ -407,9 +407,8 @@ function render(){
   const lw=leagueWeek(D.seasonStart);
   pill.textContent= lw>=1&&lw<=17?`Week ${lw}`:(lw>17?"Offseason":"Preseason");
   pill.classList.toggle("live",!!live);
-  const seg=document.getElementById("seg"); seg.hidden=!live;
-  seg.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.v===VIEW));
-  document.getElementById("std-note").textContent=(VIEW==='live'&&live)?`If Week ${live} ended now`:`Official through Week ${D.lastFinalWeek}`;
+  const seg=document.getElementById("seg");
+  seg.querySelectorAll("button").forEach(b=>{b.classList.toggle("on",b.dataset.v===VIEW); b.setAttribute("aria-pressed",b.dataset.v===VIEW);});
 
   const {rows}=standings(D,through);
   const html=[];
@@ -469,12 +468,12 @@ async function load(first){
   if(busy) return; busy=true;
   try{
     const d=await fetchSleeper(DATA);
-    if(first && d.liveWeek) VIEW='live'; if(!d.liveWeek) VIEW='official';
+    if(first && d.liveWeek) VIEW='live';
     DATA=d; render();
     let LIVE=null;
     if(d.liveWeek){ try{ const [players,rem]=await Promise.all([getPlayers(),getGameClock(d.season,d.liveWeek)]); LIVE={players,rem}; }catch(e){ console.warn("live inputs unavailable",e); } }
     runOdds(d,LIVE);
-  }catch(e){ console.error(e); if(!DATA) document.getElementById("std-note").textContent="Couldn't reach Sleeper. Check your connection and reload."; }
+  }catch(e){ console.error(e); if(!DATA){ const n=document.getElementById("std-note"); n.hidden=false; n.textContent="Couldn't reach Sleeper. Check your connection and reload."; } }
   finally{busy=false;}
 }
 load(true);
