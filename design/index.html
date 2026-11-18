@@ -260,9 +260,9 @@ async function fetchSleeper(prev){
   const teams={};
   rosters.forEach(r=>{const u=uById[r.owner_id]||{}; teams[r.roster_id]={team:((u.metadata&&u.metadata.team_name)||u.display_name||("Team "+r.roster_id)).trim(),owner:u.display_name||""};});
   const same=prev&&prev.season===league.season;
-  const weeks={}, sched={}, need=[];
+  const weeks={}, sched={}, need=[], pp={}, starters={};
   for(let w=1;w<=regEnd;w++){
-    if(same && w<=prev.lastFinalWeek && prev.weeks[w]) weeks[w]=prev.weeks[w];
+    if(same && w<=prev.lastFinalWeek && prev.weeks[w] && prev.pp && prev.pp[w]){ weeks[w]=prev.weeks[w]; pp[w]=prev.pp[w]; }
     else if(same && w>G+1 && prev.sched && prev.sched[w]) sched[w]=prev.sched[w];
     else need.push(w);
   }
@@ -270,6 +270,8 @@ async function fetchSleeper(prev){
   need.forEach((w,i)=>{
     const rows=(got[i]||[]).filter(m=>m.matchup_id!=null).map(m=>[m.roster_id,m.matchup_id,Math.round(pts(m)*100)/100]);
     if(w<=G+1) weeks[w]=rows; else sched[w]=rows;
+    if(w<=G){ pp[w]={}; (got[i]||[]).forEach(m=>Object.assign(pp[w],m.players_points||{})); }
+    if(w===G+1) (got[i]||[]).forEach(m=>{ starters[m.roster_id]=(m.starters||[]).filter(x=>x&&x!=="0"); });
   });
   let liveWeek=null;
   if(G+1<=regEnd && weeks[G+1] && weeks[G+1].some(x=>x[2]>0)) liveWeek=G+1;
@@ -277,7 +279,7 @@ async function fetchSleeper(prev){
   if(liveWeek) sched[G+1]=weeks[G+1];
   return {league_id:LEAGUE,season:league.season,seasonStart:state.season_start_date||null,regularSeasonWeeks:regEnd,
     playoffTeams:s.playoff_teams||6,byes:(s.playoff_teams||6)===6?2:0,
-    lastFinalWeek:G,liveWeek,updatedAt:new Date().toISOString(),teams,weeks,sched};
+    lastFinalWeek:G,liveWeek,updatedAt:new Date().toISOString(),teams,weeks,sched,pp,starters};
 }
 
 // League week flips every Wednesday at 12:30 AM Pacific, counted from the season's start date.
@@ -291,6 +293,30 @@ function leagueWeek(seasonStart){
   return wk;
 }
 
+// ---------- LIVE GAME INPUTS ----------
+// Which NFL team each player is on: Sleeper's full player list is ~15 MB, so it is fetched at most
+// once a week and slimmed to {id:[team,pos]} (~55 KB), replacing the previous copy on the phone.
+async function getPlayers(){
+  try{ const c=JSON.parse(localStorage.getItem("ledg-players")||"null"); if(c && Date.now()-c.t<6*864e5) return c.map; }catch(e){}
+  const all=await j(`/players/nfl`), map={};
+  for(const id in all){ const p=all[id]; if(p&&p.team&&p.position) map[id]=[p.team,p.position]; }
+  try{ localStorage.setItem("ledg-players",JSON.stringify({t:Date.now(),map})); }catch(e){}
+  return map;
+}
+// Share of each NFL team's game still to play this week: 1 = not started, 0 = final or on bye.
+const ESPN_FIX={WSH:"WAS"};
+async function getGameClock(season,week){
+  const r=await fetch(`https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?seasontype=2&week=${week}&dates=${season}`,{cache:"no-store"});
+  if(!r.ok) throw new Error("espn "+r.status);
+  const d=await r.json(), rem={};
+  for(const e of d.events||[]){
+    const st=e.status||{}, t=st.type||{}, per=st.period||0, clk=st.clock||0;
+    let f= t.state==="pre"?1 : t.state==="post"?0 : per>4?0 : Math.max(0,Math.min(1,((4-per)*900+clk)/3600));
+    for(const c of (e.competitions&&e.competitions[0]&&e.competitions[0].competitors)||[]){ const a=c.team&&c.team.abbreviation; if(a) rem[ESPN_FIX[a]||a]=f; }
+  }
+  return rem;
+}
+
 // ---------- PLAYOFF ODDS ----------
 // Simulates the rest of the regular season many times. Each team's weekly score is drawn
 // from a normal curve centred on its scoring average (pulled part-way toward the league
@@ -299,9 +325,12 @@ function leagueWeek(seasonStart){
 // and past seasons did not predict future scoring (r=0.04), so only this season is used.
 let ODDS=null, ODDS_KEY=null;
 function randn(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
-function runOdds(D,N=5000){
-  const key=D.season+":"+D.lastFinalWeek+":"+Object.keys(D.sched).join(",");
-  if(key===ODDS_KEY) return; ODDS_KEY=key; ODDS=null;
+let RUN=0;
+function runOdds(D,LIVE,N=5000){
+  const lw=D.liveWeek;
+  const liveSig=lw&&LIVE?JSON.stringify([D.weeks[lw],LIVE.rem]):"";
+  const key=D.season+":"+D.lastFinalWeek+":"+Object.keys(D.sched).join(",")+":"+liveSig;
+  if(key===ODDS_KEY) return; ODDS_KEY=key; const run=++RUN;
   const base=buildGames(D,D.lastFinalWeek);
   const ids=Object.keys(D.teams).map(Number), sc={}; ids.forEach(i=>sc[i]=[]);
   base.forEach(g=>{sc[g.a].push(g.pa);sc[g.b].push(g.pb);});
@@ -309,6 +338,24 @@ function runOdds(D,N=5000){
   let ss=0,n=0; ids.forEach(i=>{const m=sc[i].reduce((a,b)=>a+b,0)/Math.max(1,sc[i].length); sc[i].m=m; sc[i].forEach(x=>{ss+=(x-m)**2;n++;});});
   const SD=Math.sqrt(ss/Math.max(1,n-ids.length))||25, W=sc[ids[0]].length/(sc[ids[0]].length+10);
   const mu={}; ids.forEach(i=>mu[i]=sc[i].length?W*sc[i].m+(1-W)*M:M);
+  // Live week: start each team from its current score and add only what its starters still have to play.
+  const liveT={};
+  if(lw&&LIVE){
+    const pav={}; for(const w in D.pp){ for(const id in D.pp[w]){ const v=D.pp[w][id]; if(v){ (pav[id]=pav[id]||[0,0]); pav[id][0]+=v; pav[id][1]++; } } }
+    const fr=Object.values(LIVE.rem), avgF=fr.length?fr.reduce((a,b)=>a+b,0)/fr.length:1;
+    const cur={}; (D.weeks[lw]||[]).forEach(([r,,p])=>cur[r]=p);
+    ids.forEach(r=>{
+      let full=0,E=0;
+      for(const id of D.starters[r]||[]){
+        const a=pav[id]?pav[id][0]/pav[id][1]:7;
+        const team=(LIVE.players[id]&&LIVE.players[id][0])||(/^[A-Z]{2,3}$/.test(id)?id:null);
+        const f=team==null?avgF:(team in LIVE.rem?LIVE.rem[team]:0);
+        full+=a; E+=a*f;
+      }
+      const share=full>0?E/full:avgF;
+      liveT[r]={cur:cur[r]||0, mean:mu[r]*share, sd:SD*Math.sqrt(share)};
+    });
+  }
   const left=[]; for(let w=D.lastFinalWeek+1;w<=D.regularSeasonWeeks;w++){ const byM={}; (D.sched[w]||[]).forEach(([r,m])=>(byM[m]=byM[m]||[]).push(r)); Object.values(byM).forEach(p=>{if(p.length===2) left.push([w,p[0],p[1]]);}); }
   const inC={},byeC={}; ids.forEach(i=>{inC[i]=0;byeC[i]=0;});
   let done=0;
@@ -316,13 +363,17 @@ function runOdds(D,N=5000){
     const stop=Math.min(N,done+250);
     for(;done<stop;done++){
       const games=base.slice();
-      for(const [w,a,b] of left) games.push({week:w,a,pa:mu[a]+SD*randn(),b,pb:mu[b]+SD*randn()});
+      for(const [w,a,b] of left){
+        if(w===lw && liveT[a]){ const A=liveT[a],B=liveT[b]; games.push({week:w,a,pa:A.cur+A.mean+A.sd*randn(),b,pb:B.cur+B.mean+B.sd*randn()}); }
+        else games.push({week:w,a,pa:mu[a]+SD*randn(),b,pb:mu[b]+SD*randn()});
+      }
       const order=standingsG(D,games).rows;
       for(let k=0;k<D.playoffTeams;k++){ inC[order[k].id]++; if(k<D.byes) byeC[order[k].id]++; }
     }
+    if(run!==RUN) return;
     if(done<N){ setTimeout(chunk,0); return; }
     ODDS={}; ids.forEach(i=>ODDS[i]={po:inC[i]/N,bye:byeC[i]/N});
-    ODDS.left=left.length; render();
+    ODDS.left=left.length; ODDS.live=!!(lw&&LIVE); render();
   })();
 }
 function pct(p){ if(p==null) return "…"; if(p>=0.995) return ">99%"; if(p<=0.005) return "<1%"; return Math.round(p*100)+"%"; }
@@ -360,7 +411,7 @@ function render(){
     if(seed===D.playoffTeams) html.push(`<li class="cut" aria-label="Playoff line"></li>`);
   });
   document.getElementById("list").innerHTML=html.join("");
-  document.getElementById("odds-note").textContent= ODDS?`Odds: ${ODDS.left?`5,000 simulations of the ${ODDS.left} games left`:"regular season complete"}`:"Odds: calculating…";
+  document.getElementById("odds-note").textContent= !ODDS?"Odds: calculating…" : !ODDS.left?"Odds: regular season complete" : ODDS.live?`Live odds: Week ${D.liveWeek} scores and game clocks included`:`Odds: 5,000 simulations of the ${ODDS.left} games left`;
 
   // scores
   const wk=live||D.lastFinalWeek, byM={};
@@ -401,7 +452,10 @@ async function load(first){
   try{
     const d=await fetchSleeper(DATA);
     if(first && d.liveWeek) VIEW='live'; if(!d.liveWeek) VIEW='official';
-    DATA=d; render(); runOdds(d);
+    DATA=d; render();
+    let LIVE=null;
+    if(d.liveWeek){ try{ const [players,rem]=await Promise.all([getPlayers(),getGameClock(d.season,d.liveWeek)]); LIVE={players,rem}; }catch(e){ console.warn("live inputs unavailable",e); } }
+    runOdds(d,LIVE);
   }catch(e){ console.error(e); if(!DATA) document.getElementById("std-note").textContent="Couldn't reach Sleeper. Check your connection and reload."; }
   finally{busy=false;}
 }
