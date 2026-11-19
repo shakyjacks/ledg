@@ -211,7 +211,9 @@ body[data-tab=home][data-ann=on] .wave{background:var(--red)}
 .fp .seg button{font:600 13px "Chakra Petch",sans-serif;padding:7px 12px}
 .fp-speed{margin-bottom:auto}
 body.fp-on{overflow:hidden}
-body.playing main{padding-bottom:calc(166px + env(safe-area-inset-bottom))}
+body.playing[data-tab="podcast"] main{padding-bottom:calc(166px + env(safe-area-inset-bottom))}
+/* the mini-player only shows on the Podcast page; audio keeps playing on other pages */
+body:not([data-tab="podcast"]) .player{display:none}
 </style>
 </head>
 <body data-tab="home" data-ann="off">
@@ -816,7 +818,7 @@ function playEp(i){
   document.getElementById("fp-date").textContent=new Date(e.date).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})+(e.duration?" · "+durTxt(e.duration):"");
   document.getElementById("player").hidden=false; document.body.classList.add("playing");
   if("mediaSession" in navigator){
-    navigator.mediaSession.metadata=new MediaMetadata({title:e.title,artist:"The LEDG Podcast",artwork:[{src:"podcast-badge.png",sizes:"720x822",type:"image/png"}]});
+    navigator.mediaSession.metadata=new MediaMetadata({title:e.title,artist:"The LEDG Podcast",artwork:[{src:new URL("podcast-art-512.png",location.href).href,sizes:"512x512",type:"image/png"},{src:new URL("podcast-art-1024.png",location.href).href,sizes:"1024x1024",type:"image/png"}]});
     navigator.mediaSession.setActionHandler("seekbackward",()=>{AUD.currentTime=Math.max(0,AUD.currentTime-15);});
     navigator.mediaSession.setActionHandler("seekforward",()=>{AUD.currentTime+=30;});
   }

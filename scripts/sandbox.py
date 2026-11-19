@@ -11,7 +11,7 @@ New or changed images go in sandbox/ while being tried out; move them to the roo
 import re, sys, pathlib
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 LIVE, SBX = ROOT / "index.html", ROOT / "sandbox" / "index.html"
-ASSETS = ["icon-192.png", "badge.png", "apple-touch-icon.png", "podcast-badge.png"]
+ASSETS = ["icon-192.png", "badge.png", "apple-touch-icon.png", "podcast-badge.png", "podcast-art-512.png", "podcast-art-1024.png"]
 TAG_CSS = '.bar-in{position:relative}.sbx{position:absolute;right:0;bottom:-6px;font:700 10px Manrope;color:var(--gold);border:1px solid var(--gold);border-radius:999px;padding:1px 7px;white-space:nowrap}'
 SW = '\nif("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});'
 MANIFEST = '<link rel="manifest" href="manifest.webmanifest">'
