@@ -9,7 +9,7 @@ async function fromArchive() {
   const out = [];
   for (let offset = 0; offset < 2000; offset += 50) {
     const r = await fetch(`${BASE}/api/v1/archive?sort=new&offset=${offset}&limit=50`, { headers: UA });
-    if (!r.ok) throw new Error("archive " + r.status);
+    if (!r.ok) throw new Error("archive HTTP " + r.status + " " + (await r.text()).slice(0, 120).replace(/\s+/g, " "));
     const page = await r.json();
     if (!Array.isArray(page) || !page.length) break;
     for (const p of page) {
@@ -29,7 +29,9 @@ async function fromArchive() {
 }
 
 async function fromRss() {
-  const xml = await (await fetch(`${BASE}/feed`, { headers: UA })).text();
+  const rr = await fetch(`${BASE}/feed`, { headers: UA });
+  const xml = await rr.text();
+  if (!rr.ok) throw new Error("rss HTTP " + rr.status + " " + xml.slice(0, 120).replace(/\s+/g, " "));
   const tag = (s, t) => { const m = s.match(new RegExp(`<${t}[^>]*>([\\s\\S]*?)</${t}>`)); return m ? m[1].replace(/^<!\[CDATA\[|\]\]>$/g, "").trim() : ""; };
   return [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map(([, it]) => ({
     title: tag(it, "title"),
@@ -41,10 +43,19 @@ async function fromRss() {
   })).filter(e => e.audio);
 }
 
-let episodes;
-try { episodes = await fromArchive(); if (!episodes.length) throw new Error("empty archive"); }
-catch (e) { console.warn("archive failed, using RSS:", e.message); episodes = await fromRss(); }
-if (!episodes.length) { console.error("no episodes found; leaving podcast.json unchanged"); process.exit(0); }
+const status = { at: new Date().toISOString(), archive: null, rss: null };
+let episodes = [];
+try { episodes = await fromArchive(); status.archive = `ok ${episodes.length}`; if (!episodes.length) throw new Error("empty archive"); }
+catch (e) {
+  status.archive = String(e.message || e);
+  console.warn("archive failed, using RSS:", status.archive);
+  try { episodes = await fromRss(); status.rss = `ok ${episodes.length}`; } catch (e2) { status.rss = String(e2.message || e2); }
+}
+if (!episodes.length) {
+  console.error("no episodes found; leaving podcast.json unchanged", status);
+  writeFileSync("podcast-status.json", JSON.stringify(status, null, 1));
+  process.exit(0);
+}
 episodes.sort((a, b) => new Date(b.date) - new Date(a.date));
 
 const next = { show: { title: "The LEDG Podcast", link: BASE }, episodes };
