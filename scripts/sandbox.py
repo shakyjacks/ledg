@@ -5,7 +5,8 @@
   python3 scripts/sandbox.py publish  # after approval: make the sandbox version the live app
 
 The sandbox lives at /ledg/sandbox/ and loads shared files (logos, podcast.json) from the live folder via ../.
-It has no home-screen install or offline cache, and shows a gold "Sandbox" tag in the header.
+It installs to the home screen as "Sandbox" with a gold icon (sandbox/ files only), has no offline cache,
+and shows a gold "Sandbox" tag in the header.
 New or changed images go in sandbox/ while being tried out; move them to the root folder when publishing.
 """
 import re, sys, pathlib
@@ -15,8 +16,15 @@ ASSETS = ["icon-192.png", "badge.png", "apple-touch-icon.png", "podcast-badge.pn
 TAG_CSS = '.bar-in{position:relative}.sbx{position:absolute;right:0;bottom:-6px;font:700 10px Manrope;color:var(--gold);border:1px solid var(--gold);border-radius:999px;padding:1px 7px;white-space:nowrap}'
 SW = '\nif("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});'
 MANIFEST = '<link rel="manifest" href="manifest.webmanifest">'
+# The sandbox has its own home-screen name and gold icon (files in sandbox/ only), so it never reaches the live app.
+LIVE_HEAD = '<link rel="icon" type="image/png" href="icon-192.png">\n' + MANIFEST + '\n<link rel="apple-touch-icon" href="apple-touch-icon.png">'
+SBX_HEAD = ('<!--SANDBOX-HEAD--><link rel="icon" type="image/png" href="sandbox-icon-192.png">\n<link rel="manifest" href="sandbox.webmanifest">\n'
+            '<link rel="apple-touch-icon" href="sandbox-touch-icon.png"><!--/SANDBOX-HEAD-->')
+LIVE_TITLE, SBX_TITLE = '<meta name="apple-mobile-web-app-title" content="LEDG">', '<meta name="apple-mobile-web-app-title" content="Sandbox">'
 
 def to_sandbox(s):
+    assert LIVE_HEAD in s, "live <head> icon/manifest lines changed; update LIVE_HEAD in scripts/sandbox.py"
+    s = s.replace(LIVE_HEAD, SBX_HEAD).replace(LIVE_TITLE, SBX_TITLE)
     for a in ASSETS:
         s = re.sub(r'(["(])' + re.escape(a), r'\1../' + a, s)
     s = s.replace('fetch("podcast.json?', 'fetch("../podcast.json?')
@@ -27,6 +35,7 @@ def to_sandbox(s):
     return s
 
 def to_live(s):
+    s = s.replace(SBX_HEAD, LIVE_HEAD).replace(SBX_TITLE, LIVE_TITLE)
     s = re.sub(r"/\*SANDBOX\*/.*?/\*/SANDBOX\*/", "", s, flags=re.S)
     s = re.sub(r"<!--SANDBOX-->.*?<!--/SANDBOX-->\n\s*", "", s, flags=re.S)
     s = s.replace("<title>LEDG Sandbox</title>", "<title>LEDG</title>")

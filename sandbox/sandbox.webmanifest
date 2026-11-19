@@ -1,0 +1,14 @@
+{
+  "name": "LEDG Sandbox",
+  "short_name": "Sandbox",
+  "description": "Test version of the LEDG app. Changes are tried here before they go live.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#031a3d",
+  "theme_color": "#031a3d",
+  "icons": [
+    { "src": "sandbox-icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "sandbox-icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
