@@ -716,12 +716,38 @@ let POD=null, NOW=null;
 const AUD=document.getElementById("audio");
 const mmss=t=>{ if(!isFinite(t)||t<0) return "–:–"; t=Math.round(t); const h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60; return (h?h+":"+String(m).padStart(2,"0"):m)+":"+String(s).padStart(2,"0"); };
 const durTxt=t=>{ if(!t) return ""; const m=Math.round(t/60); return m>=60?`${Math.floor(m/60)} hr ${m%60} min`:`${m} min`; };
+// Substack blocks GitHub's servers part of the time, so the saved list can lag behind.
+// After showing it, the app checks the live feed through a feed-reading service and adds anything newer.
+const POD_FEED="https://api.substack.com/feed/podcast/10631863.rss";
+const cleanDesc=s=>String(s||"").replace(/<[^>]+>/g," ").replace(/&nbsp;/g," ").replace(/\s*This is a public episode\.[\s\S]*$/,"").replace(/\s+/g," ").trim().slice(0,300);
+const hms=d=>!d?null:String(d).includes(":")?String(d).split(":").reduce((a,x)=>a*60+ +x,0):Math.round(+d)||null;
+async function liveEpisodes(){
+  try{
+    const r=await fetch("https://api.rss2json.com/v1/api.json?rss_url="+encodeURIComponent(POD_FEED)); const j=await r.json();
+    if(j.status==="ok"&&j.items?.length) return j.items.filter(it=>it.enclosure?.link).map(it=>({title:it.title,date:new Date(it.pubDate.replace(" ","T")+"Z").toISOString(),audio:it.enclosure.link,duration:hms(it.enclosure.duration),desc:cleanDesc(it.description),link:it.link}));
+  }catch(e){}
+  try{
+    const r=await fetch("https://api.allorigins.win/raw?url="+encodeURIComponent(POD_FEED)); const x=new DOMParser().parseFromString(await r.text(),"text/xml");
+    return [...x.querySelectorAll("item")].map(it=>{const g=t=>it.getElementsByTagName(t)[0]?.textContent||""; const enc=it.querySelector("enclosure"); return {title:g("title"),date:new Date(g("pubDate")).toISOString(),audio:enc?.getAttribute("url"),duration:hms(g("itunes:duration")),desc:cleanDesc(g("description")),link:g("link")};}).filter(e=>e.audio);
+  }catch(e){}
+  return [];
+}
 async function loadPodcast(){
   if(POD) return;
   try{
     const r=await fetch("../podcast.json?ts="+Date.now(),{cache:"no-store"}); if(!r.ok) throw new Error(r.status);
     POD=await r.json(); renderEps();
-  }catch(e){ document.getElementById("eps").innerHTML=`<li class="ep-empty">Couldn't load episodes. Check your connection and try again.</li>`; }
+  }catch(e){ POD={episodes:[]}; }
+  const live=await liveEpisodes();
+  const have=new Set(POD.episodes.map(e=>e.link||e.audio));
+  const add=live.filter(e=>!have.has(e.link||e.audio));
+  if(add.length){
+    const cur=NOW!=null?POD.episodes[NOW]?.audio:null;
+    POD.episodes=[...add,...POD.episodes].sort((a,b)=>new Date(b.date)-new Date(a.date));
+    if(cur) NOW=POD.episodes.findIndex(e=>e.audio===cur);
+  }
+  if(POD.episodes.length) renderEps();
+  else document.getElementById("eps").innerHTML=`<li class="ep-empty">Couldn't load episodes. Check your connection and try again.</li>`;
 }
 function renderEps(){
   const eps=POD.episodes||[];
@@ -732,7 +758,7 @@ function renderEps(){
     return `<li class="ep ${playing?"now":""}" data-i="${i}">
       <button class="ep-play" aria-label="${playing&&!AUD.paused?"Pause":"Play"} ${esc(e.title)}">${playing&&!AUD.paused?"❚❚":"▶"}</button>
       <button class="ep-info" aria-expanded="false"><span class="ep-t">${esc(e.title)}</span><span class="ep-m">${d}${e.duration?" · "+durTxt(e.duration):""}</span></button>
-      <div class="ep-more">${e.desc?`<p>${esc(e.desc)}</p>`:""}<a href="${esc(e.link)}" target="_blank" rel="noopener">Open on Substack</a></div>
+      <div class="ep-more">${cleanDesc(e.desc)?`<p>${esc(cleanDesc(e.desc))}</p>`:""}<a href="${esc(e.link)}" target="_blank" rel="noopener">Open on Substack</a></div>
     </li>`;
   }).join("") || `<li class="ep-empty">No episodes yet.</li>`;
 }
