@@ -895,7 +895,7 @@ function renderOdds(){
     const st=c.po===1?(c.bye===1?"Clinched a first-round bye.":"Clinched a playoff spot."):c.po===-1?"Eliminated from the playoffs.":"";
     return `<li class="orow ${oOpen.has(id)?"open":""} ${c.po===-1?"elim":""}" data-id="${id}">
       <button aria-expanded="${oOpen.has(id)}"><span class="who"><span class="name">${esc(t.team)}</span>${scorePill(id)}</span>
-        <span class="num">${oCell(o.po,c.po)}</span><span class="num">${oCell(o.bye,c.bye)}</span><span class="num">${pct(o.ti)}</span><span class="num mo ${Math.round(o.mo*100)>=15?"hot":""}">${pct(o.mo)}</span></button>
+        <span class="num">${oCell(o.po,c.po)}</span><span class="num">${oCell(o.bye,c.bye)}</span><span class="num">${pct(o.ti)}</span><span class="num mo ${Math.round(o.mo*100)>=25?"hot":""}">${pct(o.mo)}</span></button>
       <div class="o-more">
         <dl><dt>Record now</dt><dt>Likely finish</dt><dt>Proj. points</dt><dd>${r.w}-${r.l}${r.t?"-"+r.t:""}</dd><dd>${o.likelyW}-${D.regularSeasonWeeks-o.likelyW}</dd><dd>${Math.round(o.pf).toLocaleString("en-US")}</dd></dl>
         ${st?`<div class="o-st">${st}</div>`:""}
