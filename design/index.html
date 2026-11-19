@@ -6,7 +6,6 @@
 <meta name="theme-color" content="#031a3d">
 <title>LEDG</title>
 <link rel="icon" type="image/png" href="../icon-192.png">
-
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -180,15 +179,34 @@ body[data-tab=home][data-ann=on] .wave{background:var(--red)}
 .ep-more p{margin:0 0 6px;line-height:1.45}
 .ep-more a{color:var(--muted);font-size:12px}
 .ep-empty{padding:18px 0;color:var(--muted);font-size:13px;list-style:none}
-.player{position:fixed;left:0;right:0;bottom:calc(53px + max(4px, env(safe-area-inset-bottom) - 12px));z-index:6;background:#0b2a5c;border-top:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:8px 12px}
+.player{position:fixed;left:0;right:0;bottom:calc(53px + max(4px, env(safe-area-inset-bottom) - 12px));z-index:6;background:#0b2a5c;border-top:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:11px 14px;cursor:pointer}
 .player[hidden]{display:none}
-.pl-btn{flex:none;width:36px;height:36px;border-radius:50%;border:0;background:var(--red);color:var(--white);font-size:12px;cursor:pointer}
+.pl-btn{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:var(--red);color:var(--white);font-size:14px;cursor:pointer}
 .pl-mid{flex:1;min-width:0}
-.pl-title{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pl-bar{display:flex;align-items:center;gap:6px;font:400 11px "Chakra Petch",sans-serif;color:var(--muted)}
-.pl-bar input{flex:1;accent-color:var(--white);height:16px;margin:0}
-.pl-skip{flex:none;border:0;background:none;color:#dbe4f3;font:600 12px "Chakra Petch",sans-serif;padding:6px 2px;cursor:pointer}
-body.playing main{padding-bottom:calc(150px + env(safe-area-inset-bottom))}
+.pl-title{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+.pl-bar{display:flex;align-items:center;gap:8px;font:400 12px "Chakra Petch",sans-serif;color:var(--muted)}
+.pl-bar input{flex:1;accent-color:var(--white);height:18px;margin:0}
+.pl-open{flex:none;border:0;background:none;color:var(--muted);padding:6px 0 6px 2px;cursor:pointer;display:grid;place-items:center}
+/* full-screen player */
+.fp{position:fixed;inset:0;z-index:20;background:var(--bg);display:flex;flex-direction:column;align-items:center;padding:calc(10px + env(safe-area-inset-top)) 24px calc(28px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .28s ease;visibility:hidden}
+.fp.open{transform:none;visibility:visible}
+@media (prefers-reduced-motion:reduce){.fp{transition:none}}
+.fp-top{align-self:stretch;display:flex;align-items:center;justify-content:space-between;min-height:44px}
+.fp-close{border:0;background:none;color:var(--white);width:44px;height:44px;margin-left:-10px;display:grid;place-items:center;cursor:pointer}
+.fp-show{font-size:13px;font-weight:700;color:var(--muted)}
+.fp-art{width:min(62vw,240px);height:auto;margin:auto 0 0}
+.fp-info{align-self:stretch;margin-top:28px}
+.fp-title{font-weight:800;font-size:21px;line-height:1.25}
+.fp-date{color:var(--muted);font-size:13px;margin-top:4px}
+.fp-seek{align-self:stretch;margin-top:22px}
+.fp-seek input{width:100%;accent-color:var(--white);margin:0;height:22px}
+.fp-times{display:flex;justify-content:space-between;font:400 12px "Chakra Petch",sans-serif;color:var(--muted);margin-top:4px}
+.fp-btn{width:76px;height:76px;border-radius:50%;border:0;background:var(--red);color:var(--white);font-size:22px;cursor:pointer;margin:22px 0 26px}
+.fp-speed-l{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px}
+.fp .seg button{font:600 13px "Chakra Petch",sans-serif;padding:7px 12px}
+.fp-speed{margin-bottom:auto}
+body.fp-on{overflow:hidden}
+body.playing main{padding-bottom:calc(166px + env(safe-area-inset-bottom))}
 </style>
 </head>
 <body data-tab="home" data-ann="off">
@@ -240,13 +258,27 @@ body.playing main{padding-bottom:calc(150px + env(safe-area-inset-bottom))}
   <p class="note" id="foot" hidden></p>
 </main>
 
-<div class="player" id="player" hidden>
+<div class="player" id="player" hidden role="button" aria-label="Open player">
   <button class="pl-btn" id="pl-btn" aria-label="Play">▶</button>
   <div class="pl-mid">
     <div class="pl-title" id="pl-title"></div>
     <div class="pl-bar"><span id="pl-cur">0:00</span><input type="range" id="pl-seek" min="0" max="1000" value="0" aria-label="Seek"><span id="pl-dur">–:–</span></div>
   </div>
-  <button class="pl-skip" id="pl-back" aria-label="Back 15 seconds">−15</button><button class="pl-skip" id="pl-fwd" aria-label="Forward 30 seconds">+30</button>
+  <span class="pl-open" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></span>
+</div>
+<div class="fp" id="fp" role="dialog" aria-modal="true" aria-label="Now playing" aria-hidden="true">
+  <div class="fp-top">
+    <button class="fp-close" id="fp-close" aria-label="Close player"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+    <span class="fp-show">The LEDG Podcast</span><span style="width:34px"></span>
+  </div>
+  <img class="fp-art" src="../podcast-badge.png" alt="">
+  <div class="fp-info"><div class="fp-title" id="fp-title"></div><div class="fp-date" id="fp-date"></div></div>
+  <div class="fp-seek"><input type="range" id="fp-seek" min="0" max="1000" value="0" aria-label="Seek"><div class="fp-times"><span id="fp-cur">0:00</span><span id="fp-left">–:–</span></div></div>
+  <button class="fp-btn" id="fp-btn" aria-label="Play">▶</button>
+  <div class="fp-speed-l">Playback speed</div>
+  <div class="seg fp-speed" id="fp-speed" role="group" aria-label="Playback speed">
+    <button data-r="0.75">0.75×</button><button data-r="1">1×</button><button data-r="1.25">1.25×</button><button data-r="1.5">1.5×</button><button data-r="2">2×</button>
+  </div>
 </div>
 <audio id="audio" preload="none"></audio>
 <nav class="tabs" aria-label="Pages">
@@ -768,11 +800,14 @@ function playEp(i){
   NOW=i; AUD.src=e.audio;
   let pos=0; try{ pos=+JSON.parse(localStorage.getItem("ledg-pod-pos")||"{}")[e.audio]||0; }catch(_){}
   AUD.addEventListener("loadedmetadata",()=>{ if(pos>5 && pos<AUD.duration-10) AUD.currentTime=pos; },{once:true});
+  AUD.defaultPlaybackRate=AUD.playbackRate=RATE;
   AUD.play().catch(()=>{});
   document.getElementById("pl-title").textContent=e.title;
+  document.getElementById("fp-title").textContent=e.title;
+  document.getElementById("fp-date").textContent=new Date(e.date).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})+(e.duration?" · "+durTxt(e.duration):"");
   document.getElementById("player").hidden=false; document.body.classList.add("playing");
   if("mediaSession" in navigator){
-    navigator.mediaSession.metadata=new MediaMetadata({title:e.title,artist:"The LEDG Podcast",artwork:[{src:"podcast-badge.png",sizes:"240x240",type:"image/png"}]});
+    navigator.mediaSession.metadata=new MediaMetadata({title:e.title,artist:"The LEDG Podcast",artwork:[{src:"../podcast-badge.png",sizes:"240x240",type:"image/png"}]});
     navigator.mediaSession.setActionHandler("seekbackward",()=>{AUD.currentTime=Math.max(0,AUD.currentTime-15);});
     navigator.mediaSession.setActionHandler("seekforward",()=>{AUD.currentTime+=30;});
   }
@@ -783,20 +818,38 @@ document.getElementById("eps").addEventListener("click",e=>{
   if(e.target.closest(".ep-play")) return playEp(+li.dataset.i);
   if(e.target.closest(".ep-info")){ const o=li.classList.toggle("open"); li.querySelector(".ep-info").setAttribute("aria-expanded",o); }
 });
-document.getElementById("pl-btn").addEventListener("click",()=>{ AUD.paused?AUD.play().catch(()=>{}):AUD.pause(); });
-document.getElementById("pl-back").addEventListener("click",()=>{ AUD.currentTime=Math.max(0,AUD.currentTime-15); });
-document.getElementById("pl-fwd").addEventListener("click",()=>{ AUD.currentTime=Math.min(AUD.duration||1e9,AUD.currentTime+30); });
-const SEEK=document.getElementById("pl-seek"); let seeking=false;
-SEEK.addEventListener("input",()=>{ seeking=true; document.getElementById("pl-cur").textContent=mmss(SEEK.value/1000*(AUD.duration||0)); });
-SEEK.addEventListener("change",()=>{ if(AUD.duration) AUD.currentTime=SEEK.value/1000*AUD.duration; seeking=false; });
+const toggle=()=>{ AUD.paused?AUD.play().catch(()=>{}):AUD.pause(); };
+document.getElementById("pl-btn").addEventListener("click",ev=>{ ev.stopPropagation(); toggle(); });
+document.getElementById("fp-btn").addEventListener("click",toggle);
+// Full-screen player: tap the mini-player to open; chevron or swipe down to close.
+const FP=document.getElementById("fp");
+function openFP(o){ FP.classList.toggle("open",o); FP.setAttribute("aria-hidden",!o); document.body.classList.toggle("fp-on",o); if(o) document.getElementById("fp-close").focus(); }
+document.getElementById("player").addEventListener("click",ev=>{ if(!ev.target.closest("input,button")) openFP(true); });
+document.getElementById("fp-close").addEventListener("click",()=>openFP(false));
+document.addEventListener("keydown",ev=>{ if(ev.key==="Escape"&&FP.classList.contains("open")) openFP(false); });
+let fpY=null;
+FP.addEventListener("touchstart",ev=>{ fpY=ev.target.closest("input")?null:ev.touches[0].clientY; },{passive:true});
+FP.addEventListener("touchend",ev=>{ if(fpY!=null && ev.changedTouches[0].clientY-fpY>90) openFP(false); fpY=null; });
+// Playback speed, remembered between visits.
+let RATE=1; try{ RATE=+localStorage.getItem("ledg-pod-rate")||1; }catch(_){}
+function showRate(){ document.querySelectorAll("#fp-speed button").forEach(b=>{ const on=+b.dataset.r===RATE; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on); }); }
+document.getElementById("fp-speed").addEventListener("click",ev=>{ const b=ev.target.closest("button"); if(!b) return; RATE=+b.dataset.r; AUD.defaultPlaybackRate=AUD.playbackRate=RATE; try{ localStorage.setItem("ledg-pod-rate",RATE); }catch(_){} showRate(); });
+showRate();
+let seeking=false;
+["pl-seek","fp-seek"].forEach(id=>{ const el=document.getElementById(id);
+  el.addEventListener("click",ev=>ev.stopPropagation());
+  el.addEventListener("input",()=>{ seeking=true; const t=el.value/1000*(AUD.duration||0); document.getElementById("pl-cur").textContent=document.getElementById("fp-cur").textContent=mmss(t); });
+  el.addEventListener("change",()=>{ if(AUD.duration) AUD.currentTime=el.value/1000*AUD.duration; seeking=false; });
+});
 let lastSave=0;
 AUD.addEventListener("timeupdate",()=>{
-  if(!seeking){ SEEK.value=AUD.duration?Math.round(AUD.currentTime/AUD.duration*1000):0; document.getElementById("pl-cur").textContent=mmss(AUD.currentTime); }
+  if(!seeking){ const v=AUD.duration?Math.round(AUD.currentTime/AUD.duration*1000):0; document.getElementById("pl-seek").value=document.getElementById("fp-seek").value=v; document.getElementById("pl-cur").textContent=document.getElementById("fp-cur").textContent=mmss(AUD.currentTime); }
   document.getElementById("pl-dur").textContent=mmss(AUD.duration);
+  document.getElementById("fp-left").textContent=AUD.duration?"−"+mmss(AUD.duration-AUD.currentTime):"–:–";
   if(Date.now()-lastSave>5000){ lastSave=Date.now(); try{ const m=JSON.parse(localStorage.getItem("ledg-pod-pos")||"{}"); m[AUD.src]=AUD.currentTime; localStorage.setItem("ledg-pod-pos",JSON.stringify(m)); }catch(_){} }
 });
 ["play","pause","ended"].forEach(ev=>AUD.addEventListener(ev,()=>{
-  const p=!AUD.paused; const b=document.getElementById("pl-btn"); b.textContent=p?"❚❚":"▶"; b.setAttribute("aria-label",p?"Pause":"Play");
+  const p=!AUD.paused; for(const b of [document.getElementById("pl-btn"),document.getElementById("fp-btn")]){ b.textContent=p?"❚❚":"▶"; b.setAttribute("aria-label",p?"Pause":"Play"); }
   if(POD) renderEps();
 }));
 
@@ -823,7 +876,6 @@ async function load(first){
 load(true);
 setInterval(()=>{ if(document.visibilityState==="visible") load(false); },60000);
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") load(false); });
-
 </script>
 </body>
 </html>
