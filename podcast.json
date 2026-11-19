@@ -5,6 +5,14 @@
  },
  "episodes": [
   {
+   "title": "Ep. 93 - You’re Only As Good As Your Schedule (2026 - Week 11)",
+   "date": "2026-11-19T20:09:26.000Z",
+   "audio": "https://api.substack.com/feed/podcast/225704363/544ac8f0d70d9963fac50beea7aec9ce.mp3",
+   "duration": 6960,
+   "desc": "When one of the hosts is feeling in the dumps and down on his luck, it is up to the other two hosts to make sure he leaves the recording session feeling even worse. We’re back in the Swamp this week and Adam may be taking up permanent residency.",
+   "link": "https://theledgpodcast.substack.com/p/ep-93-youre-only-as-good-as-your"
+  },
+  {
    "title": "Ep. 92 - Ranting and Raving",
    "date": "2026-11-13T21:11:34.000Z",
    "audio": "https://api.substack.com/feed/podcast/224809062/35b96e0be04eb03c3bbcddb04f5c6dff.mp3",
@@ -85,5 +93,5 @@
    "link": "https://theledgpodcast.substack.com/p/ep-83-blood-and-revenge-are-hammering"
   }
  ],
- "updated": "2026-11-19T09:20:49.941Z"
+ "updated": "2026-11-19T20:16:54.450Z"
 }
