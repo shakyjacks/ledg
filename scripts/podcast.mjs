@@ -44,9 +44,14 @@ async function fromRss(url = `${BASE}/feed`) {
   })).filter(e => e.audio);
 }
 
-const status = { at: new Date().toISOString(), podcastFeed: null, archive: null, rss: null };
+// No timestamp here, so a repeat of the same failure doesn't create a new commit every hour.
+const status = { podcastFeed: null, archive: null, rss: null };
 let episodes = [];
-try { episodes = await fromRss(PODCAST_FEED); status.podcastFeed = `ok ${episodes.length}`; } catch (e) { status.podcastFeed = String(e.message || e); }
+// Substack's bot check blocks GitHub's servers some of the time, so try the podcast feed a few times.
+for (let i = 0; i < 4 && !episodes.length; i++) {
+  if (i) await new Promise(r => setTimeout(r, 15000 * i));
+  try { episodes = await fromRss(PODCAST_FEED); status.podcastFeed = `ok ${episodes.length}`; } catch (e) { status.podcastFeed = String(e.message || e); }
+}
 if (!episodes.length) try { episodes = await fromArchive(); status.archive = `ok ${episodes.length}`; if (!episodes.length) throw new Error("empty archive"); }
 catch (e) {
   status.archive = String(e.message || e);
