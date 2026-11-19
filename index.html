@@ -808,7 +808,7 @@ function playEp(i){
   document.getElementById("fp-date").textContent=new Date(e.date).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})+(e.duration?" · "+durTxt(e.duration):"");
   document.getElementById("player").hidden=false; document.body.classList.add("playing");
   if("mediaSession" in navigator){
-    navigator.mediaSession.metadata=new MediaMetadata({title:e.title,artist:"The LEDG Podcast",artwork:[{src:"podcast-badge.png",sizes:"240x240",type:"image/png"}]});
+    navigator.mediaSession.metadata=new MediaMetadata({title:e.title,artist:"The LEDG Podcast",artwork:[{src:"podcast-badge.png",sizes:"720x822",type:"image/png"}]});
     navigator.mediaSession.setActionHandler("seekbackward",()=>{AUD.currentTime=Math.max(0,AUD.currentTime-15);});
     navigator.mediaSession.setActionHandler("seekforward",()=>{AUD.currentTime+=30;});
   }
