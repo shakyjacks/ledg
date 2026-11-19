@@ -1,7 +1,7 @@
 // Pulls every LEDG Podcast episode from Substack into podcast.json (run hourly by GitHub Actions).
 // Substack blocks browsers on other sites from reading its feed, so the app reads this saved copy instead.
 // Uses Substack's archive (all episodes); falls back to the RSS feed (latest ~10) if the archive is unavailable.
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, rmSync } from "node:fs";
 const BASE = "https://theledgpodcast.substack.com";
 const PODCAST_FEED = "https://api.substack.com/feed/podcast/10631863.rss"; // the feed Apple/Spotify-style apps read
 const UA = { "user-agent": "LEDG-app podcast sync (github.com/shakyjacks/ledg)" };
@@ -39,7 +39,7 @@ async function fromRss(url = `${BASE}/feed`) {
     date: new Date(tag(it, "pubDate")).toISOString(),
     audio: (it.match(/<enclosure[^>]*url="([^"]+)"/) || [])[1],
     duration: (d => !d ? null : d.includes(":") ? d.split(":").reduce((a, x) => a * 60 + +x, 0) : Math.round(+d) || null)(tag(it, "itunes:duration")),
-    desc: tag(it, "description").replace(/<[^>]+>/g, "").slice(0, 300),
+    desc: tag(it, "description").replace(/<[^>]+>/g, "").replace(/\s*This is a public episode\.[\s\S]*$/, "").trim().slice(0, 300),
     link: tag(it, "link"),
   })).filter(e => e.audio);
 }
@@ -58,6 +58,7 @@ if (!episodes.length) {
   writeFileSync("podcast-status.json", JSON.stringify(status, null, 1));
   process.exit(0);
 }
+rmSync("podcast-status.json", { force: true }); // clear an old failure note
 episodes.sort((a, b) => new Date(b.date) - new Date(a.date));
 
 const next = { show: { title: "The LEDG Podcast", link: BASE }, episodes };

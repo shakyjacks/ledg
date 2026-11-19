@@ -20,7 +20,7 @@ jobs:
           if [ -n "$(git status --porcelain podcast.json podcast-status.json)" ]; then
             git config user.name "LEDG podcast sync"
             git config user.email "actions@users.noreply.github.com"
-            for f in podcast.json podcast-status.json; do [ -e "$f" ] && git add "$f"; done
+            git add -A -- podcast.json podcast-status.json
             git commit -m "Update podcast episodes"
             git push
           fi
