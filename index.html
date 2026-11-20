@@ -833,8 +833,16 @@ document.getElementById("list").addEventListener("click",e=>{
   li.classList.toggle("open"); li.querySelector("button").setAttribute("aria-expanded",open.has(id));
 });
 document.getElementById("seg").addEventListener("click",e=>{const v=e.target.dataset.v; if(v){VIEW=v;render();}});
+// Which page the app opens to: Standings while a week is live (first kickoff to final whistle), otherwise Home.
+// Once someone taps a tab themselves, the app leaves them there.
+let PICKED=false;
+function openDefault(live){ if(!PICKED && TAB!==(live?"standings":"home")) showTab(live?"standings":"home"); }
 document.querySelector(".tabs").addEventListener("click",e=>{
-  const b=e.target.closest("button[data-tab]"); if(!b) return; TAB=b.dataset.tab; document.body.dataset.tab=TAB;
+  const b=e.target.closest("button[data-tab]"); if(!b) return; PICKED=true; showTab(b.dataset.tab);
+});
+function showTab(t){
+  const b=document.querySelector(`.tabs button[data-tab="${t}"]`); if(!b) return;
+  TAB=t; document.body.dataset.tab=TAB;
   document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x===b));
   document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="v-"+TAB));
   document.getElementById("title").textContent={home:"Home",standings:"Standings",scores:"Scores",odds:"Odds",podcast:"Podcast"}[TAB]||"LEDG";
@@ -842,7 +850,7 @@ document.querySelector(".tabs").addEventListener("click",e=>{
   document.getElementById("foot").hidden=TAB==="home"||TAB==="podcast";
   if(TAB==="podcast") loadPodcast();
   window.scrollTo(0,0);
-});
+}
 // ---------- ODDS PAGE ----------
 let OVIEW="playoffs";
 const oOpen=new Set();
@@ -1174,7 +1182,9 @@ let busy=false;
 async function load(first){
   if(busy) return; busy=true;
   try{
-    if(first && !DATA){ try{ const c=JSON.parse(localStorage.getItem("ledg-cache2")||"null"); if(c){ DATA=c; render(); } }catch(e){} }
+    if(first && !DATA){ try{ const c=JSON.parse(localStorage.getItem("ledg-cache2")||"null"); if(c){ DATA=c; render();
+      // best guess from the last visit (if recent) so the right page shows right away; confirmed below
+      if(c.liveWeek && Date.now()-new Date(c.updatedAt)<12*3600e3) openDefault(true); } }catch(e){} }
     const d=await fetchSleeper(DATA);
     let LIVE=null;
     if(d.liveWeek){ try{ const [players,rem]=await Promise.all([getPlayers(),getGameClock(d.season,d.liveWeek)]); LIVE={players,rem}; }catch(e){ console.warn("live inputs unavailable",e); } }
@@ -1185,6 +1195,7 @@ async function load(first){
     }
     if(first && d.liveWeek) VIEW='live';
     DATA=d; render(); loadSchedule();
+    if(first) openDefault(!!d.liveWeek);
     try{ localStorage.setItem("ledg-cache2",JSON.stringify(d)); }catch(e){}
     runOdds(d,LIVE);
   }catch(e){ console.error(e); if(!DATA){ const n=document.getElementById("std-note"); n.hidden=false; n.textContent="Couldn't reach Sleeper. Check your connection and reload."; } }
@@ -1192,7 +1203,14 @@ async function load(first){
 }
 load(true);
 setInterval(()=>{ if(document.visibilityState==="visible") load(false); },60000);
-document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") load(false); });
+// Coming back after 30+ minutes away counts as opening the app again (iPhone often keeps it in memory).
+let hiddenAt=0;
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="hidden"){ hiddenAt=Date.now(); return; }
+  const reopen=hiddenAt && Date.now()-hiddenAt>30*60e3; hiddenAt=0;
+  if(reopen) PICKED=false;
+  load(reopen);
+});
 if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
 </script>
 </body>
