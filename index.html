@@ -214,6 +214,65 @@ body.fp-on{overflow:hidden}
 body.playing[data-tab="podcast"] main{padding-bottom:calc(166px + env(safe-area-inset-bottom))}
 /* the mini-player only shows on the Podcast page; audio keeps playing on other pages */
 body:not([data-tab="podcast"]) .player{display:none}
+/* odds page */
+.ocols,.orow>button{display:grid;grid-template-columns:minmax(0,1fr) 50px 38px 38px 38px;align-items:center;column-gap:9px}
+.ocols{padding:0 2px 6px;border-bottom:1px solid var(--line);color:var(--faint);font-size:11px;font-weight:700}
+.ocols span{text-align:right}.ocols span:first-child{text-align:left}
+.orow{border-bottom:1px solid var(--line)}
+.orow>button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) 50px 38px 38px 38px;align-items:center;column-gap:9px;width:100%;padding:11px 2px;cursor:pointer}
+.orow .num{font-size:15px}
+.orow.elim .name{color:#dbe4f3}
+.orow .num .ok{color:#4ade80;font-weight:600}
+.orow .num .x{color:var(--faint)}
+.orow .num.mo{color:var(--muted)}
+.orow .num.mo.hot{color:var(--red)}
+.o-more{display:none;padding:2px 2px 14px;color:var(--muted);font-size:12.5px}
+.orow.open .o-more{display:block}
+.o-more dl{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;gap:2px 22px;margin:0 0 8px}
+.o-more dt{font-size:11px}
+.o-more dd{margin:0;color:var(--white);font:400 15px/1.1 "Chakra Petch"}
+.o-st{color:#4ade80;font-weight:700;margin-bottom:6px}
+.orow.elim .o-st{color:var(--muted)}
+.o-h3{font-size:11px;font-weight:700;color:var(--muted);margin:10px 0 5px}
+.sbars{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;align-items:end;margin-top:2px}
+.sb{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:122px}
+.sb b{font:400 10.5px/1 "Chakra Petch",sans-serif;color:var(--white);margin-bottom:4px;white-space:nowrap;letter-spacing:-.02em}
+.sb b.z{color:var(--faint)}
+.sb i{display:block;width:100%;border-radius:3px 3px 0 0;background:var(--faint)}
+.sb i.g{background:var(--gold)}.sb i.w{background:var(--white)}.sb i.r{background:var(--red)}
+.sb span{font:600 11px/1 "Chakra Petch",sans-serif;color:var(--muted);margin-top:5px}
+.movers{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0 0 12px}
+.mv-l{font-size:11px;font-weight:700;color:var(--muted)}
+.mv{font:400 12px/1 "Chakra Petch",sans-serif;padding:4px 7px;border-radius:999px;background:rgba(255,255,255,.08)}
+.mv.up{color:#4ade80}.mv.down{color:var(--red)}
+.o-note{margin:12px 2px 0;color:var(--muted);font-size:11.5px}
+.o-empty{color:var(--muted);font-size:13px;margin:8px 0;list-style:none}
+.o-wk{font-size:13px;font-weight:700;color:var(--muted);margin:0 0 10px}.o-wk b{color:var(--red)}
+.mcards{display:grid;gap:10px}
+.mc{background:var(--surface);border-radius:14px;padding:12px 14px}
+.mc .mx-n{font-size:15px}
+.mc.gotw{box-shadow:inset 0 0 0 1px var(--gold)}
+.mc-tag{font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px}
+.mc-ifs{display:flex;justify-content:space-between;gap:10px;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
+.mc-if{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.mc-if i{display:block;font-style:normal;font-size:10.5px;color:var(--faint);margin-bottom:2px}
+.mc-if:last-child{text-align:right}
+.mc-if b{font:400 12.5px "Chakra Petch",sans-serif;color:var(--white)}
+.o-h2{font:400 19px/1 Manrope,sans-serif;letter-spacing:.025em;margin:26px 0 16px}
+/* drawn at 16px and scaled down: iPhone zooms the page when a menu with smaller text is tapped */
+.rg-pick{position:relative;display:inline-block;min-width:190px;transform:scale(.82);transform-origin:left top;margin-bottom:-6px}
+.rg-pick select{appearance:none;-webkit-appearance:none;width:100%;border:0;border-radius:999px;background:var(--surface);color:var(--white);font:700 16px Manrope,sans-serif;padding:8px 38px 8px 15px;cursor:pointer}
+.rg-pick select:focus-visible{outline:2px solid var(--white);outline-offset:2px}
+.rg-pick svg{position:absolute;right:14px;top:50%;margin-top:-8px;width:16px;height:16px;color:var(--muted);pointer-events:none}
+.rg-goal{color:#dbe4f3;font-size:13.5px;margin:14px 0 6px}
+.rg-goal b{font:400 14px "Chakra Petch",sans-serif;color:var(--white)}
+.rg-list{list-style:none;margin:0;padding:0}
+.rg-list li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.rg-list li .num{font-size:14px;white-space:nowrap}
+.rg-list li .num.up{color:#4ade80}
+.rg-list li.own{font-weight:700}
+.rg-list li.own .num{font-size:13px;color:var(--white)}
+.rg-list li.own em{font-style:normal;color:var(--muted);font-weight:400}
 </style>
 </head>
 <body data-tab="home" data-ann="off">
@@ -250,6 +309,23 @@ body:not([data-tab="podcast"]) .player{display:none}
     <div class="cols" aria-hidden="true"><span></span><span>Team</span><span>Record</span><span>PF</span><span>Odds</span></div>
     <ul class="list" id="list"></ul>
     <div class="key"><span><i style="background:var(--gold)"></i>Bye (Top 2)</span><span><i style="background:var(--white)"></i>Playoffs (Top 6)</span><span><i style="background:var(--red)"></i>Mole-offs bye (Bottom 2)</span><span><b></b>Playoff line</span><span id="odds-note">Odds: calculating…</span></div>
+  </section>
+  <section class="view" id="v-odds">
+    <div class="subhead">
+      <div class="seg" id="oseg" role="group" aria-label="Odds view"><button data-o="playoffs">Playoffs</button><button data-o="week">This Week</button></div>
+    </div>
+    <div id="o-playoffs">
+      <div id="movers"></div>
+      <div class="ocols" aria-hidden="true"><span>Team</span><span>Playoffs</span><span>Bye</span><span>Title</span><span>Mole</span></div>
+      <ul class="list" id="olist"></ul>
+      <div class="key"><span><span style="color:#4ade80">✓</span> Clinched</span><span>– Eliminated</span></div>
+    </div>
+    <div id="o-week" hidden>
+      <div class="o-wk" id="o-wk"></div>
+      <div class="mcards" id="mcards"></div>
+      <div id="rg"><h2 class="o-h2">Rooting Guide</h2><label class="rg-pick"><select id="rg-team" aria-label="Team for the rooting guide"></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></label><div id="root"></div></div>
+    </div>
+    <p class="o-note" id="o-note"></p>
   </section>
   <section class="view" id="v-podcast">
     <div class="pod-head">
@@ -297,7 +373,7 @@ body:not([data-tab="podcast"]) .player{display:none}
     <button class="on" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
     <button data-tab="standings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Standings</button>
     <button data-tab="scores" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M12 5v14"/></svg>Scores</button>
-    <button disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19l5-6 4 3 7-9"/></svg>Odds</button>
+    <button data-tab="odds"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19l5-6 4 3 7-9"/></svg>Odds</button>
     <button data-tab="podcast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>Podcast</button>
   </div>
 </nav>
@@ -543,55 +619,155 @@ function matchHTML(D,id){
 }
 function randn(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
 let RUN=0;
+// Scoring model built from games through a given week: each team's mean pulled toward the league average.
+function modelFor(D,through){
+  const base=buildGames(D,through);
+  const ids=Object.keys(D.teams).map(Number), sc={}; ids.forEach(i=>sc[i]=[]);
+  base.forEach(g=>{sc[g.a].push(g.pa);sc[g.b].push(g.pb);});
+  const all=[].concat(...ids.map(i=>sc[i])), M=all.reduce((a,b)=>a+b,0)/Math.max(1,all.length)||110;
+  let ss=0,n=0; ids.forEach(i=>{const m=sc[i].reduce((a,b)=>a+b,0)/Math.max(1,sc[i].length); sc[i].m=m; sc[i].forEach(x=>{ss+=(x-m)**2;n++;});});
+  const SD=Math.sqrt(ss/Math.max(1,n-ids.length))||25, W=sc[ids[0]].length/(sc[ids[0]].length+10);
+  const mu={}; ids.forEach(i=>mu[i]=sc[i].length?W*sc[i].m+(1-W)*M:M);
+  return {base,ids,mu,SD};
+}
+// Regular-season games after `through`: [week,a,b,focusIndex] (focusIndex numbers the games in week fw).
+function gamesLeft(D,through,fw){
+  const left=[]; let gi=0;
+  for(let w=through+1;w<=D.regularSeasonWeeks;w++){
+    const byM={}; (D.sched[w]||D.weeks[w]||[]).forEach(([r,m])=>(byM[m]=byM[m]||[]).push(r));
+    Object.keys(byM).sort((x,y)=>x-y).forEach(m=>{const p=byM[m]; if(p.length===2) left.push([w,p[0],p[1],w===fw?gi++:null]);});
+  }
+  return left;
+}
+// Live week: start each team from its current score and add only what its starters still have to play.
+function liveState(D,LIVE,mu,SD,ids){
+  const lw=D.liveWeek, liveT={};
+  if(!(lw&&LIVE)) return liveT;
+  const pav={}; for(const w in D.pp){ for(const id in D.pp[w]){ const v=D.pp[w][id]; if(v){ (pav[id]=pav[id]||[0,0]); pav[id][0]+=v; pav[id][1]++; } } }
+  const fr=Object.values(LIVE.rem), avgF=fr.length?fr.reduce((a,b)=>a+b,0)/fr.length:1;
+  const cur={}; (D.weeks[lw]||[]).forEach(([r,,p])=>cur[r]=p);
+  ids.forEach(r=>{
+    let full=0,E=0;
+    for(const id of D.starters[r]||[]){
+      const a=pav[id]?pav[id][0]/pav[id][1]:7;
+      const team=(LIVE.players[id]&&LIVE.players[id][0])||(/^[A-Z]{2,3}$/.test(id)?id:null);
+      const f=team==null?avgF:(team in LIVE.rem?LIVE.rem[team]:0);
+      full+=a; E+=a*f;
+    }
+    const share=full>0?E/full:avgF;
+    liveT[r]={cur:cur[r]||0, mean:mu[r]*share, sd:SD*Math.sqrt(share)};
+  });
+  return liveT;
+}
+// The week the Odds page's "This Week" covers: the shown week, or the next one once it's final.
+function focusWeek(D){
+  const mw=matchWeek(D); if(!mw) return null;
+  if(mw<=D.lastFinalWeek){ const n=D.lastFinalWeek+1; return n<=D.regularSeasonWeeks?n:null; }
+  return mw;
+}
+// LEDG playoffs (fixed bracket, no reseeding): Wk15 3v6, 4v5; Wk16 1 v 4/5 winner, 2 v 3/6 winner; Wk17 final.
+function champion(s,mu,SD){
+  const g=(x,y)=>(mu[x]+SD*randn())>=(mu[y]+SD*randn())?x:y;
+  return g(g(s[0],g(s[3],s[4])),g(s[1],g(s[2],s[5])));
+}
+// LEDG Mole-offs (seeds 7-12, losers advance): Wk15 7v10, 8v9; Wk16 12 v 8/9 loser, 11 v 7/10 loser;
+// Wk17 Mole Bowl, whose loser is the Mole.
+function moleOf(s,mu,SD){
+  const L=(x,y)=>(mu[x]+SD*randn())<(mu[y]+SD*randn())?x:y;
+  return L(L(s[5],L(s[1],s[2])),L(s[4],L(s[0],s[3])));
+}
+const OK=["po","bye","ti","mo"];
+// Runs N simulated seasons in small chunks (keeps the page responsive) and returns the tallies.
+function simulate(D,ctx,N,alive,done){
+  const {base,ids,mu,SD,liveT,left}=ctx, lw=D.liveWeek, nT=ids.length, ix={}; ids.forEach((i,k)=>ix[i]=k);
+  const nG=left.reduce((n,x)=>x[3]!=null?n+1:n,0);
+  const S={N,ids,nG,cnt:{},seed:ids.map(()=>new Float64Array(nT)),wins:ids.map(()=>({})),pf:new Float64Array(nT),
+    cN:Array.from({length:nG},()=>[0,0]),cond:{}};
+  OK.forEach(k=>{S.cnt[k]=new Float64Array(nT); S.cond[k]=new Float64Array(nT*nG*2);});
+  const full=nT===12&&D.playoffTeams===6;
+  let n=0; const fwWin=new Array(nG);
+  (function chunk(){
+    const stop=Math.min(N,n+200);
+    for(;n<stop;n++){
+      const games=base.slice();
+      for(const [w,a,b,gi] of left){
+        let pa,pb;
+        if(w===lw && liveT[a]){ const A=liveT[a],B=liveT[b]; pa=A.cur+A.mean+A.sd*randn(); pb=B.cur+B.mean+B.sd*randn(); }
+        else { pa=mu[a]+SD*randn(); pb=mu[b]+SD*randn(); }
+        games.push({week:w,a,pa,b,pb});
+        if(gi!=null) fwWin[gi]=pa>=pb?0:1;
+      }
+      const rows=standingsG(D,games).rows, order=rows.map(r=>r.id);
+      const hit={po:new Set(order.slice(0,D.playoffTeams)),bye:new Set(order.slice(0,D.byes))};
+      if(full){ hit.ti=new Set([champion(order.slice(0,6),mu,SD)]); hit.mo=new Set([moleOf(order.slice(6),mu,SD)]); }
+      rows.forEach((r,k)=>{ const t=ix[r.id]; S.seed[t][k]++; S.wins[t][r.w]=(S.wins[t][r.w]||0)+1; S.pf[t]+=r.pf; });
+      for(const k of OK){ const h=hit[k]; if(!h) continue; for(const id of h){ const t=ix[id]; S.cnt[k][t]++; for(let g=0;g<nG;g++) S.cond[k][(t*nG+g)*2+fwWin[g]]++; } }
+      for(let g=0;g<nG;g++) S.cN[g][fwWin[g]]++;
+    }
+    if(!alive()) return;
+    if(n<N){ setTimeout(chunk,0); return; }
+    done(S);
+  })();
+}
+// Exact clinch / elimination by wins alone (worst case: every tiebreak lost / won). 1 clinched, -1 eliminated.
+function clinchStatus(D,left){
+  const T=buildTable(D,buildGames(D,D.lastFinalWeek)), ids=Object.keys(T).map(Number), rem={};
+  ids.forEach(i=>rem[i]=0); left.forEach(([,a,b])=>{rem[a]++;rem[b]++;});
+  if(!left.length) return null;
+  const out={};
+  ids.forEach(i=>{
+    const mn=T[i].w, mx=T[i].w+rem[i];
+    const canReach=ids.filter(j=>j!==i&&T[j].w+rem[j]>=mn).length, surelyAbove=ids.filter(j=>j!==i&&T[j].w>mx).length;
+    const st=k=>canReach<=k-1?1:surelyAbove>=k?-1:0;
+    out[i]={po:st(D.playoffTeams),bye:st(D.byes)};
+  });
+  return out;
+}
 function runOdds(D,LIVE,N=5000){
   const lw=D.liveWeek;
   const liveSig=lw&&LIVE?JSON.stringify([D.weeks[lw],LIVE.rem]):"";
   const key=D.season+":"+D.lastFinalWeek+":"+Object.keys(D.sched).join(",")+":"+liveSig+":"+matchWeek(D);
   if(key===ODDS_KEY) return; ODDS_KEY=key; const run=++RUN;
-  const base=buildGames(D,D.lastFinalWeek);
-  const ids=Object.keys(D.teams).map(Number), sc={}; ids.forEach(i=>sc[i]=[]);
-  base.forEach(g=>{sc[g.a].push(g.pa);sc[g.b].push(g.pb);});
-  const all=[].concat(...ids.map(i=>sc[i])), M=all.reduce((a,b)=>a+b,0)/Math.max(1,all.length);
-  let ss=0,n=0; ids.forEach(i=>{const m=sc[i].reduce((a,b)=>a+b,0)/Math.max(1,sc[i].length); sc[i].m=m; sc[i].forEach(x=>{ss+=(x-m)**2;n++;});});
-  const SD=Math.sqrt(ss/Math.max(1,n-ids.length))||25, W=sc[ids[0]].length/(sc[ids[0]].length+10);
-  const mu={}; ids.forEach(i=>mu[i]=sc[i].length?W*sc[i].m+(1-W)*M:M);
-  // Live week: start each team from its current score and add only what its starters still have to play.
-  const liveT={};
-  if(lw&&LIVE){
-    const pav={}; for(const w in D.pp){ for(const id in D.pp[w]){ const v=D.pp[w][id]; if(v){ (pav[id]=pav[id]||[0,0]); pav[id][0]+=v; pav[id][1]++; } } }
-    const fr=Object.values(LIVE.rem), avgF=fr.length?fr.reduce((a,b)=>a+b,0)/fr.length:1;
-    const cur={}; (D.weeks[lw]||[]).forEach(([r,,p])=>cur[r]=p);
-    ids.forEach(r=>{
-      let full=0,E=0;
-      for(const id of D.starters[r]||[]){
-        const a=pav[id]?pav[id][0]/pav[id][1]:7;
-        const team=(LIVE.players[id]&&LIVE.players[id][0])||(/^[A-Z]{2,3}$/.test(id)?id:null);
-        const f=team==null?avgF:(team in LIVE.rem?LIVE.rem[team]:0);
-        full+=a; E+=a*f;
-      }
-      const share=full>0?E/full:avgF;
-      liveT[r]={cur:cur[r]||0, mean:mu[r]*share, sd:SD*Math.sqrt(share)};
+  const m=modelFor(D,D.lastFinalWeek), liveT=liveState(D,LIVE,m.mu,m.SD,m.ids);
+  MATCH=buildMatch(D,m.mu,m.SD,liveT); render();
+  const fw=focusWeek(D), left=gamesLeft(D,D.lastFinalWeek,fw);
+  simulate(D,{...m,liveT,left},N,()=>run===RUN,S=>{
+    const O={}; S.ids.forEach((i,t)=>{
+      const o={}; OK.forEach(k=>o[k]=S.cnt[k][t]/N);
+      o.seed=Array.from(S.seed[t],x=>x/N);
+      const wv=Object.entries(S.wins[t]).sort((a,b)=>b[1]-a[1])[0]; o.likelyW=+wv[0]; o.likelyP=wv[1]/N;
+      o.pf=S.pf[t]/N; o.avgSeed=o.seed.reduce((a,p,k)=>a+p*(k+1),0);
+      o.cond=(k,g,s)=>{ const c=S.cN[g][s]; return c?S.cond[k][(t*S.nG+g)*2+s]/c:null; };
+      O[i]=o;
     });
-  }
-  MATCH=buildMatch(D,mu,SD,liveT); render();
-  const left=[]; for(let w=D.lastFinalWeek+1;w<=D.regularSeasonWeeks;w++){ const byM={}; (D.sched[w]||[]).forEach(([r,m])=>(byM[m]=byM[m]||[]).push(r)); Object.values(byM).forEach(p=>{if(p.length===2) left.push([w,p[0],p[1]]);}); }
-  const inC={},byeC={}; ids.forEach(i=>{inC[i]=0;byeC[i]=0;});
-  let done=0;
-  (function chunk(){
-    const stop=Math.min(N,done+250);
-    for(;done<stop;done++){
-      const games=base.slice();
-      for(const [w,a,b] of left){
-        if(w===lw && liveT[a]){ const A=liveT[a],B=liveT[b]; games.push({week:w,a,pa:A.cur+A.mean+A.sd*randn(),b,pb:B.cur+B.mean+B.sd*randn()}); }
-        else games.push({week:w,a,pa:mu[a]+SD*randn(),b,pb:mu[b]+SD*randn()});
-      }
-      const order=standingsG(D,games).rows;
-      for(let k=0;k<D.playoffTeams;k++){ inC[order[k].id]++; if(k<D.byes) byeC[order[k].id]++; }
-    }
-    if(run!==RUN) return;
-    if(done<N){ setTimeout(chunk,0); return; }
-    ODDS={}; ids.forEach(i=>ODDS[i]={po:inC[i]/N,bye:byeC[i]/N});
-    ODDS.left=left.length; ODDS.live=!!(lw&&LIVE); render();
+    O.left=left.length; O.live=!!(lw&&LIVE); O.N=N;
+    O.week=fw; O.games=left.filter(x=>x[3]!=null).map(([,a,b],g)=>({a,b,g,n:S.cN[g]}));
+    O.clinch=clinchStatus(D,left);
+    // win chance per focus game: from the matchup model when it's the shown week, else from the sims
+    O.games.forEach(G=>{ const mm=MATCH&&MATCH[G.a]; G.p=(mm&&mm.opp===G.b&&mm.w===fw)?mm.p:G.n[0]/Math.max(1,G.n[0]+G.n[1]); G.status=mm&&mm.opp===G.b&&mm.w===fw?mm.status:"upcoming"; G.sa=mm&&mm.w===fw?mm.me:0; G.sb=mm&&mm.w===fw?mm.them:0; });
+    ODDS=O; render(); if(TAB==="odds") ensureHistory(D);
+  });
+}
+// ---------- ODDS HISTORY (playoff/bye/title/Mole odds after each final week) ----------
+// Re-run from each past week's point of view. Weeks Sleeper has finalized never change, so they're kept on the phone.
+let HIST=null, HKEY=null, HRUN=0;
+const HV=1, HN=2000;
+function ensureHistory(D){
+  const key=D.season+":"+D.lastFinalWeek+":"+D.sleeperFinal;
+  if(HKEY===key) return; HKEY=key; const run=++HRUN;
+  let cache=null; try{ cache=JSON.parse(localStorage.getItem("ledg-odds-hist")||"null"); }catch(e){}
+  if(!cache||cache.v!==HV||cache.season!==D.season) cache={v:HV,season:D.season,weeks:{}};
+  HIST=cache;
+  const todo=[]; for(let w=1;w<=D.lastFinalWeek;w++){ const c=cache.weeks[w]; if(!c||!c.frozen) todo.push(w); }
+  (function next(){
+    if(run!==HRUN) return;
+    if(!todo.length){ try{ localStorage.setItem("ledg-odds-hist",JSON.stringify(cache)); }catch(e){} render(); return; }
+    const w=todo.shift(), m=modelFor(D,w), left=gamesLeft(D,w,null);
+    simulate(D,{...m,liveT:{},left},HN,()=>run===HRUN,S=>{
+      const vals={}; S.ids.forEach((i,t)=>vals[i]=OK.map(k=>Math.round(S.cnt[k][t]/S.N*1000)/1000));
+      cache.weeks[w]={frozen:w<=D.sleeperFinal,vals};
+      render(); setTimeout(next,0);
+    });
   })();
 }
 function pct(p){ if(p==null) return "…"; if(p>=0.995) return ">99%"; if(p<=0.005) return "<1%"; return Math.round(p*100)+"%"; }
@@ -641,6 +817,7 @@ function render(){
     return `<div class="game">${g.map(([r,p],i)=>`<div class="side ${i===lead?"win":""}"><div class="who"><div class="name">${esc(D.teams[r].team)}</div><div class="meta">${T[r].w}-${T[r].l}</div></div><div class="pts">${f2(p)}</div></div>`).join("")}</div>`;
   }).join("");
   document.getElementById("foot").textContent=`Live from Sleeper · updated ${ago(D.updatedAt)}`;
+  if(TAB==="odds") renderOdds();
 }
 function shortNote(n){
   if(/^Won H2H/.test(n)) return "Won H2H";
@@ -660,10 +837,137 @@ document.querySelector(".tabs").addEventListener("click",e=>{
   const b=e.target.closest("button[data-tab]"); if(!b) return; TAB=b.dataset.tab; document.body.dataset.tab=TAB;
   document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x===b));
   document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="v-"+TAB));
-  document.getElementById("title").textContent={home:"Home",standings:"Standings",scores:"Scores",podcast:"Podcast"}[TAB]||"LEDG";
+  document.getElementById("title").textContent={home:"Home",standings:"Standings",scores:"Scores",odds:"Odds",podcast:"Podcast"}[TAB]||"LEDG";
+  if(TAB==="odds"&&DATA){ renderOdds(); ensureHistory(DATA); }
   document.getElementById("foot").hidden=TAB==="home"||TAB==="podcast";
   if(TAB==="podcast") loadPodcast();
   window.scrollTo(0,0);
+});
+// ---------- ODDS PAGE ----------
+let OVIEW="playoffs";
+const oOpen=new Set();
+let ME=null; try{ ME=+localStorage.getItem("ledg-me")||null; }catch(e){}
+// Percent for odds cells; clinched/eliminated shown as ✓ / –
+function oCell(p,cl){ if(cl===1) return `<span class="ok" aria-label="clinched">✓</span>`; if(cl===-1) return `<span class="x" aria-label="eliminated">–</span>`; return pct(p); }
+const pp=d=>(d>0?"+":d<0?"−":"")+Math.abs(Math.round(d*100));
+function histSeries(D,id,k){
+  const out=[]; if(!HIST) return out;
+  for(let w=1;w<=D.lastFinalWeek;w++){ const c=HIST.weeks[w]; if(c&&c.vals[id]) out.push([w,c.vals[id][OK.indexOf(k)]]); }
+  return out;
+}
+function seedBars(o){
+  const mx=Math.max(...o.seed,.0001), lab=p=>p<=0?"–":p<0.005?"<1":p>=0.995?">99":Math.round(p*100);
+  return `<div class="sbars" role="img" aria-label="Chance of each final seed: ${o.seed.map((p,k)=>`${k+1}: ${pct(p)}`).join(", ")}">${o.seed.map((p,k)=>{
+    const c=k<DATA.byes?"g":k<DATA.playoffTeams?"w":k>=o.seed.length-DATA.byes?"r":"d";
+    return `<div class="sb"><b class="${p<0.005?"z":""}">${lab(p)}</b><i class="${c}" style="height:${p>0?Math.max(2,Math.round(p/mx*84)):0}px"></i><span>${k+1}</span></div>`;}).join("")}</div>`;
+}
+function moversHTML(D){
+  if(!ODDS||!HIST) return "";
+  const ref=ODDS.live?D.lastFinalWeek:D.lastFinalWeek-1; const c=HIST.weeks[ref]; if(!c) return "";
+  const ch=Object.keys(D.teams).map(Number).map(i=>[i,ODDS[i].po-(c.vals[i]?c.vals[i][0]:ODDS[i].po)]).filter(x=>Math.abs(x[1])>=0.03).sort((a,b)=>b[1]-a[1]);
+  if(!ch.length) return "";
+  const up=ch.filter(x=>x[1]>0).slice(0,2), dn=ch.filter(x=>x[1]<0).slice(-2).reverse();
+  const it=([i,d])=>`<span class="mv ${d>0?"up":"down"}">${d>0?"▲":"▼"} ${esc(D.teams[i].team)} ${pp(d)}%</span>`;
+  return `<div class="movers"><span class="mv-l">${ODDS.live?"Since kickoff":`After Week ${D.lastFinalWeek}`}</span>${[...up,...dn].map(it).join("")}</div>`;
+}
+function oddsNote(D){
+  if(!ODDS) return "Odds: calculating…";
+  if(ODDS.live) return `Live odds · Week ${D.liveWeek} scores and game clocks included`;
+  return ODDS.left?`5,000 simulations of the ${ODDS.left} regular-season games left, plus the playoffs and Mole-offs`:"Regular season complete · 5,000 simulations of the playoffs and Mole-offs";
+}
+function renderOdds(){
+  const D=DATA; if(!D) return;
+  document.querySelectorAll("#oseg button").forEach(b=>{const on=b.dataset.o===OVIEW; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on);});
+  document.getElementById("oseg").classList.toggle("gameson",!!D.liveWeek);
+  document.getElementById("o-playoffs").hidden=OVIEW!=="playoffs";
+  document.getElementById("o-week").hidden=OVIEW!=="week";
+  document.getElementById("o-note").textContent=oddsNote(D);
+  if(!ODDS){ document.getElementById("olist").innerHTML=`<li class="o-empty">Running the numbers…</li>`; document.getElementById("mcards").innerHTML=""; return; }
+  const ids=Object.keys(D.teams).map(Number), CL=ODDS.clinch||{};
+  const {rows}=standings(D,D.lastFinalWeek); const rec={}; rows.forEach((r,k)=>rec[r.id]={r,seed:k+1});
+  // ---- Playoffs view
+  document.getElementById("movers").innerHTML=moversHTML(D);
+  const order=ids.slice().sort((a,b)=>ODDS[b].po-ODDS[a].po||ODDS[b].bye-ODDS[a].bye||ODDS[b].ti-ODDS[a].ti||ODDS[a].mo-ODDS[b].mo||rec[a].seed-rec[b].seed);
+  document.getElementById("olist").innerHTML=order.map(id=>{
+    const o=ODDS[id], c=CL[id]||{}, t=D.teams[id], r=rec[id].r;
+    const st=c.po===1?(c.bye===1?"Clinched a first-round bye.":"Clinched a playoff spot."):c.po===-1?"Eliminated from the playoffs.":"";
+    return `<li class="orow ${oOpen.has(id)?"open":""} ${c.po===-1?"elim":""}" data-id="${id}">
+      <button aria-expanded="${oOpen.has(id)}"><span class="who"><span class="name">${esc(t.team)}</span>${scorePill(id)}</span>
+        <span class="num">${oCell(o.po,c.po)}</span><span class="num">${oCell(o.bye,c.bye)}</span><span class="num">${pct(o.ti)}</span><span class="num mo ${Math.round(o.mo*100)>=25?"hot":""}">${pct(o.mo)}</span></button>
+      <div class="o-more">
+        <dl><dt>Record now</dt><dt>Likely finish</dt><dt>Proj. points</dt><dd>${r.w}-${r.l}${r.t?"-"+r.t:""}</dd><dd>${o.likelyW}-${D.regularSeasonWeeks-o.likelyW}</dd><dd>${Math.round(o.pf).toLocaleString("en-US")}</dd></dl>
+        ${st?`<div class="o-st">${st}</div>`:""}
+        <div class="o-h3">Chance of each final seed (%)</div>${seedBars(o)}
+      </div></li>`;
+  }).join("");
+  // ---- This Week view
+  const fw=ODDS.week, G=ODDS.games||[];
+  document.getElementById("o-wk").innerHTML=fw?`Week ${fw}${D.liveWeek===fw?` · <b>Live</b>`:""}`:"";
+  if(!fw||!G.length){ document.getElementById("mcards").innerHTML=`<p class="o-empty">The regular season is over. Playoff and Mole-off odds are on the Playoffs tab.</p>`; document.getElementById("rg").hidden=true; return; }
+  document.getElementById("rg").hidden=false;
+  // how much each game moves the whole playoff race
+  // how much is still at stake in each game for the whole playoff race (a nearly decided game counts for little)
+  G.forEach(g=>{ const n=g.n[0]+g.n[1], q=4*g.n[0]*g.n[1]/Math.max(1,n*n);
+    g.lev=q*ids.reduce((s,i)=>{const a=ODDS[i].cond("po",g.g,0),b=ODDS[i].cond("po",g.g,1); return s+(a!=null&&b!=null?Math.abs(a-b):0);},0); });
+  const gotw=G.slice().sort((a,b)=>b.lev-a.lev)[0];
+  const sorted=[gotw,...G.filter(g=>g!==gotw)];
+  // each side shows what this game means for that team: playoff odds, or bye / title / Mole odds once that's settled
+  const side=(id,g,s)=>{ const o=ODDS[id], goal=goalFor(o,CL[id]||{});
+    if(!goal) return `<span class="mc-if"><i>Nothing big at stake</i></span>`;
+    const w=o.cond(goal.k,g.g,s), l=o.cond(goal.k,g.g,1-s), lab={po:"Playoff odds",bye:"Bye odds",ti:"Title odds",mo:"Mole odds"}[goal.k];
+    if(Math.min(...g.n)<150) return `<span class="mc-if"><i>${lab}</i><b>${pct(o[goal.k])}</b> · all but decided</span>`;
+    return `<span class="mc-if"><i>${lab}</i>Win <b>${pct(w)}</b> · Lose <b>${pct(l)}</b></span>`; };
+  document.getElementById("mcards").innerHTML=sorted.map(g=>{
+    const A=D.teams[g.a].team, B=D.teams[g.b].team, live=g.status==="live", fin=g.status==="final";
+    const pA=fin?(g.sa>g.sb?1:0):g.p, w=Math.round(pA*1000)/10;
+    return `<div class="mc ${g===gotw?"gotw":""}">${g===gotw?`<div class="mc-tag">Game of the Week</div>`:""}
+      <div class="mx-row"><span><span class="mx-n">${esc(A)}</span>${live||fin?` <span class="mx-s">${f2(g.sa)}</span>`:""}</span><span>${live||fin?`<span class="mx-s op">${f2(g.sb)}</span> `:""}<span class="mx-n op">${esc(B)}</span></span></div>
+      <div class="mx-bar" role="img" aria-label="${esc(A)} ${pct(pA)} to win, ${esc(B)} ${pct(1-pA)}"><i style="width:${w}%"></i></div>
+      <div class="mx-p"><span>${pct(pA)}</span><span>${pct(1-pA)}</span></div>
+      <div class="mc-ifs">${side(g.a,g,0)}${side(g.b,g,1)}</div></div>`;
+  }).join("");
+  // ---- Rooting guide
+  const chipOrder=rows.map(r=>r.id);
+  // dropdown of teams in standings order; only rebuilt when the order or names change, so an open menu isn't disturbed
+  const sel=document.getElementById("rg-team"), sig=chipOrder.map(id=>id+":"+D.teams[id].team).join("|");
+  if(sel.dataset.sig!==sig){ sel.dataset.sig=sig; sel.innerHTML=`<option value="">Pick a team</option>`+chipOrder.map(id=>`<option value="${id}">${esc(D.teams[id].team)}</option>`).join(""); }
+  sel.value=ME&&D.teams[ME]?String(ME):"";
+  document.getElementById("root").innerHTML=ME&&D.teams[ME]?rootingHTML(D,ME,G,CL):`<p class="o-empty">Pick a team to see which results this week help them most.</p>`;
+}
+// What a team is playing for this week, best first: playoffs, then a bye, then the title, then dodging the Mole.
+function goalFor(o,c){
+  const live=p=>p!=null&&p>0.01&&p<0.99;
+  if(c.po!==1&&c.po!==-1&&live(o.po)) return {k:"po",txt:"is chasing a playoff spot",sign:1};
+  if(o.po>=0.99&&c.bye!==1&&c.bye!==-1&&live(o.bye)) return {k:"bye",txt:"is chasing a first-round bye",sign:1};
+  if(o.po>=0.99&&o.ti>0.01) return {k:"ti",txt:"is chasing the title",sign:1};
+  if(o.mo>0.01) return {k:"mo",txt:"is trying not to become the Mole",sign:-1};
+  return null;
+}
+function rootingHTML(D,id,G,CL){
+  const o=ODDS[id], c=CL[id]||{}, name=esc(D.teams[id].team), goal=goalFor(o,c);
+  if(!goal) return `<p class="o-empty">Nothing this week changes much for ${name}.</p>`;
+  const now=o[goal.k], lab={po:"Playoff odds",bye:"Bye odds",ti:"Title odds",mo:"Mole odds"}[goal.k];
+  const own=G.find(g=>g.a===id||g.b===id); const lines=[], open=g=>Math.min(...g.n)>=150;
+  if(own&&open(own)){ const s=own.a===id?0:1, opp=D.teams[s?own.a:own.b].team, w=o.cond(goal.k,own.g,s), l=o.cond(goal.k,own.g,1-s);
+    lines.push(`<li class="own"><span>Beat ${esc(opp)}</span><span class="num">${pct(w)} <em>· ${pct(l)} if they lose</em></span></li>`); }
+  const others=G.filter(g=>g!==own&&open(g)).map(g=>{ const d=(o.cond(goal.k,g.g,0)-o.cond(goal.k,g.g,1))*goal.sign; return {g,d,fav:d>=0?g.a:g.b,vs:d>=0?g.b:g.a}; })
+    .sort((x,y)=>Math.abs(y.d)-Math.abs(x.d));
+  const big=others.filter(x=>Math.abs(x.d)>=0.02), small=others.length-big.length;
+  big.forEach(x=>lines.push(`<li><span>Root for <b>${esc(D.teams[x.fav].team)}</b> over ${esc(D.teams[x.vs].team)}</span><span class="num up">${goal.sign>0?"+":"−"}${Math.round(Math.abs(x.d)*100)}%</span></li>`));
+  if(!lines.length&&!small) lines.push(`<li><span>Every game this week is already decided.</span></li>`);
+  return `<p class="rg-goal">${name} ${goal.txt} (${lab.toLowerCase().replace("mole","Mole")} now <b>${pct(now)}</b>). ${goal.sign>0?"Numbers show how much each result raises them.":"Numbers show how much each result lowers them."}</p>
+    <ul class="rg-list">${lines.join("")}</ul>
+    ${small?`<p class="o-empty">${big.length?"The other":"The"} ${small} game${small>1?"s":""} still in doubt ${small>1?"barely matter":"barely matters"} for ${name} (under 2%).</p>`:""}`;
+}
+document.getElementById("oseg").addEventListener("click",e=>{const v=e.target.dataset.o; if(v){OVIEW=v; renderOdds(); window.scrollTo(0,0);}});
+document.getElementById("olist").addEventListener("click",e=>{
+  const li=e.target.closest(".orow"); if(!li) return; const id=+li.dataset.id;
+  oOpen.has(id)?oOpen.delete(id):oOpen.add(id);
+  li.classList.toggle("open"); li.querySelector("button").setAttribute("aria-expanded",oOpen.has(id));
+});
+document.getElementById("rg-team").addEventListener("change",e=>{
+  ME=+e.target.value||null; try{ ME?localStorage.setItem("ledg-me",ME):localStorage.removeItem("ledg-me"); }catch(_){}
+  renderOdds();
 });
 // ---------- HOME: trade deadline countdown ----------
 // LEDG rule: the trade deadline is kickoff of the first Thanksgiving Day game (not Sleeper's setting).
