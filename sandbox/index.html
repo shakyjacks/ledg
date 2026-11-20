@@ -223,7 +223,7 @@ body:not([data-tab="podcast"]) .player{display:none}
 .orow .num{font-size:15px}
 .orow.elim .name{color:#dbe4f3}
 .orow .num .ok{color:#4ade80;font-weight:600}
-.orow .num .x{color:var(--red);font-weight:600}
+.orow .num .x{color:var(--faint)}
 .orow .num.mo{color:var(--muted)}
 .orow .num.mo.hot{color:var(--red)}
 .o-more{display:none;padding:2px 2px 14px;color:var(--muted);font-size:12.5px}
@@ -320,7 +320,7 @@ body:not([data-tab="podcast"]) .player{display:none}
       <div id="movers"></div>
       <div class="ocols" aria-hidden="true"><span>Team</span><span>Playoffs</span><span>Bye</span><span>Title</span><span>Mole</span></div>
       <ul class="list" id="olist"></ul>
-      <div class="key"><span><span style="color:#4ade80">✓</span> Clinched</span><span><span style="color:var(--red)">✕</span> Eliminated</span></div>
+      <div class="key"><span><span style="color:#4ade80">✓</span> Clinched</span><span>– Eliminated</span></div>
     </div>
     <div id="o-week" hidden>
       <div class="o-wk" id="o-wk"></div>
@@ -850,7 +850,7 @@ let OVIEW="playoffs";
 const oOpen=new Set();
 let ME=null; try{ ME=+localStorage.getItem("ledg-me")||null; }catch(e){}
 // Percent for odds cells; clinched/eliminated shown as ✓ / –
-function oCell(p,cl){ if(cl===1) return `<span class="ok" aria-label="clinched">✓</span>`; if(cl===-1) return `<span class="x" aria-label="eliminated">✕</span>`; return pct(p); }
+function oCell(p,cl){ if(cl===1) return `<span class="ok" aria-label="clinched">✓</span>`; if(cl===-1) return `<span class="x" aria-label="eliminated">–</span>`; return pct(p); }
 const pp=d=>(d>0?"+":d<0?"−":"")+Math.abs(Math.round(d*100));
 function histSeries(D,id,k){
   const out=[]; if(!HIST) return out;
