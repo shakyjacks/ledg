@@ -1,6 +1,73 @@
 {
  "about": "Games of the Week and picks from the LEDG Podcast, keyed by season, then week. One entry per matchup that was discussed: 'host' (optional) is whoever made it their Game of the Week (host or guest; leave out for regular games), 'teams' are the two first names in the matchup, and 'calls' maps each person to the first name they picked to win. Hosts can be missing in a week, and guests can be added.",
  "2026": {
+  "1": {
+   "episode": "Ep. 83",
+   "games": [
+    {
+     "host": "Sam",
+     "teams": [
+      "Adam",
+      "Nathan"
+     ],
+     "calls": {
+      "Sam": "Nathan",
+      "Adam": "Adam"
+     }
+    },
+    {
+     "host": "Adam",
+     "teams": [
+      "Sam",
+      "Spencer"
+     ],
+     "calls": {
+      "Adam": "Spencer",
+      "Sam": "Sam"
+     }
+    },
+    {
+     "teams": [
+      "Mike",
+      "Jeremy"
+     ],
+     "calls": {
+      "Sam": "Mike",
+      "Adam": "Jeremy"
+     }
+    },
+    {
+     "teams": [
+      "Jon",
+      "Calvin"
+     ],
+     "calls": {
+      "Sam": "Calvin",
+      "Adam": "Calvin"
+     }
+    },
+    {
+     "teams": [
+      "Jay",
+      "Garren"
+     ],
+     "calls": {
+      "Sam": "Jay",
+      "Adam": "Garren"
+     }
+    },
+    {
+     "teams": [
+      "Eric",
+      "Alex"
+     ],
+     "calls": {
+      "Sam": "Alex",
+      "Adam": "Alex"
+     }
+    }
+   ]
+  },
   "2": {
    "episode": "Ep. 84",
    "games": [
@@ -258,7 +325,7 @@
      "calls": {
       "Adam": "Alex",
       "Sam": "Alex",
-      "Mike": "Alex"
+      "Mike": "Mike"
      }
     },
     {
@@ -292,6 +359,18 @@
       "Adam": "Adam",
       "Sam": "Sam",
       "Mike": "Adam"
+     }
+    },
+    {
+     "host": "Mike",
+     "teams": [
+      "Jay",
+      "Garren"
+     ],
+     "calls": {
+      "Adam": "Garren",
+      "Sam": "Garren",
+      "Mike": "Garren"
      }
     }
    ]
@@ -420,7 +499,8 @@
      "calls": {
       "Adam": "Mike",
       "Sam": "Sam",
-      "Mike": "Mike"
+      "Mike": "Mike",
+      "Nate": "Mike"
      }
     },
     {
@@ -431,7 +511,8 @@
      "calls": {
       "Adam": "Calvin",
       "Sam": "Calvin",
-      "Mike": "Calvin"
+      "Mike": "Calvin",
+      "Nate": "Calvin"
      }
     },
     {
@@ -442,7 +523,21 @@
      "calls": {
       "Adam": "Jeremy",
       "Sam": "Garren",
-      "Mike": "Garren"
+      "Mike": "Garren",
+      "Nate": "Jeremy"
+     }
+    },
+    {
+     "host": "Mike",
+     "teams": [
+      "Adam",
+      "Spencer"
+     ],
+     "calls": {
+      "Adam": "Adam",
+      "Sam": "Spencer",
+      "Mike": "Adam",
+      "Nate": "Adam"
      }
     }
    ]
@@ -481,7 +576,8 @@
       "Adam": "Sam",
       "Sam": "Sam",
       "Mike": "Sam"
-     }
+     },
+     "host": "Mike"
     },
     {
      "teams": [
@@ -503,7 +599,8 @@
       "Adam": "Jon",
       "Sam": "Jon",
       "Mike": "Jon"
-     }
+     },
+     "host": "Sam"
     },
     {
      "teams": [
@@ -514,7 +611,8 @@
       "Adam": "Calvin",
       "Sam": "Spencer",
       "Mike": "Spencer"
-     }
+     },
+     "host": "Adam"
     }
    ]
   },
@@ -668,10 +766,10 @@
   }
  },
  "notes": [
-  "Weeks 1 and 5: no rundown in the Drive folder (Ep. 83, Ep. 87).",
-  "Week 4 Mole vs Jay and Week 6 Adam vs Sam: Adam's cell was blank; his picks were filled in from the official Pick 'em Standings.",
-  "Week 6 Mike vs Mole: the rundown has Mike picking Mole ('Mole wins.'), but the standings credit Mike with 4-2 that week, which only works if he took himself.",
-  "Week 8: guest Nate's rundown picks cover 3 of 6 games; the standings have him 1-5 overall.",
-  "Weeks 6 and 8: Mike's Game of the Week isn't marked. Week 9: no Games of the Week marked."
+  "Week 5: no rundown or transcript yet (Ep. 87).",
+  "Week 4 Mole vs Jay: Adam's cell was blank; filled in from the official Pick 'em Standings (he called it right).",
+  "Week 6 Adam vs Sam: Adam's cell was blank; filled in from the standings (he took himself).",
+  "Week 6 Mike vs Mole: Mike switched to himself during recording (the rundown still says Mole).",
+  "Week 1 has Sam and Adam only (Mike was out). Week 8 includes guest Nate."
  ]
 }
