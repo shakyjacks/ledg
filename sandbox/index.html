@@ -260,6 +260,7 @@ body:not([data-tab="podcast"]) .player{display:none}
 .mm-dl{display:grid;grid-template-columns:repeat(2,auto);justify-content:start;gap:2px 20px;margin:0 0 8px}
 .mm-dl dt{font-size:11px}.mm-dl dd{margin:0;color:var(--white);font:400 15px/1.1 "Chakra Petch",sans-serif}
 .mm-note{margin:0 0 4px;line-height:1.45}
+.mm-drought{margin:0 0 6px;padding:7px 10px;border-radius:10px;background:rgba(255,49,49,.12);color:#ffd5d5;font-size:12.5px;font-weight:700}
 .mm-list{list-style:none;margin:0;padding:0}
 .mm-list li{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
 .mm-list li:last-child{border-bottom:0}
@@ -1009,9 +1010,15 @@ function mcMore(D,a,b,W){
                        :`<li class="bw"><div class="bw-top"><span>${name}'s biggest win</span></div><div class="bw-bot"><span class="mm-when">No wins yet</span></div></li>`;
   const line=m=>`<li><span class="mm-when">${when(m)}</span><span class="mm-sc">${sc(m)}</span></li>`;
   const recent=M.slice(-5).reverse();
+  // 5+ straight wins: when did the other side last win this matchup?
+  let drought="";
+  if(lw&&n>=5){ const lo=lw===a?b:a, L=lo===a?A:B, Wn=lw===a?A:B;
+    const lastWin=M.slice().reverse().find(m=>lo===a?m[3]>m[4]:m[4]>m[3]);
+    drought=`<p class="mm-drought">${lastWin?`${L} hasn't beaten ${Wn} since ${when(lastWin)}.`:`${L} has never beaten ${Wn}${post?" in the postseason":""}.`}</p>`; }
   return `<div class="mc-more">
     <p class="mm-lead">${lead}</p>
     <dl class="mm-dl"><dt>Current streak</dt><dt>Avg score</dt><dd>${cur}</dd><dd>${avg(3).toFixed(1)} – ${avg(4).toFixed(1)}</dd></dl>
+    ${drought}
     <ul class="mm-list">${bw(big(1),A)}${bw(big(-1),B)}</ul>
     <div class="o-h3">Last ${recent.length===1?"meeting":recent.length+" meetings"}</div><ul class="mm-list">${recent.map(line).join("")}</ul>
   </div>`;
