@@ -1092,7 +1092,7 @@ function renderOdds(){
 let GOTW=null, gotwLoading=false, RANKING=false;
 async function loadGOTW(){
   if(GOTW||gotwLoading) return; gotwLoading=true;
-  try{ const r=await fetch("gotw.json?ts="+Date.now(),{cache:"no-store"}); if(!r.ok) throw new Error(r.status); GOTW=await r.json(); }catch(e){ console.warn("games of the week unavailable",e); GOTW={}; }
+  try{ const r=await fetch("../gotw.json?ts="+Date.now(),{cache:"no-store"}); if(!r.ok) throw new Error(r.status); GOTW=await r.json(); }catch(e){ console.warn("games of the week unavailable",e); GOTW={}; }
   renderOdds();
 }
 function idByFirst(D,f){ const k=Object.keys(D.teams).find(k=>D.teams[k].first===f); return k?+k:0; }
@@ -1200,7 +1200,7 @@ let H2H=null, h2hLoading=false; const mOpen=new Set();
 const ROUND={CHMP:"Championship",CSF:"Semifinal",CQF:"Quarterfinal","3rdGM":"3rd Place Game","5thGM":"5th Place Game","7thGM":"7th Place Game","9thGM":"9th Place Game",MQF:"Mole Quarterfinal",MSF:"Mole Semifinal",MBWL:"Mole Bowl",POST:"Postseason"};
 async function loadH2H(){
   if(H2H||h2hLoading) return; h2hLoading=true;
-  try{ const r=await fetch("h2h.json"); if(!r.ok) throw new Error(r.status); H2H=await r.json(); }catch(e){ console.warn("head-to-head unavailable",e); H2H={pairs:{},failed:true}; }
+  try{ const r=await fetch("../h2h.json"); if(!r.ok) throw new Error(r.status); H2H=await r.json(); }catch(e){ console.warn("head-to-head unavailable",e); H2H={pairs:{},failed:true}; }
   renderOdds();
 }
 // every meeting from a's side: [year, week, tag, a's score, b's score], oldest first

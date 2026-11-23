@@ -242,17 +242,71 @@ body:not([data-tab="podcast"]) .player{display:none}
 .sb i.g{background:var(--gold)}.sb i.w{background:var(--white)}.sb i.r{background:var(--red)}
 .sb span{font:600 11px/1 "Chakra Petch",sans-serif;color:var(--muted);margin-top:5px}
 .movers{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0 0 12px}
+.rg-wk{font-size:13px;font-weight:700;color:var(--muted);margin:0 0 10px}.rg-wk b{color:var(--red)}
 .mv-l{font-size:11px;font-weight:700;color:var(--muted)}
 .mv{font:400 12px/1 "Chakra Petch",sans-serif;padding:4px 7px;border-radius:999px;background:rgba(255,255,255,.08)}
 .mv.up{color:#4ade80}.mv.down{color:var(--red)}
 .o-note{margin:12px 2px 0;color:var(--muted);font-size:11.5px}
+.rec-cap{color:var(--muted);font-size:13px;margin:0 0 4px}
+.rec{list-style:none;margin:0;padding:0}
+.rec li{padding:10px 0 9px;border-bottom:1px solid var(--line)}
+.rec .rr{display:grid;grid-template-columns:46px 1fr 46px;align-items:center;gap:10px}
+.rec .rk{font:400 17px/1 "Chakra Petch",sans-serif}
+.rec .rt{height:10px;border-radius:5px;background:var(--surface);overflow:hidden}
+.rec .rt i{display:block;height:100%;border-radius:5px;background:var(--white)}
+.rec .rp{font:400 16px/1 "Chakra Petch",sans-serif;text-align:right}
+.rec .rs{margin:6px 0 0 56px;font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:5px 6px;align-items:center}
+.rec .rs .tm{background:var(--surface);color:var(--white);font-weight:700;border-radius:999px;padding:2px 8px}
+.rec .rs .tm.me{background:var(--white);color:var(--bg)}
+.rec li.none .rk,.rec li.none .rp{color:var(--faint)}
+.rec li.now{background:linear-gradient(90deg,rgba(255,255,255,.05),transparent 70%)}
 .o-empty{color:var(--muted);font-size:13px;margin:8px 0;list-style:none}
-.o-wk{font-size:13px;font-weight:700;color:var(--muted);margin:0 0 10px}.o-wk b{color:var(--red)}
+.o-wk{display:flex;align-items:center;gap:4px;margin:0 0 12px}
+.rg-pick.wk-pick{min-width:0;width:116px;margin-right:-17px}
+#sc-st{font-size:13px;font-weight:700;color:var(--muted)}#sc-st.live{color:var(--red)}
+.mc .mx-n.lose,.mc .mx-s.lose{color:var(--muted)}
+.mc-res{font-size:12px;color:var(--muted);margin-top:8px}
+.mc[data-a]{cursor:pointer}
+.mc-more{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
+.mc.open .mc-more{display:block}
+.mc-more>.mc-calls{margin:0 0 10px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.mm-lead{color:var(--white);font-weight:700;font-size:14px;margin:0 0 8px}
+.mm-dl{display:grid;grid-template-columns:repeat(2,auto);justify-content:start;gap:2px 20px;margin:0 0 8px}
+.mm-dl dt{font-size:11px}.mm-dl dd{margin:0;color:var(--white);font:400 15px/1.1 "Chakra Petch",sans-serif}
+.mm-note{margin:0 0 4px;line-height:1.45}
+.mm-drought{margin:0 0 6px;padding:7px 10px;border-radius:10px;background:rgba(255,49,49,.12);color:#ffd5d5;font-size:12.5px;font-weight:700}
+.mm-list{list-style:none;margin:0;padding:0}
+.mm-list li{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
+.mm-list li:last-child{border-bottom:0}
+.mm-list li.bw{display:block}
+.bw-top,.bw-bot{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.bw-top{font-size:12px;font-weight:700;color:#dbe4f3;margin-bottom:2px}
+.bw-d{font:400 13px "Chakra Petch",sans-serif;color:#4ade80}
+.mm-when{font-size:11.5px;white-space:nowrap}
+.mm-sc{font:400 12.5px "Chakra Petch",sans-serif;white-space:nowrap;text-align:right}
+.mm-sc .w{color:var(--white)}
 .mcards{display:grid;gap:10px}
 .mc{background:var(--surface);border-radius:14px;padding:12px 14px}
-.mc .mx-n{font-size:15px}
-.mc.gotw{box-shadow:inset 0 0 0 1px var(--gold)}
-.mc-tag{font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px}
+.mc .mx-n{font-size:18px}
+.mc .mx-s{font-size:19px;margin:0 3px}
+.mc .mx-row{gap:10px;flex-wrap:wrap}
+.mc-tag.odds{color:#cfdcf2}
+.mc-calls{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted);margin-top:8px}
+.mc-calls b{color:#dbe4f3;font-weight:700}
+.pk-row{display:grid;grid-template-columns:18px minmax(0,1fr) 62px 104px;column-gap:10px;align-items:baseline;padding:9px 2px;border-bottom:1px solid var(--line)}
+.pk-head{color:var(--faint);font-size:11px;font-weight:700;padding-top:0}
+.pk-head span:nth-child(n+3){text-align:right}
+.pk-rk{font:600 13px "Chakra Petch",sans-serif;color:var(--muted)}
+.pk-n{font-weight:800;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pk-row.pk-sb .pk-n{color:#cfdcf2}
+.pk-row.guest .pk-n{font-weight:700;color:var(--muted)}.pk-n i{font-style:normal;font-size:11px;font-weight:700;color:var(--faint)}
+.pk-row .num{font-size:14px}.pk-row .num em{font-style:normal;color:var(--muted);font-size:12px}
+.mc-calls .hit b{color:#4ade80}
+.mc-calls .miss b{color:var(--red)}
+.mc-tag{font-size:11px;font-weight:700;color:var(--gold)}
+.mc-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px}
+.mc-alert{font-size:11px;font-weight:800;color:var(--red);white-space:nowrap}
+.mc.upset{box-shadow:inset 0 0 0 1.5px var(--red)}
 .mc-ifs{display:flex;justify-content:space-between;gap:10px;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
 .mc-if{font-size:11.5px;color:var(--muted);white-space:nowrap}
 .mc-if i{display:block;font-style:normal;font-size:10.5px;color:var(--faint);margin-bottom:2px}
@@ -312,7 +366,7 @@ body:not([data-tab="podcast"]) .player{display:none}
   </section>
   <section class="view" id="v-odds">
     <div class="subhead">
-      <div class="seg" id="oseg" role="group" aria-label="Odds view"><button data-o="playoffs">Playoffs</button><button data-o="week">This Week</button></div>
+      <div class="seg" id="oseg" role="group" aria-label="Odds view"><button data-o="playoffs">Playoffs</button><button data-o="rec">By Record</button><button data-o="root">Rooting Guide</button></div>
     </div>
     <div id="o-playoffs">
       <div id="movers"></div>
@@ -320,10 +374,15 @@ body:not([data-tab="podcast"]) .player{display:none}
       <ul class="list" id="olist"></ul>
       <div class="key"><span><span style="color:#4ade80">✓</span> Clinched</span><span>– Eliminated</span></div>
     </div>
-    <div id="o-week" hidden>
-      <div class="o-wk" id="o-wk"></div>
-      <div class="mcards" id="mcards"></div>
-      <div id="rg"><h2 class="o-h2">Rooting Guide</h2><label class="rg-pick"><select id="rg-team" aria-label="Team for the rooting guide"></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></label><div id="root"></div></div>
+    <div id="o-root" hidden>
+      <p class="rg-wk" id="rg-wk"></p>
+      <label class="rg-pick"><select id="rg-team" aria-label="Team for the rooting guide"></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></label>
+      <div id="root"></div>
+    </div>
+    <div id="o-rec" hidden>
+      <p class="rg-wk" id="rec-wk"></p>
+      <p class="rec-cap">How often a team with each record went on to make the playoffs in LEDG history</p>
+      <ul class="rec" id="rec"></ul>
     </div>
     <p class="o-note" id="o-note"></p>
   </section>
@@ -335,8 +394,11 @@ body:not([data-tab="podcast"]) .player{display:none}
     <ul class="eps" id="eps"><li class="ep-empty">Loading episodes…</li></ul>
   </section>
   <section class="view" id="v-scores">
-    <div class="subhead"><p id="sc-note"></p></div>
-    <div class="games" id="games"></div>
+    <div id="o-week">
+      <div class="o-wk"><label class="rg-pick wk-pick"><select id="sc-week" aria-label="Week"></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></label><span id="sc-st"></span></div>
+      <div class="mcards" id="mcards"></div>
+      <div id="pickem"></div>
+    </div>
   </section>
   <p class="note" id="foot" hidden></p>
 </main>
@@ -372,7 +434,7 @@ body:not([data-tab="podcast"]) .player{display:none}
   <div class="tabs-in">
     <button class="on" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
     <button data-tab="standings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Standings</button>
-    <button data-tab="scores" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M12 5v14"/></svg>Scores</button>
+    <button data-tab="scores"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M12 5v14"/></svg>Scores</button>
     <button data-tab="odds"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19l5-6 4 3 7-9"/></svg>Odds</button>
     <button data-tab="podcast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>Podcast</button>
   </div>
@@ -508,7 +570,7 @@ async function fetchSleeper(prev){
   const G=Math.max(0,...rosters.map(r=>(r.settings.wins||0)+(r.settings.losses||0)+(r.settings.ties||0)));
   const uById={}; users.forEach(u=>uById[u.user_id]=u);
   const teams={};
-  rosters.forEach(r=>{const u=uById[r.owner_id]||{}; const tn=((u.metadata&&u.metadata.team_name)||u.display_name||("Team "+r.roster_id)).trim(); teams[r.roster_id]={team:(MOLE[league.season]===r.owner_id?"Mole":null)||FIRST_NAMES[r.owner_id]||u.display_name||tn,teamName:tn};});
+  rosters.forEach(r=>{const u=uById[r.owner_id]||{}; const tn=((u.metadata&&u.metadata.team_name)||u.display_name||("Team "+r.roster_id)).trim(); teams[r.roster_id]={team:(MOLE[league.season]===r.owner_id?"Mole":null)||FIRST_NAMES[r.owner_id]||u.display_name||tn,teamName:tn,first:FIRST_NAMES[r.owner_id]||null};});
   const same=prev&&prev.season===league.season;
   const weeks={}, sched={}, need=[], pp={}, starters={}; let ppLive=null;
   for(let w=1;w<=regEnd;w++){
@@ -529,7 +591,7 @@ async function fetchSleeper(prev){
   if(liveWeek) sched[G+1]=weeks[G+1];
   return {league_id:LEAGUE,season:league.season,seasonStart:state.season_start_date||null,regularSeasonWeeks:regEnd,
     playoffTeams:s.playoff_teams||6,byes:(s.playoff_teams||6)===6?2:0,
-    lastFinalWeek:G,sleeperFinal:G,liveWeek,updatedAt:new Date().toISOString(),teams,weeks,sched,pp,starters,ppLive};
+    lastFinalWeek:G,sleeperFinal:G,liveWeek,updatedAt:new Date().toISOString(),teams,weeks,sched,pp,starters,ppLive,scoring:league.scoring_settings||null};
 }
 
 // League week flips every Wednesday at 12:30 AM Pacific, counted from the season's start date.
@@ -620,6 +682,52 @@ function matchHTML(D,id){
 function randn(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
 let RUN=0;
 // Scoring model built from games through a given week: each team's mean pulled toward the league average.
+// ---------- PROJECTIONS (matchup odds from Week 12 of 2026 on) ----------
+// A matchup's expected score is half the team's scoring model (season average pulled toward the league average)
+// and half Sleeper's pregame projection for that week's starters, scored with LEDG's settings. Tested on Weeks 2-10
+// of 2026: favorites won 32 of 54 (scores only: 25 of 54). Used for the Scores page odds, Stat Boy's picks and
+// Upset Watch. The playoff odds sims still use scores only. Earlier weeks keep the scores-only odds, so
+// Stat Boy's picks already made don't change. If Sleeper's projections can't be reached, it falls back to scores only.
+const PROJ_FROM={"2026":12}, PROJ_W=0.5, PROJ_TTL=10*60e3;
+let PROJ={}, PROJ_SIG=0, LASTLIVE=null; const projBusy=new Set();
+try{ PROJ=JSON.parse(localStorage.getItem("ledg-proj")||"{}"); }catch(e){}
+// lineups may have changed while the app was closed or in the background: recheck unfinished weeks on open/return
+function projStale(){ for(const k in PROJ) if(!PROJ[k].final) PROJ[k].at=0; }
+projStale();
+function weekMu(D,W,mu){
+  const tot=projWeek(D,W); if(!tot) return mu;
+  const out={}; for(const id in mu) out[id]=tot[id]!=null?(1-PROJ_W)*mu[id]+PROJ_W*tot[id]:mu[id]; return out;
+}
+function projWeek(D,W){
+  if(!D||!(W>=(PROJ_FROM[D.season]||99))) return null;
+  const e=PROJ[D.season+":"+W], fin=W<=D.lastFinalWeek;
+  if(!e||(!e.final&&(fin||Date.now()-e.at>PROJ_TTL))) loadProj(D,W);
+  return e?e.tot:null;
+}
+function projPts(st,S,pos){
+  let p=0; for(const k in st){ if(S[k]!=null&&!k.startsWith("pts_")) p+=st[k]*S[k]; }
+  if(pos==="DEF"&&st.pts_allow!=null){ const a=st.pts_allow;
+    p+=(a<=0?S.pts_allow_0:a<7?S.pts_allow_1_6:a<14?S.pts_allow_7_13:a<21?S.pts_allow_14_20:a<28?S.pts_allow_21_27:a<35?S.pts_allow_28_34:S.pts_allow_35p)||0; }
+  return p;
+}
+async function loadProj(D,W){
+  const k=D.season+":"+W; if(projBusy.has(k)) return; projBusy.add(k);
+  try{
+    const S=D.scoring||(await j(`/league/${LEAGUE}`)).scoring_settings||{};
+    const [mt,pr]=await Promise.all([j(`/league/${LEAGUE}/matchups/${W}`),
+      fetch(`https://api.sleeper.com/projections/nfl/${D.season}/${W}?season_type=regular`+["QB","RB","WR","TE","K","DEF","DL","LB","DB"].map(x=>"&position[]="+x).join("")).then(r=>{if(!r.ok) throw new Error("projections "+r.status); return r.json();})]);
+    const need=new Set(); mt.forEach(t=>(t.starters||[]).forEach(id=>need.add(id)));
+    const P={}; pr.forEach(x=>{ if(need.has(x.player_id)) P[x.player_id]=projPts(x.stats||{},S,x.player&&x.player.position); });
+    const tot={}; mt.forEach(t=>{ if(t.starters&&t.starters.length) tot[t.roster_id]=Math.round((t.starters.reduce((s,id)=>s+(P[id]||0),0))*100)/100; });
+    if(Object.keys(tot).length<2) throw new Error("no lineups yet");
+    PROJ[k]={tot,at:Date.now(),final:W<=D.lastFinalWeek};
+    for(const x in PROJ) if(!x.startsWith(D.season+":")) delete PROJ[x];
+    try{ localStorage.setItem("ledg-proj",JSON.stringify(PROJ)); }catch(e){}
+    for(const x in PREGAME) delete PREGAME[x];
+    if(DATA&&(W===matchWeek(DATA)||W===focusWeek(DATA))){ PROJ_SIG++; runOdds(DATA,LASTLIVE); } renderOdds();
+  }catch(e){ console.warn("projections unavailable for week "+W,e); PROJ[k]=PROJ[k]||{tot:null,at:Date.now(),final:false}; }
+  finally{ projBusy.delete(k); }
+}
 function modelFor(D,through){
   const base=buildGames(D,through);
   const ids=Object.keys(D.teams).map(Number), sc={}; ids.forEach(i=>sc[i]=[]);
@@ -679,7 +787,7 @@ function moleOf(s,mu,SD){
 const OK=["po","bye","ti","mo"];
 // Runs N simulated seasons in small chunks (keeps the page responsive) and returns the tallies.
 function simulate(D,ctx,N,alive,done){
-  const {base,ids,mu,SD,liveT,left}=ctx, lw=D.liveWeek, nT=ids.length, ix={}; ids.forEach((i,k)=>ix[i]=k);
+  const {base,ids,mu,SD,liveT,left,fw,muF}=ctx, lw=D.liveWeek, nT=ids.length, ix={}; ids.forEach((i,k)=>ix[i]=k);
   const nG=left.reduce((n,x)=>x[3]!=null?n+1:n,0);
   const S={N,ids,nG,cnt:{},seed:ids.map(()=>new Float64Array(nT)),wins:ids.map(()=>({})),pf:new Float64Array(nT),
     cN:Array.from({length:nG},()=>[0,0]),cond:{}};
@@ -693,7 +801,7 @@ function simulate(D,ctx,N,alive,done){
       for(const [w,a,b,gi] of left){
         let pa,pb;
         if(w===lw && liveT[a]){ const A=liveT[a],B=liveT[b]; pa=A.cur+A.mean+A.sd*randn(); pb=B.cur+B.mean+B.sd*randn(); }
-        else { pa=mu[a]+SD*randn(); pb=mu[b]+SD*randn(); }
+        else { const M=(muF&&w===fw)?muF:mu; pa=M[a]+SD*randn(); pb=M[b]+SD*randn(); }
         games.push({week:w,a,pa,b,pb});
         if(gi!=null) fwWin[gi]=pa>=pb?0:1;
       }
@@ -726,12 +834,16 @@ function clinchStatus(D,left){
 function runOdds(D,LIVE,N=5000){
   const lw=D.liveWeek;
   const liveSig=lw&&LIVE?JSON.stringify([D.weeks[lw],LIVE.rem]):"";
-  const key=D.season+":"+D.lastFinalWeek+":"+Object.keys(D.sched).join(",")+":"+liveSig+":"+matchWeek(D);
+  const key=D.season+":"+D.lastFinalWeek+":"+Object.keys(D.sched).join(",")+":"+liveSig+":"+matchWeek(D)+":"+PROJ_SIG;
   if(key===ODDS_KEY) return; ODDS_KEY=key; const run=++RUN;
-  const m=modelFor(D,D.lastFinalWeek), liveT=liveState(D,LIVE,m.mu,m.SD,m.ids);
-  MATCH=buildMatch(D,m.mu,m.SD,liveT); render();
-  const fw=focusWeek(D), left=gamesLeft(D,D.lastFinalWeek,fw);
-  simulate(D,{...m,liveT,left},N,()=>run===RUN,S=>{
+  LASTLIVE=LIVE;
+  const m=modelFor(D,D.lastFinalWeek), fw=focusWeek(D), mw=matchWeek(D);
+  // the current week's games use the scoring + lineup-projection mix (Week 12 of 2026 on); later weeks and the postseason use scores only
+  const muW=mw?weekMu(D,mw,m.mu):m.mu, muF=fw?weekMu(D,fw,m.mu):m.mu;
+  const liveT=liveState(D,LIVE,muW,m.SD,m.ids);
+  MATCH=buildMatch(D,muW,m.SD,liveT); render();
+  const left=gamesLeft(D,D.lastFinalWeek,fw);
+  simulate(D,{...m,liveT,left,fw,muF},N,()=>run===RUN,S=>{
     const O={}; S.ids.forEach((i,t)=>{
       const o={}; OK.forEach(k=>o[k]=S.cnt[k][t]/N);
       o.seed=Array.from(S.seed[t],x=>x/N);
@@ -741,6 +853,7 @@ function runOdds(D,LIVE,N=5000){
       O[i]=o;
     });
     O.left=left.length; O.live=!!(lw&&LIVE); O.N=N;
+    O.mu=m.mu; O.SD=m.SD;
     O.week=fw; O.games=left.filter(x=>x[3]!=null).map(([,a,b],g)=>({a,b,g,n:S.cN[g]}));
     O.clinch=clinchStatus(D,left);
     // win chance per focus game: from the matchup model when it's the shown week, else from the sims
@@ -806,18 +919,8 @@ function render(){
   document.getElementById("list").innerHTML=html.join("");
   document.getElementById("odds-note").textContent= !ODDS?"Odds: calculating…" : !ODDS.left?"Odds: regular season complete" : ODDS.live?`Live odds: Week ${D.liveWeek} scores and game clocks included`:`Odds: 5,000 simulations of the ${ODDS.left} games left`;
 
-  // scores
-  const wk=live||D.lastFinalWeek, byM={};
-  (D.weeks[wk]||[]).forEach(([r,m,p])=>(byM[m]=byM[m]||[]).push([r,p]));
-  const T=buildTable(D,buildGames(D,D.lastFinalWeek));
-  document.getElementById("sc-note").textContent= live?`Week ${wk} · live, updates every minute`:`Week ${wk} · final`;
-  document.getElementById("games").innerHTML=Object.keys(byM).sort((a,b)=>a-b).map(m=>{
-    const g=byM[m]; if(g.length!==2) return "";
-    const lead=g[0][1]===g[1][1]?-1:g[0][1]>g[1][1]?0:1;
-    return `<div class="game">${g.map(([r,p],i)=>`<div class="side ${i===lead?"win":""}"><div class="who"><div class="name">${esc(D.teams[r].team)}</div><div class="meta">${T[r].w}-${T[r].l}</div></div><div class="pts">${f2(p)}</div></div>`).join("")}</div>`;
-  }).join("");
   document.getElementById("foot").textContent=`Live from Sleeper · updated ${ago(D.updatedAt)}`;
-  if(TAB==="odds") renderOdds();
+  if(TAB==="odds"||TAB==="scores") renderOdds();
 }
 function shortNote(n){
   if(/^Won H2H/.test(n)) return "Won H2H";
@@ -846,14 +949,15 @@ function showTab(t){
   document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x===b));
   document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="v-"+TAB));
   document.getElementById("title").textContent={home:"Home",standings:"Standings",scores:"Scores",odds:"Odds",podcast:"Podcast"}[TAB]||"LEDG";
-  if(TAB==="odds"&&DATA){ renderOdds(); ensureHistory(DATA); }
+  if((TAB==="odds"||TAB==="scores")&&DATA){ renderOdds(); if(TAB==="odds") ensureHistory(DATA); }
   document.getElementById("foot").hidden=TAB==="home"||TAB==="podcast";
   if(TAB==="podcast") loadPodcast();
   window.scrollTo(0,0);
 }
 // ---------- ODDS PAGE ----------
-let OVIEW="playoffs";
 const oOpen=new Set();
+let OVIEW="playoffs"; // Odds page view: playoffs | root
+let SW=null; // week picked on the Scores page (null = the current week)
 let ME=null; try{ ME=+localStorage.getItem("ledg-me")||null; }catch(e){}
 // Percent for odds cells; clinched/eliminated shown as ✓ / –
 function oCell(p,cl){ if(cl===1) return `<span class="ok" aria-label="clinched">✓</span>`; if(cl===-1) return `<span class="x" aria-label="eliminated">–</span>`; return pct(p); }
@@ -883,13 +987,41 @@ function oddsNote(D){
   if(ODDS.live) return `Live odds · Week ${D.liveWeek} scores and game clocks included`;
   return ODDS.left?`5,000 simulations of the ${ODDS.left} regular-season games left, plus the playoffs and Mole-offs`:"Regular season complete · 5,000 simulations of the playoffs and Mole-offs";
 }
+// ---- By Record (Odds page): historical playoff rate for each record after N games. Data: scripts/build_record_hist.py
+const RECORD_HIST={"seasons":"2012-2025","byGames":{"1":{"0":[35,84],"1":[49,84]},"2":{"0":[11,39],"1":[44,90],"2":[29,39]},"3":{"0":[1,19],"1":[22,66],"2":[44,63],"3":[17,20]},"4":{"0":[0,10],"1":[8,43],"2":[34,63],"3":[33,42],"4":[9,10]},"5":{"0":[0,4],"1":[2,29],"2":[18,52],"3":[38,53],"4":[19,23],"5":[7,7]},"6":{"0":[0,2],"1":[1,18],"2":[8,40],"3":[26,51],"4":[29,34],"5":[19,22],"6":[1,1]},"7":{"0":[0,1],"1":[0,10],"2":[4,30],"3":[14,44],"4":[31,44],"5":[22,26],"6":[12,12],"7":[1,1]},"8":{"1":[0,9],"2":[1,21],"3":[5,35],"4":[22,41],"5":[26,31],"6":[22,23],"7":[7,7],"8":[1,1]},"9":{"1":[0,5],"2":[0,13],"3":[3,29],"4":[11,40],"5":[25,33],"6":[26,29],"7":[15,15],"8":[4,4]},"10":{"1":[0,5],"2":[0,6],"3":[0,22],"4":[6,36],"5":[16,33],"6":[31,34],"7":[16,17],"8":[12,12],"9":[3,3]},"11":{"1":[0,1],"2":[0,8],"3":[0,13],"4":[0,23],"5":[11,43],"6":[27,33],"7":[21,22],"8":[19,19],"9":[5,5],"10":[1,1]},"12":{"1":[0,1],"2":[0,2],"3":[0,11],"4":[0,16],"5":[3,20],"6":[8,18],"7":[19,22],"8":[15,15],"9":[14,14],"10":[1,1]},"13":{"3":[0,3],"4":[0,7],"5":[0,5],"6":[4,15],"7":[9,13],"8":[10,10],"9":[3,3],"10":[4,4]}}};
+function recordHTML(D,W){
+  const H=RECORD_HIST.byGames[W]||{}, {rows}=standings(D,Math.min(W,D.lastFinalWeek)), here=W<=D.lastFinalWeek;
+  const at={}; if(here) rows.forEach(r=>{(at[r.w]=at[r.w]||[]).push(r);});
+  let out="";
+  for(let w=W;w>=0;w--){
+    const h=H[w]||[0,0], tm=at[w]||[], p=h[1]?h[0]/h[1]:null;
+    if(!h[1]&&!tm.length) continue;
+    const chips=tm.map(r=>`<span class="tm ${r.id===ME?"me":""}">${esc(D.teams[r.id].team)}${r.t?` ${r.w}-${r.l}-${r.t}`:""}</span>`).join("");
+    const lab=!h[1]?"No LEDG team has been here":`${h[0]} of ${h[1]}`;
+    out+=`<li class="${p===null?"none":""} ${tm.length?"now":""}"><div class="rr"><span class="rk">${w}-${W-w}</span><span class="rt"><i style="width:${p?Math.max(1.5,p*100):0}%"></i></span><span class="rp">${p===null?"–":Math.round(p*100)+"%"}</span></div><div class="rs"><span>${lab}</span>${chips}</div></li>`;
+  }
+  return out;
+}
+function renderRecord(D){
+  // Only the week that matters now: during Week N (the Week pill), show records after N-1 games
+  const n=Object.keys(RECORD_HIST.byGames).length, mw=matchWeek(D), W=mw?mw-1:0;
+  const wk=document.getElementById("rec-wk"), list=document.getElementById("rec");
+  if(W<1||W>n){
+    wk.textContent=""; list.innerHTML=`<li class="o-empty">${W<1&&mw?"Check back after Week 1.":"The regular season is over."}</li>`;
+    document.getElementById("o-note").textContent=""; return;
+  }
+  wk.textContent=`After Week ${W}`;
+  list.innerHTML=recordHTML(D,W);
+  document.getElementById("o-note").textContent=`Every 12-team season, ${RECORD_HIST.seasons.replace("-","–")} (6 playoff spots).`+(W>=12?` Seasons were 12 games through 2015 and 13 through 2020, so only the ${W>=13?"14-game seasons (2021 on)":"13- and 14-game seasons (2016 on)"} count after Week ${W}.`:"");
+}
 function renderOdds(){
   const D=DATA; if(!D) return;
-  document.querySelectorAll("#oseg button").forEach(b=>{const on=b.dataset.o===OVIEW; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on);});
-  document.getElementById("oseg").classList.toggle("gameson",!!D.liveWeek);
-  document.getElementById("o-playoffs").hidden=OVIEW!=="playoffs";
-  document.getElementById("o-week").hidden=OVIEW!=="week";
   document.getElementById("o-note").textContent=oddsNote(D);
+  document.querySelectorAll("#oseg button").forEach(b=>{const on=b.dataset.o===OVIEW; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on);});
+  document.getElementById("o-playoffs").hidden=OVIEW!=="playoffs";
+  document.getElementById("o-root").hidden=OVIEW!=="root";
+  document.getElementById("o-rec").hidden=OVIEW!=="rec";
+  if(OVIEW==="rec") renderRecord(D);
   if(!ODDS){ document.getElementById("olist").innerHTML=`<li class="o-empty">Running the numbers…</li>`; document.getElementById("mcards").innerHTML=""; return; }
   const ids=Object.keys(D.teams).map(Number), CL=ODDS.clinch||{};
   const {rows}=standings(D,D.lastFinalWeek); const rec={}; rows.forEach((r,k)=>rec[r.id]={r,seed:k+1});
@@ -908,39 +1040,254 @@ function renderOdds(){
         <div class="o-h3">Chance of each final seed (%)</div>${seedBars(o)}
       </div></li>`;
   }).join("");
-  // ---- This Week view
-  const fw=ODDS.week, G=ODDS.games||[];
-  document.getElementById("o-wk").innerHTML=fw?`Week ${fw}${D.liveWeek===fw?` · <b>Live</b>`:""}`:"";
-  if(!fw||!G.length){ document.getElementById("mcards").innerHTML=`<p class="o-empty">The regular season is over. Playoff and Mole-off odds are on the Playoffs tab.</p>`; document.getElementById("rg").hidden=true; return; }
-  document.getElementById("rg").hidden=false;
-  // how much each game moves the whole playoff race
-  // how much is still at stake in each game for the whole playoff race (a nearly decided game counts for little)
-  G.forEach(g=>{ const n=g.n[0]+g.n[1], q=4*g.n[0]*g.n[1]/Math.max(1,n*n);
-    g.lev=q*ids.reduce((s,i)=>{const a=ODDS[i].cond("po",g.g,0),b=ODDS[i].cond("po",g.g,1); return s+(a!=null&&b!=null?Math.abs(a-b):0);},0); });
-  const gotw=G.slice().sort((a,b)=>b.lev-a.lev)[0];
-  const sorted=[gotw,...G.filter(g=>g!==gotw)];
-  // each side shows what this game means for that team: playoff odds, or bye / title / Mole odds once that's settled
-  const side=(id,g,s)=>{ const o=ODDS[id], goal=goalFor(o,CL[id]||{});
-    if(!goal) return `<span class="mc-if"><i>Nothing big at stake</i></span>`;
-    const w=o.cond(goal.k,g.g,s), l=o.cond(goal.k,g.g,1-s), lab={po:"Playoff odds",bye:"Bye odds",ti:"Title odds",mo:"Mole odds"}[goal.k];
-    if(Math.min(...g.n)<150) return `<span class="mc-if"><i>${lab}</i><b>${pct(o[goal.k])}</b> · all but decided</span>`;
-    return `<span class="mc-if"><i>${lab}</i>Win <b>${pct(w)}</b> · Lose <b>${pct(l)}</b></span>`; };
-  document.getElementById("mcards").innerHTML=sorted.map(g=>{
-    const A=D.teams[g.a].team, B=D.teams[g.b].team, live=g.status==="live", fin=g.status==="final";
-    const pA=fin?(g.sa>g.sb?1:0):g.p, w=Math.round(pA*1000)/10;
-    return `<div class="mc ${g===gotw?"gotw":""}">${g===gotw?`<div class="mc-tag">Game of the Week</div>`:""}
-      <div class="mx-row"><span><span class="mx-n">${esc(A)}</span>${live||fin?` <span class="mx-s">${f2(g.sa)}</span>`:""}</span><span>${live||fin?`<span class="mx-s op">${f2(g.sb)}</span> `:""}<span class="mx-n op">${esc(B)}</span></span></div>
-      <div class="mx-bar" role="img" aria-label="${esc(A)} ${pct(pA)} to win, ${esc(B)} ${pct(1-pA)}"><i style="width:${w}%"></i></div>
-      <div class="mx-p"><span>${pct(pA)}</span><span>${pct(1-pA)}</span></div>
-      <div class="mc-ifs">${side(g.a,g,0)}${side(g.b,g,1)}</div></div>`;
-  }).join("");
-  // ---- Rooting guide
+  // ---- Rooting Guide (Odds page): always about the week the odds cover
+  document.getElementById("rg-wk").innerHTML=ODDS.week?`Week ${ODDS.week}${D.liveWeek===ODDS.week?` · <b>Live</b>`:""}`:"";
+  if(!ODDS.week||!(ODDS.games||[]).length) document.getElementById("root").innerHTML=`<p class="o-empty">The regular season is over, so there's nothing left to root for.</p>`;
+  else { const G=ODDS.games;
   const chipOrder=rows.map(r=>r.id);
   // dropdown of teams in standings order; only rebuilt when the order or names change, so an open menu isn't disturbed
   const sel=document.getElementById("rg-team"), sig=chipOrder.map(id=>id+":"+D.teams[id].team).join("|");
   if(sel.dataset.sig!==sig){ sel.dataset.sig=sig; sel.innerHTML=`<option value="">Pick a team</option>`+chipOrder.map(id=>`<option value="${id}">${esc(D.teams[id].team)}</option>`).join(""); }
   sel.value=ME&&D.teams[ME]?String(ME):"";
   document.getElementById("root").innerHTML=ME&&D.teams[ME]?rootingHTML(D,ME,G,CL):`<p class="o-empty">Pick a team to see which results this week help them most.</p>`;
+  }
+  // ---- Scores page: the weekly scoreboard
+  const fw=ODDS.week, G=ODDS.games||[];
+  // Week dropdown: opens on the Week pill's week (so a finished week's scores stay up until Wednesday's flip)
+  const ws=document.getElementById("sc-week"), nW=D.regularSeasonWeeks;
+  if(ws.options.length!==nW) ws.innerHTML=Array.from({length:nW},(_,k)=>`<option value="${k+1}">Week ${k+1}</option>`).join("");
+  const W=SW||matchWeek(D)||fw||D.lastFinalWeek||1; ws.value=String(W);
+  const stW=W<=D.lastFinalWeek?"final":W===D.liveWeek?"live":"upcoming", st=document.getElementById("sc-st");
+  st.textContent={final:"Final",live:"Live",upcoming:""}[stW]; st.className=stW;
+  document.getElementById("pickem").innerHTML=pickemHTML(D,W);
+  if(!(W===fw&&G.length)){ document.getElementById("mcards").innerHTML=weekCards(D,W,stW); return; }
+  // Games of the Week: the hosts' picks from the podcast, then the Odds' pick (locked at the week's first kickoff)
+  const HP=hostPicks(D,W), rank=oddsPickRank(D,W)||[], key=g=>g.a+"-"+g.b;
+  const picked=k=>HP[k]&&HP[k].pickers.length, oddsPick=rank.find(k=>!picked(k));
+  const pos=g=>picked(key(g))?HP[key(g)].order:key(g)===oddsPick?100:200+Math.max(0,rank.indexOf(key(g)));
+  const sorted=G.slice().sort((x,y)=>pos(x)-pos(y));
+  // each side shows what this game means for that team: playoff odds, or bye / title / Mole odds once that's settled
+  const side=(id,g,s)=>{ const o=ODDS[id], goal=goalFor(o,CL[id]||{});
+    if(!goal) return `<span class="mc-if"><i>Nothing big at stake</i></span>`;
+    const w=o.cond(goal.k,g.g,s), l=o.cond(goal.k,g.g,1-s), lab={po:"Playoff odds",bye:"Bye odds",ti:"Title odds",mo:"Mole odds"}[goal.k];
+    if(Math.min(...g.n)<150) return `<span class="mc-if"><i>${lab}</i><b>${pct(o[goal.k])}</b></span>`;
+    return `<span class="mc-if"><i>${lab}</i>Win <b>${pct(w)}</b> · Lose <b>${pct(l)}</b></span>`; };
+  document.getElementById("mcards").innerHTML=sorted.map(g=>{
+    const A=D.teams[g.a].team, B=D.teams[g.b].team, live=g.status==="live", fin=g.status==="final";
+    const pA=fin?(g.sa>g.sb?1:0):g.p, w=Math.round(pA*1000)/10;
+    const UP=upsetState(D,W,g.a,g.b,g.status,g.p,fin?(g.sa>g.sb?g.a:g.sb>g.sa?g.b:0):null);
+    return `<div class="mc ${UP?"upset":""} ${mOpen.has(g.a+"-"+g.b)?"open":""}" data-a="${g.a}" data-b="${g.b}" role="button" tabindex="0" aria-expanded="${mOpen.has(g.a+"-"+g.b)}">${gotwTag(HP[key(g)],key(g)===oddsPick,UP)}
+      <div class="mx-row"><span><span class="mx-n">${esc(A)}</span>${live||fin?` <span class="mx-s">${f2(g.sa)}</span>`:""}</span><span>${live||fin?`<span class="mx-s op">${f2(g.sb)}</span> `:""}<span class="mx-n op">${esc(B)}</span></span></div>
+      <div class="mx-bar" role="img" aria-label="${esc(A)} ${pct(pA)} to win, ${esc(B)} ${pct(1-pA)}"><i style="width:${w}%"></i></div>
+      <div class="mx-p"><span>${pct(pA)}</span><span>${pct(1-pA)}</span></div>
+      <div class="mc-ifs">${side(g.a,g,0)}${side(g.b,g,1)}</div>${withCalls(mcMore(D,g.a,g.b,W),callsHTML(D,HP[key(g)],fin?(g.sa>g.sb?g.a:g.sb>g.sa?g.b:0):null,statBoyPick(D,W,g.a,g.b)))}</div>`;
+  }).join("");
+}
+// ---------- GAMES OF THE WEEK ----------
+// gotw.json holds each host's Game of the Week from the podcast (Adam, Mike, Sam) and who each of them picked to win.
+// Stat Boy's Game of the Week is the game with the most playoff stakes that no host picked, ranked once from the
+// pregame odds and kept for the rest of the week.
+let GOTW=null, gotwLoading=false, RANKING=false;
+async function loadGOTW(){
+  if(GOTW||gotwLoading) return; gotwLoading=true;
+  try{ const r=await fetch("gotw.json?ts="+Date.now(),{cache:"no-store"}); if(!r.ok) throw new Error(r.status); GOTW=await r.json(); }catch(e){ console.warn("games of the week unavailable",e); GOTW={}; }
+  renderOdds();
+}
+function idByFirst(D,f){ const k=Object.keys(D.teams).find(k=>D.teams[k].first===f); return k?+k:0; }
+// "a-b" (either order) -> {host, order, calls:[[name, picked team id]]}. Any number of pickers, hosts or guests;
+// if two people pick the same game, the card shares the label ("Adam's & Jay's Game of the Week").
+function hostPicks(D,W){
+  if(!GOTW){ loadGOTW(); return {}; }
+  const wk=GOTW[D.season]&&GOTW[D.season][W], out={}; if(!wk) return out;
+  (wk.games||[]).forEach((g,i)=>{ const a=idByFirst(D,g.teams[0]), b=idByFirst(D,g.teams[1]); if(!a||!b) return;
+    const v=out[a+"-"+b]||{pickers:[],order:i,calls:[]};
+    if(g.host&&!v.pickers.includes(g.host)) v.pickers.push(g.host);
+    Object.entries(g.calls||{}).forEach(([h,f])=>{ if(!v.calls.some(c=>c[0]===h)) v.calls.push([h,idByFirst(D,f)]); });
+    out[a+"-"+b]=v; out[b+"-"+a]=v; });
+  return out;
+}
+function stakesRank(games,cond,ids){ // most at stake first
+  return games.map(g=>{ const n=g.n[0]+g.n[1], q=4*g.n[0]*g.n[1]/Math.max(1,n*n);
+    return [g.a+"-"+g.b, q*ids.reduce((s,i)=>{const x=cond(i,g.g,0),y=cond(i,g.g,1); return s+(x!=null&&y!=null?Math.abs(x-y):0);},0)]; })
+    .sort((x,y)=>y[1]-x[1]).map(x=>x[0]);
+}
+function oddsPickRank(D,W){
+  const key=D.season+":"+W; let c={}; try{ c=JSON.parse(localStorage.getItem("ledg-gotw-rank")||"{}"); }catch(e){}
+  if(c[key]) return c[key];
+  if(!ODDS||ODDS.week!==W) return null;
+  const save=r=>{ try{ localStorage.setItem("ledg-gotw-rank",JSON.stringify({[key]:r})); }catch(e){} return r; };
+  const ids=Object.keys(D.teams).map(Number);
+  if(D.liveWeek!==W) return save(stakesRank(ODDS.games,(i,g,s)=>ODDS[i].cond("po",g,s),ids)); // odds are still pregame
+  // the week is already underway on this phone: rebuild the pregame picture once, without live scores
+  if(RANKING) return null; RANKING=true;
+  const m=modelFor(D,D.lastFinalWeek), left=gamesLeft(D,D.lastFinalWeek,W);
+  simulate(D,{...m,liveT:{},left},3000,()=>true,S=>{
+    const games=left.filter(x=>x[3]!=null).map(([,a,b,g])=>({a,b,g,n:S.cN[g]}));
+    save(stakesRank(games,(i,g,s)=>{const t=S.ids.indexOf(i), n=S.cN[g][s]; return n?S.cond.po[(t*S.nG+g)*2+s]/n:null;},ids));
+    RANKING=false; renderOdds();
+  });
+  return null;
+}
+function gotwTag(hp,odds,up){
+  const left=hp&&hp.pickers.length?`<span class="mc-tag">${hp.pickers.map(n=>esc(n)+"'s").join(" & ")} Game of the Week</span>`
+    :odds?`<span class="mc-tag odds">Stat Boy's Game of the Week</span>`:"";
+  const right=up==="alert"?`<span class="mc-alert">Upset Alert</span>`:up==="upset"?`<span class="mc-alert">Upset</span>`:"";
+  return left||right?`<div class="mc-top">${left||"<span></span>"}${right}</div>`:"";
+}
+// ---------- UPSET WATCH ----------
+// An underdog is a team the app gave 40% or less to win before kickoff (the model as of the week before).
+// Upset Alert: during the game, the underdog's live win chance passes 50%. Upset: the underdog won.
+const UPSET_CUT=0.40; const PREGAME={};
+function pregameP(D,W,a,b){
+  const k=D.season+":"+W+":"+D.lastFinalWeek; if(!PREGAME[k]) PREGAME[k]=modelFor(D,Math.max(0,Math.min(W-1,D.lastFinalWeek)));
+  const m=PREGAME[k], mu=weekMu(D,W,m.mu); return Phi((mu[a]-mu[b])/(m.SD*Math.SQRT2));
+}
+// status: "live" | "final" | other; pLive = a's live win chance; winner = team id (0 tie) once final
+function upsetState(D,W,a,b,status,pLive,winner){
+  if(W<2) return null;
+  const p=pregameP(D,W,a,b), dog=p<=UPSET_CUT?a:1-p<=UPSET_CUT?b:0; if(!dog) return null;
+  if(status==="final") return winner===dog?"upset":null;
+  if(status==="live"&&pLive!=null) return (dog===a?pLive:1-pLive)>0.5?"alert":null;
+  return null;
+}
+// who each host picked to win; ✓ / ✗ once the game is final (winner = team id, 0 = tie, null = not final)
+// Pick 'em Standings: everyone's calls graded on finished weeks (hosts and Stat Boy; guests listed below them)
+function pickemHTML(D,W){
+  if(!GOTW){ loadGOTW(); return ""; }
+  const rec={}, add=(n,w,ok)=>{ const r=rec[n]=rec[n]||{s:[0,0],w:{}}; r.s[ok?0:1]++; (r.w[w]=r.w[w]||[0,0])[ok?0:1]++; };
+  for(let w=1;w<=D.lastFinalWeek;w++){
+    const HP=hostPicks(D,w), byM={}; (D.weeks[w]||[]).forEach(([r,m,p])=>(byM[m]=byM[m]||[]).push([r,p]));
+    Object.values(byM).filter(g=>g.length===2).forEach(([[a,pa],[b,pb]])=>{
+      if(pa===pb) return; const win=pa>pb?a:b, hp=HP[a+"-"+b];
+      (hp?hp.calls:[]).forEach(([n,id])=>{ if(id) add(n,w,id===win); });
+      const sb=statBoyPick(D,w,a,b); if(sb) add("Stat Boy",w,sb===win);
+    });
+  }
+  const names=Object.keys(rec); if(!names.length) return "";
+  const hosts=new Set((GOTW.hosts||["Adam","Mike","Sam"]).concat("Stat Boy"));
+  const pctOf=r=>r.s[0]/Math.max(1,r.s[0]+r.s[1]), fmt=x=>x?x[0]+"-"+x[1]:"–", p3=x=>x.toFixed(3).replace(/^0/,"");
+  const wk=W<=D.lastFinalWeek?W:D.lastFinalWeek;
+  const order=names.sort((x,y)=>(hosts.has(y)-hosts.has(x))||pctOf(rec[y])-pctOf(rec[x])||rec[y].s[0]-rec[x].s[0]);
+  let rank=0;
+  return `<h2 class="o-h2">Pick 'em Standings</h2>
+    <div class="pk-row pk-head"><span></span><span>Picker</span><span>Week ${wk}</span><span>Season</span></div>
+    ${order.map(n=>{ const r=rec[n], h=hosts.has(n); if(h) rank++;
+      return `<div class="pk-row ${n==="Stat Boy"?"pk-sb":""} ${h?"":"guest"}"><span class="pk-rk">${h?rank:""}</span><span class="pk-n">${esc(n)}${h?"":` <i>guest</i>`}</span><span class="num">${fmt(r.w[wk])}</span><span class="num">${fmt(r.s)} <em>${p3(pctOf(r))}</em></span></div>`; }).join("")}`;
+}
+// Stat Boy (the app) picks the pregame favorite in every game. When the odds are dead even (all of Week 1),
+// he flips a coin: a fixed one per matchup, so every phone gets the same pick and it never changes.
+function statBoyPick(D,W,a,b){
+  const p=W<2?0.5:pregameP(D,W,a,b); if(p>0.5) return a; if(p<0.5) return b;
+  const n=x=>(D.teams[x].first||D.teams[x].team), [x,y]=[a,b].sort((i,j)=>n(i)<n(j)?-1:1);
+  let h=0; for(const c of D.season+"-"+W+"-"+n(x)+"|"+n(y)) h=(h*31+c.charCodeAt(0))>>>0;
+  return (h>>>3)%2?y:x;
+}
+// podcast picks sit at the top of a matchup's tap-open section
+function withCalls(more,calls){ return more.replace('<div class="mc-more">','<div class="mc-more">'+calls); }
+function callsHTML(D,hp,winner,sb){
+  const calls=(hp?hp.calls.slice():[]); if(sb) calls.push(["Stat Boy",sb]);
+  if(!calls.length) return "";
+  return `<div class="mc-calls">${calls.map(([h,id])=>{ const r=winner==null||!id?"":id===winner?"hit":"miss";
+    return `<span class="${r}">${esc(h)}: <b>${id?esc(D.teams[id].team):"?"}${r==="hit"?" ✓":r==="miss"?" ✗":""}</b></span>`; }).join("")}</div>`;
+}
+// ---------- HEAD-TO-HEAD (tap a matchup on Scores) ----------
+// h2h.json: every meeting between current members from the LEDG Historical Data sheet (2010 through last season),
+// keyed "First|First" (alphabetical) as [year, week, round tag, first name's score, second name's score].
+// This season's meetings are added from Sleeper.
+let H2H=null, h2hLoading=false; const mOpen=new Set();
+const ROUND={CHMP:"Championship",CSF:"Semifinal",CQF:"Quarterfinal","3rdGM":"3rd Place Game","5thGM":"5th Place Game","7thGM":"7th Place Game","9thGM":"9th Place Game",MQF:"Mole Quarterfinal",MSF:"Mole Semifinal",MBWL:"Mole Bowl",POST:"Postseason"};
+async function loadH2H(){
+  if(H2H||h2hLoading) return; h2hLoading=true;
+  try{ const r=await fetch("h2h.json"); if(!r.ok) throw new Error(r.status); H2H=await r.json(); }catch(e){ console.warn("head-to-head unavailable",e); H2H={pairs:{},failed:true}; }
+  renderOdds();
+}
+// every meeting from a's side: [year, week, tag, a's score, b's score], oldest first
+function meetings(D,a,b){
+  const fa=D.teams[a]&&D.teams[a].first, fb=D.teams[b]&&D.teams[b].first; if(!fa||!fb) return [];
+  const flip=fa>fb, key=flip?fb+"|"+fa:fa+"|"+fb;
+  const hist=((H2H&&H2H.pairs[key])||[]).filter(m=>m[0]<+D.season).map(([y,w,t,x,z])=>flip?[y,w,t,z,x]:[y,w,t,x,z]);
+  const cur=[];
+  for(let w=1;w<=D.lastFinalWeek;w++){ const rows=D.weeks[w]||[], ra=rows.find(r=>r[0]===a), rb=rows.find(r=>r[0]===b); if(ra&&rb&&ra[1]===rb[1]) cur.push([+D.season,w,"REG",ra[2],rb[2]]); }
+  return hist.concat(cur);
+}
+// Regular-season weeks show only regular-season meetings; postseason weeks (15-17) show only postseason meetings.
+function mcMore(D,a,b,W){
+  if(!mOpen.has(a+"-"+b)) return `<div class="mc-more"></div>`;
+  if(!H2H){ loadH2H(); return `<div class="mc-more"><p class="o-empty">Loading the series history…</p></div>`; }
+  const post=W>D.regularSeasonWeeks, A=esc(D.teams[a].team), B=esc(D.teams[b].team);
+  const ALL=meetings(D,a,b), M=ALL.filter(m=>post?m[2]!=="REG":m[2]==="REG");
+  if(H2H.failed&&!M.length) return `<div class="mc-more"><p class="o-empty">Couldn't load the series history. Check your connection and try again.</p></div>`;
+  if(!M.length) return `<div class="mc-more"><p class="mm-lead">First-ever ${post?"postseason ":""}meeting.</p></div>`;
+  const r=M.reduce((r,m)=>(r[m[3]>m[4]?0:m[3]<m[4]?1:2]++,r),[0,0,0]), t=r[2]?"-"+r[2]:"", kind=post?"postseason series":"series";
+  const lead=r[0]>r[1]?`${A} leads the ${kind} ${r[0]}-${r[1]}${t}`:r[1]>r[0]?`${B} leads the ${kind} ${r[1]}-${r[0]}${t}`:`${post?"Postseason series":"Series"} tied ${r[0]}-${r[1]}${t}`;
+  // current streak: who won the most recent meetings in a row, regular season and postseason together
+  const last=ALL[ALL.length-1], lw=last[3]>last[4]?a:last[3]<last[4]?b:null; let n=0;
+  for(let k=ALL.length-1;k>=0&&lw&&(lw===a?ALL[k][3]>ALL[k][4]:ALL[k][4]>ALL[k][3]);k--) n++;
+  const cur=lw?`${lw===a?A:B} W${n}`:"Tied last time";
+  const avg=i=>M.reduce((s,m)=>s+m[i],0)/M.length;
+  const when=m=>`${m[0]} - ${m[2]==="REG"?"Week "+m[1]:ROUND[m[2]]||"Postseason"}`;
+  const big=sign=>M.reduce((best,m)=>{const d=(m[3]-m[4])*sign; return d>0&&(!best||d>best.d)?{d,m}:best;},null);
+  const sc=(m,aw)=>`<span class="${m[3]>m[4]?"w":""}">${A} ${f2(m[3])}</span> – <span class="${m[4]>m[3]?"w":""}">${f2(m[4])} ${B}</span>`;
+  const bw=(x,name)=>x?`<li class="bw"><div class="bw-top"><span>${name}'s biggest win</span><span class="bw-d">+${f2(x.d)}</span></div><div class="bw-bot"><span class="mm-when">${when(x.m)}</span><span class="mm-sc">${sc(x.m)}</span></div></li>`
+                       :`<li class="bw"><div class="bw-top"><span>${name}'s biggest win</span></div><div class="bw-bot"><span class="mm-when">No wins yet</span></div></li>`;
+  const line=m=>`<li><span class="mm-when">${when(m)}</span><span class="mm-sc">${sc(m)}</span></li>`;
+  const recent=M.slice(-5).reverse();
+  // 5+ straight wins: when did the other side last win this matchup?
+  let drought="";
+  if(lw&&n>=5){ const lo=lw===a?b:a, L=lo===a?A:B, Wn=lw===a?A:B;
+    const lastWin=ALL.slice().reverse().find(m=>lo===a?m[3]>m[4]:m[4]>m[3]);
+    drought=`<p class="mm-drought">${droughtText(L,Wn,lastWin,n)}</p>`; }
+  return `<div class="mc-more">
+    <p class="mm-lead">${lead}</p>
+    <dl class="mm-dl"><dt>Current streak</dt><dt>Avg score</dt><dd>${cur}</dd><dd>${avg(3).toFixed(1)} – ${avg(4).toFixed(1)}</dd></dl>
+    ${drought}
+    <ul class="mm-list">${bw(big(1),A)}${bw(big(-1),B)}</ul>
+    <div class="o-h3">Last ${recent.length===1?"meeting":recent.length+" meetings"}</div><ul class="mm-list">${recent.map(line).join("")}</ul>
+  </div>`;
+}
+// The "5+ in a row" line: a bit of fun about how long it's been. The wording is picked per matchup,
+// so it stays the same on every refresh.
+function gameDate(y,w){ // Sunday of that NFL week: the Sunday after Labor Day is Week 1
+  const lab=new Date(y,8,1); lab.setDate(1+((8-lab.getDay())%7)); const d=new Date(lab); d.setDate(lab.getDate()+6+(w-1)*7); return d;
+}
+function droughtText(L,Wn,m,n){
+  if(!m) return [`${L} has never beaten ${Wn}. That's 0 for ${n}.`,`${L} is still looking for a first-ever win over ${Wn}. 0 for ${n} so far.`][(L.length+Wn.length)%2];
+  const g=m[2]==="REG"?`Week ${m[1]} of ${m[0]}`:`the ${m[0]} ${ROUND[m[2]]||"postseason"}`;
+  const days=Math.max(1,Math.round((Date.now()-gameDate(m[0],m[2]==="REG"?m[1]:Math.max(m[1],15)))/864e5)), yrs=days/365.25;
+  const ago=yrs>=1?(yrs%1<.25?`${Math.floor(yrs)} years ago`:yrs%1>.75?`almost ${Math.ceil(yrs)} years ago`:`over ${Math.floor(yrs)} years ago`).replace(/^(almost |over )?1 years/,"$11 year"):`${Math.round(days/7)} weeks ago`;
+  const big=m[2]==="CHMP";
+  const opts=[
+    `${L} last beat ${Wn} in ${g}. That was ${days.toLocaleString("en-US")} days ago.`,
+    `${L} hasn't beaten ${Wn} since ${g}, ${ago}. ${n} straight losses and counting.`,
+    `The last time ${L} beat ${Wn} was ${g}, ${ago}. ${Wn} has won all ${n} since.`,
+    `${L} vs. ${Wn} hasn't gone ${L}'s way since ${g}. That's ${days.toLocaleString("en-US")} days and ${n} straight losses.`
+  ];
+  if(big) opts.push(`${L} last beat ${Wn} in ${g}. ${Wn} has won ${n} straight since, and that title game was ${ago}.`);
+  let h=0; for(const c of L+Wn) h=(h*31+c.charCodeAt(0))>>>0;
+  return big?opts[opts.length-1]:opts[h%opts.length];
+}
+// Scoreboard cards for any week other than the one the odds cover: final scores, or the matchup with a pregame win chance.
+function weekCards(D,W,stW){
+  const byM={}; (stW==="upcoming"?(D.sched[W]||D.weeks[W]||[]):(D.weeks[W]||[])).forEach(([r,m,p])=>(byM[m]=byM[m]||[]).push([r,p||0]));
+  const HP=hostPicks(D,W), hk=g=>g[0][0]+"-"+g[1][0];
+  let rk=[]; try{ rk=JSON.parse(localStorage.getItem("ledg-gotw-rank")||"{}")[D.season+":"+W]||[]; }catch(e){}
+  const picked=k=>HP[k]&&HP[k].pickers.length, op=rk.find(k=>!picked(k)), isOP=(a,b)=>op===a+"-"+b||op===b+"-"+a;
+  const games=Object.keys(byM).sort((a,b)=>a-b).map(m=>byM[m]).filter(g=>g.length===2)
+    .sort((x,y)=>(picked(hk(x))?HP[hk(x)].order:isOP(x[0][0],x[1][0])?100:200)-(picked(hk(y))?HP[hk(y)].order:isOP(y[0][0],y[1][0])?100:200));
+  if(!games.length) return `<p class="o-empty">No matchups found for Week ${W}.</p>`;
+  return games.map(([[a,pa],[b,pb]])=>{
+    const A=esc(D.teams[a].team), B=esc(D.teams[b].team);
+    if(stW!=="upcoming"){
+      const aw=pa>pb, tie=pa===pb, m=Math.abs(pa-pb);
+      const UP=stW==="final"?upsetState(D,W,a,b,"final",null,aw?a:tie?0:b):null;
+      return `<div class="mc ${UP?"upset":""} ${mOpen.has(a+"-"+b)?"open":""}" data-a="${a}" data-b="${b}" role="button" tabindex="0" aria-expanded="${mOpen.has(a+"-"+b)}">${gotwTag(HP[a+"-"+b],isOP(a,b),UP)}<div class="mx-row"><span><span class="mx-n ${aw||tie?"":"lose"}">${A}</span> <span class="mx-s ${aw||tie?"":"lose"}">${f2(pa)}</span></span><span><span class="mx-s op ${!aw||tie?"":"lose"}">${f2(pb)}</span> <span class="mx-n op ${!aw||tie?"":"lose"}">${B}</span></span></div>
+        <div class="mc-res">${stW==="live"?"Live":tie?"Final · Tie":`Final · ${aw?A:B} by ${f2(m)}`}</div>${withCalls(mcMore(D,a,b,W),callsHTML(D,HP[a+"-"+b],stW==="final"?(aw?a:tie?0:b):null,statBoyPick(D,W,a,b)))}</div>`;
+    }
+    const mu=ODDS.mu?weekMu(D,W,ODDS.mu):null, p=mu?Phi((mu[a]-mu[b])/(ODDS.SD*Math.SQRT2)):.5, w=Math.round(p*1000)/10;
+    return `<div class="mc ${mOpen.has(a+"-"+b)?"open":""}" data-a="${a}" data-b="${b}" role="button" tabindex="0" aria-expanded="${mOpen.has(a+"-"+b)}">${gotwTag(HP[a+"-"+b],isOP(a,b))}<div class="mx-row"><span class="mx-n">${A}</span><span class="mx-n op">${B}</span></div>
+      <div class="mx-bar" role="img" aria-label="${A} ${pct(p)} to win, ${B} ${pct(1-p)}"><i style="width:${w}%"></i></div>
+      <div class="mx-p"><span>${pct(p)}</span><span>${pct(1-p)}</span></div>${withCalls(mcMore(D,a,b,W),callsHTML(D,HP[a+"-"+b],null,statBoyPick(D,W,a,b)))}</div>`;
+  }).join("");
 }
 // What a team is playing for this week, best first: playoffs, then a bye, then the title, then dodging the Mole.
 function goalFor(o,c){
@@ -967,12 +1314,21 @@ function rootingHTML(D,id,G,CL){
     <ul class="rg-list">${lines.join("")}</ul>
     ${small?`<p class="o-empty">${big.length?"The other":"The"} ${small} game${small>1?"s":""} still in doubt ${small>1?"barely matter":"barely matters"} for ${name} (under 2%).</p>`:""}`;
 }
-document.getElementById("oseg").addEventListener("click",e=>{const v=e.target.dataset.o; if(v){OVIEW=v; renderOdds(); window.scrollTo(0,0);}});
+
 document.getElementById("olist").addEventListener("click",e=>{
   const li=e.target.closest(".orow"); if(!li) return; const id=+li.dataset.id;
   oOpen.has(id)?oOpen.delete(id):oOpen.add(id);
   li.classList.toggle("open"); li.querySelector("button").setAttribute("aria-expanded",oOpen.has(id));
 });
+document.getElementById("oseg").addEventListener("click",e=>{const v=e.target.dataset.o; if(v){OVIEW=v; renderOdds(); window.scrollTo(0,0);}});
+// tap a matchup to open its head-to-head history (one or more can stay open)
+function toggleMatch(e){
+  const c=e.target.closest(".mc[data-a]"); if(!c) return; if(e.type==="keydown"&&e.key!=="Enter"&&e.key!==" ") return; if(e.type==="keydown") e.preventDefault();
+  const k=c.dataset.a+"-"+c.dataset.b; mOpen.has(k)?mOpen.delete(k):mOpen.add(k); renderOdds();
+}
+document.getElementById("mcards").addEventListener("click",toggleMatch);
+document.getElementById("mcards").addEventListener("keydown",toggleMatch);
+document.getElementById("sc-week").addEventListener("change",e=>{ const w=+e.target.value; SW=(w===(matchWeek(DATA)||ODDS&&ODDS.week))?null:w; renderOdds(); });
 document.getElementById("rg-team").addEventListener("change",e=>{
   ME=+e.target.value||null; try{ ME?localStorage.setItem("ledg-me",ME):localStorage.removeItem("ledg-me"); }catch(_){}
   renderOdds();
@@ -1198,6 +1554,7 @@ async function load(first){
     if(first) openDefault(!!d.liveWeek);
     try{ localStorage.setItem("ledg-cache2",JSON.stringify(d)); }catch(e){}
     runOdds(d,LIVE);
+    [matchWeek(d),focusWeek(d)].forEach(pw=>{ if(pw) projWeek(d,pw); }); // checked every minute; refetches when 10+ minutes old
   }catch(e){ console.error(e); if(!DATA){ const n=document.getElementById("std-note"); n.hidden=false; n.textContent="Couldn't reach Sleeper. Check your connection and reload."; } }
   finally{busy=false;}
 }
@@ -1208,8 +1565,8 @@ let hiddenAt=0;
 document.addEventListener("visibilitychange",()=>{
   if(document.visibilityState==="hidden"){ hiddenAt=Date.now(); return; }
   const reopen=hiddenAt && Date.now()-hiddenAt>30*60e3; hiddenAt=0;
-  if(reopen) PICKED=false;
-  load(reopen);
+  if(reopen){ PICKED=false; SW=null; }
+  projStale(); load(reopen);
 });
 if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
 </script>

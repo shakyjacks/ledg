@@ -4,7 +4,7 @@
   python3 scripts/sandbox.py reset    # copy the live app (index.html) into sandbox/index.html
   python3 scripts/sandbox.py publish  # after approval: make the sandbox version the live app
 
-The sandbox lives at /ledg/sandbox/ and loads shared files (logos, podcast.json) from the live folder via ../.
+The sandbox lives at /ledg/sandbox/ and loads shared files (logos, podcast.json, gotw.json, h2h.json) from the live folder via ../.
 It installs to the home screen as "Sandbox" with a gold icon (sandbox/ files only), has no offline cache,
 and shows a gold "Sandbox" tag in the header.
 New or changed images go in sandbox/ while being tried out; move them to the root folder when publishing.
@@ -28,6 +28,7 @@ def to_sandbox(s):
     for a in ASSETS:
         s = re.sub(r'(["(])' + re.escape(a), r'\1../' + a, s)
     s = s.replace('fetch("podcast.json?', 'fetch("../podcast.json?')
+    s = s.replace('fetch("gotw.json?', 'fetch("../gotw.json?').replace('fetch("h2h.json")', 'fetch("../h2h.json")')
     s = s.replace("\n" + MANIFEST, "").replace(MANIFEST, "").replace(SW, "")
     s = s.replace("<title>LEDG</title>", "<title>LEDG Sandbox</title>")
     s = s.replace("</style>\n</head>", "/*SANDBOX*/" + TAG_CSS + "\n/*/SANDBOX*/</style>\n</head>", 1)
