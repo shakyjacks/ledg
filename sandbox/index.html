@@ -1014,7 +1014,7 @@ function mcMore(D,a,b,W){
   let drought="";
   if(lw&&n>=5){ const lo=lw===a?b:a, L=lo===a?A:B, Wn=lw===a?A:B;
     const lastWin=ALL.slice().reverse().find(m=>lo===a?m[3]>m[4]:m[4]>m[3]);
-    drought=`<p class="mm-drought">${lastWin?`${L} hasn't beaten ${Wn} since ${when(lastWin)}.`:`${L} has never beaten ${Wn}.`}</p>`; }
+    drought=`<p class="mm-drought">${droughtText(L,Wn,lastWin,n)}</p>`; }
   return `<div class="mc-more">
     <p class="mm-lead">${lead}</p>
     <dl class="mm-dl"><dt>Current streak</dt><dt>Avg score</dt><dd>${cur}</dd><dd>${avg(3).toFixed(1)} – ${avg(4).toFixed(1)}</dd></dl>
@@ -1022,6 +1022,27 @@ function mcMore(D,a,b,W){
     <ul class="mm-list">${bw(big(1),A)}${bw(big(-1),B)}</ul>
     <div class="o-h3">Last ${recent.length===1?"meeting":recent.length+" meetings"}</div><ul class="mm-list">${recent.map(line).join("")}</ul>
   </div>`;
+}
+// The "5+ in a row" line: a bit of fun about how long it's been. The wording is picked per matchup,
+// so it stays the same on every refresh.
+function gameDate(y,w){ // Sunday of that NFL week: the Sunday after Labor Day is Week 1
+  const lab=new Date(y,8,1); lab.setDate(1+((8-lab.getDay())%7)); const d=new Date(lab); d.setDate(lab.getDate()+6+(w-1)*7); return d;
+}
+function droughtText(L,Wn,m,n){
+  if(!m) return [`${L} has never beaten ${Wn}. That's 0 for ${n}.`,`${L} is still looking for a first-ever win over ${Wn}. 0 for ${n} so far.`][(L.length+Wn.length)%2];
+  const g=m[2]==="REG"?`Week ${m[1]} of ${m[0]}`:`the ${m[0]} ${ROUND[m[2]]||"postseason"}`;
+  const days=Math.max(1,Math.round((Date.now()-gameDate(m[0],m[2]==="REG"?m[1]:Math.max(m[1],15)))/864e5)), yrs=days/365.25;
+  const ago=yrs>=1?(yrs%1<.25?`${Math.floor(yrs)} years ago`:yrs%1>.75?`almost ${Math.ceil(yrs)} years ago`:`over ${Math.floor(yrs)} years ago`).replace(/^(almost |over )?1 years/,"$11 year"):`${Math.round(days/7)} weeks ago`;
+  const big=m[2]==="CHMP";
+  const opts=[
+    `${L} last beat ${Wn} in ${g}. That was ${days.toLocaleString("en-US")} days ago.`,
+    `${L} hasn't beaten ${Wn} since ${g}, ${ago}. ${n} straight losses and counting.`,
+    `The last time ${L} beat ${Wn} was ${g}, ${ago}. ${Wn} has won all ${n} since.`,
+    `${L} vs. ${Wn} hasn't gone ${L}'s way since ${g}. That's ${days.toLocaleString("en-US")} days and ${n} straight losses.`
+  ];
+  if(big) opts.push(`${L} last beat ${Wn} in ${g}. ${Wn} has won ${n} straight since, and that title game was ${ago}.`);
+  let h=0; for(const c of L+Wn) h=(h*31+c.charCodeAt(0))>>>0;
+  return big?opts[opts.length-1]:opts[h%opts.length];
 }
 // Scoreboard cards for any week other than the one the odds cover: final scores, or the matchup with a pregame win chance.
 function weekCards(D,W,stW){
