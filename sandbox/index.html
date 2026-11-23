@@ -1005,7 +1005,7 @@ function mcMore(D,a,b,W){
   const when=m=>m[2]==="REG"?`Week ${m[1]}, ${m[0]}`:`${ROUND[m[2]]||"Postseason"}, ${m[0]}`;
   const big=sign=>M.reduce((best,m)=>{const d=(m[3]-m[4])*sign; return d>0&&(!best||d>best.d)?{d,m}:best;},null);
   const sc=(m,aw)=>`<span class="${m[3]>m[4]?"w":""}">${A} ${f2(m[3])}</span> – <span class="${m[4]>m[3]?"w":""}">${f2(m[4])} ${B}</span>`;
-  const bw=(x,name)=>x?`<li class="bw"><div class="bw-top"><span>${name}'s biggest win</span><span class="bw-d">+${f2(x.d)}</span></div><div class="bw-bot"><span class="mm-when">${when(x.m)}</span><span class="mm-sc">${sc(x.m)}</span></div></li>`
+  const bw=(x,name)=>x?`<li class="bw"><div class="bw-top"><span>${name}'s biggest win</span><span class="bw-d">+${f2(x.d)}</span></div><div class="bw-bot"><span class="mm-when">${x.m[0]} - ${x.m[2]==="REG"?"Week "+x.m[1]:ROUND[x.m[2]]||"Postseason"}</span><span class="mm-sc">${sc(x.m)}</span></div></li>`
                        :`<li class="bw"><div class="bw-top"><span>${name}'s biggest win</span></div><div class="bw-bot"><span class="mm-when">No wins yet</span></div></li>`;
   const line=m=>`<li><span class="mm-when">${when(m)}</span><span class="mm-sc">${sc(m)}</span></li>`;
   const recent=M.slice(-5).reverse();
