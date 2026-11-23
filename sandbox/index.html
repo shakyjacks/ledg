@@ -247,7 +247,11 @@ body:not([data-tab="podcast"]) .player{display:none}
 .mv.up{color:#4ade80}.mv.down{color:var(--red)}
 .o-note{margin:12px 2px 0;color:var(--muted);font-size:11.5px}
 .o-empty{color:var(--muted);font-size:13px;margin:8px 0;list-style:none}
-.o-wk{font-size:13px;font-weight:700;color:var(--muted);margin:0 0 10px}.o-wk b{color:var(--red)}
+.o-wk{display:flex;align-items:center;gap:4px;margin:0 0 12px}
+.wk-pick{min-width:0;width:150px;margin-right:-23px}
+#sc-st{font-size:13px;font-weight:700;color:var(--muted)}#sc-st.live{color:var(--red)}
+.mc .mx-n.lose,.mc .mx-s.lose{color:var(--muted)}
+.mc-res{font-size:12px;color:var(--muted);margin-top:8px}
 .mcards{display:grid;gap:10px}
 .mc{background:var(--surface);border-radius:14px;padding:12px 14px}
 .mc .mx-n{font-size:15px}
@@ -330,7 +334,7 @@ body:not([data-tab="podcast"]) .player{display:none}
   </section>
   <section class="view" id="v-scores">
     <div id="o-week">
-      <div class="o-wk" id="o-wk"></div>
+      <div class="o-wk"><label class="rg-pick wk-pick"><select id="sc-week" aria-label="Week"></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></label><span id="sc-st"></span></div>
       <div class="mcards" id="mcards"></div>
       <div id="rg"><h2 class="o-h2">Rooting Guide</h2><label class="rg-pick"><select id="rg-team" aria-label="Team for the rooting guide"></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></label><div id="root"></div></div>
     </div>
@@ -738,6 +742,7 @@ function runOdds(D,LIVE,N=5000){
       O[i]=o;
     });
     O.left=left.length; O.live=!!(lw&&LIVE); O.N=N;
+    O.mu=m.mu; O.SD=m.SD;
     O.week=fw; O.games=left.filter(x=>x[3]!=null).map(([,a,b],g)=>({a,b,g,n:S.cN[g]}));
     O.clinch=clinchStatus(D,left);
     // win chance per focus game: from the matchup model when it's the shown week, else from the sims
@@ -840,6 +845,7 @@ function showTab(t){
 }
 // ---------- ODDS PAGE ----------
 const oOpen=new Set();
+let SW=null; // week picked on the Scores page (null = the current week)
 let ME=null; try{ ME=+localStorage.getItem("ledg-me")||null; }catch(e){}
 // Percent for odds cells; clinched/eliminated shown as ✓ / –
 function oCell(p,cl){ if(cl===1) return `<span class="ok" aria-label="clinched">✓</span>`; if(cl===-1) return `<span class="x" aria-label="eliminated">–</span>`; return pct(p); }
@@ -892,8 +898,13 @@ function renderOdds(){
   }).join("");
   // ---- This Week view
   const fw=ODDS.week, G=ODDS.games||[];
-  document.getElementById("o-wk").innerHTML=fw?`Week ${fw}${D.liveWeek===fw?` · <b>Live</b>`:""}`:"";
-  if(!fw||!G.length){ document.getElementById("mcards").innerHTML=`<p class="o-empty">The regular season is over. Playoff and Mole-off odds are on the Playoffs tab.</p>`; document.getElementById("rg").hidden=true; return; }
+  // Week dropdown: opens on the Week pill's week (so a finished week's scores stay up until Wednesday's flip)
+  const ws=document.getElementById("sc-week"), nW=D.regularSeasonWeeks;
+  if(ws.options.length!==nW) ws.innerHTML=Array.from({length:nW},(_,k)=>`<option value="${k+1}">Week ${k+1}</option>`).join("");
+  const W=SW||matchWeek(D)||fw||D.lastFinalWeek||1; ws.value=String(W);
+  const stW=W<=D.lastFinalWeek?"final":W===D.liveWeek?"live":"upcoming", st=document.getElementById("sc-st");
+  st.textContent={final:"Final",live:"Live",upcoming:""}[stW]; st.className=stW;
+  if(!(W===fw&&G.length)){ document.getElementById("rg").hidden=true; document.getElementById("mcards").innerHTML=weekCards(D,W,stW); return; }
   document.getElementById("rg").hidden=false;
   // how much each game moves the whole playoff race
   // how much is still at stake in each game for the whole playoff race (a nearly decided game counts for little)
@@ -923,6 +934,24 @@ function renderOdds(){
   if(sel.dataset.sig!==sig){ sel.dataset.sig=sig; sel.innerHTML=`<option value="">Pick a team</option>`+chipOrder.map(id=>`<option value="${id}">${esc(D.teams[id].team)}</option>`).join(""); }
   sel.value=ME&&D.teams[ME]?String(ME):"";
   document.getElementById("root").innerHTML=ME&&D.teams[ME]?rootingHTML(D,ME,G,CL):`<p class="o-empty">Pick a team to see which results this week help them most.</p>`;
+}
+// Scoreboard cards for any week other than the one the odds cover: final scores, or the matchup with a pregame win chance.
+function weekCards(D,W,stW){
+  const byM={}; (stW==="upcoming"?(D.sched[W]||D.weeks[W]||[]):(D.weeks[W]||[])).forEach(([r,m,p])=>(byM[m]=byM[m]||[]).push([r,p||0]));
+  const games=Object.keys(byM).sort((a,b)=>a-b).map(m=>byM[m]).filter(g=>g.length===2);
+  if(!games.length) return `<p class="o-empty">No matchups found for Week ${W}.</p>`;
+  return games.map(([[a,pa],[b,pb]])=>{
+    const A=esc(D.teams[a].team), B=esc(D.teams[b].team);
+    if(stW!=="upcoming"){
+      const aw=pa>pb, tie=pa===pb, m=Math.abs(pa-pb);
+      return `<div class="mc"><div class="mx-row"><span><span class="mx-n ${aw||tie?"":"lose"}">${A}</span> <span class="mx-s ${aw||tie?"":"lose"}">${f2(pa)}</span></span><span><span class="mx-s op ${!aw||tie?"":"lose"}">${f2(pb)}</span> <span class="mx-n op ${!aw||tie?"":"lose"}">${B}</span></span></div>
+        <div class="mc-res">${stW==="live"?"Live":tie?"Final · Tie":`Final · ${aw?A:B} by ${f2(m)}`}</div></div>`;
+    }
+    const p=ODDS.mu?Phi((ODDS.mu[a]-ODDS.mu[b])/(ODDS.SD*Math.SQRT2)):.5, w=Math.round(p*1000)/10;
+    return `<div class="mc"><div class="mx-row"><span class="mx-n">${A}</span><span class="mx-n op">${B}</span></div>
+      <div class="mx-bar" role="img" aria-label="${A} ${pct(p)} to win, ${B} ${pct(1-p)}"><i style="width:${w}%"></i></div>
+      <div class="mx-p"><span>${pct(p)}</span><span>${pct(1-p)}</span></div></div>`;
+  }).join("");
 }
 // What a team is playing for this week, best first: playoffs, then a bye, then the title, then dodging the Mole.
 function goalFor(o,c){
@@ -955,6 +984,7 @@ document.getElementById("olist").addEventListener("click",e=>{
   oOpen.has(id)?oOpen.delete(id):oOpen.add(id);
   li.classList.toggle("open"); li.querySelector("button").setAttribute("aria-expanded",oOpen.has(id));
 });
+document.getElementById("sc-week").addEventListener("change",e=>{ const w=+e.target.value; SW=(w===(matchWeek(DATA)||ODDS&&ODDS.week))?null:w; renderOdds(); });
 document.getElementById("rg-team").addEventListener("change",e=>{
   ME=+e.target.value||null; try{ ME?localStorage.setItem("ledg-me",ME):localStorage.removeItem("ledg-me"); }catch(_){}
   renderOdds();
@@ -1190,7 +1220,7 @@ let hiddenAt=0;
 document.addEventListener("visibilitychange",()=>{
   if(document.visibilityState==="hidden"){ hiddenAt=Date.now(); return; }
   const reopen=hiddenAt && Date.now()-hiddenAt>30*60e3; hiddenAt=0;
-  if(reopen) PICKED=false;
+  if(reopen){ PICKED=false; SW=null; }
   load(reopen);
 });
 </script>
