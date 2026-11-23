@@ -983,12 +983,16 @@ async function loadGOTW(){
   renderOdds();
 }
 function idByFirst(D,f){ const k=Object.keys(D.teams).find(k=>D.teams[k].first===f); return k?+k:0; }
-// "a-b" (either order) -> {host, order, calls:[[host, picked team id]]}
+// "a-b" (either order) -> {host, order, calls:[[name, picked team id]]}. Any number of pickers, hosts or guests;
+// if two people pick the same game, the card shares the label ("Adam's & Jay's Game of the Week").
 function hostPicks(D,W){
   if(!GOTW){ loadGOTW(); return {}; }
   const wk=GOTW[D.season]&&GOTW[D.season][W], out={}; if(!wk) return out;
   (wk.games||[]).forEach((g,i)=>{ const a=idByFirst(D,g.teams[0]), b=idByFirst(D,g.teams[1]); if(!a||!b) return;
-    const v={host:g.host,order:i,calls:Object.entries(g.calls||{}).map(([h,f])=>[h,idByFirst(D,f)])}; out[a+"-"+b]=v; out[b+"-"+a]=v; });
+    const v=out[a+"-"+b]||{pickers:[],order:i,calls:[]};
+    if(g.host&&!v.pickers.includes(g.host)) v.pickers.push(g.host);
+    Object.entries(g.calls||{}).forEach(([h,f])=>{ if(!v.calls.some(c=>c[0]===h)) v.calls.push([h,idByFirst(D,f)]); });
+    out[a+"-"+b]=v; out[b+"-"+a]=v; });
   return out;
 }
 function stakesRank(games,cond,ids){ // most at stake first
@@ -1014,7 +1018,7 @@ function oddsPickRank(D,W){
   return null;
 }
 function gotwTag(hp,odds){
-  if(hp) return `<div class="mc-tag">${esc(hp.host)}'s Game of the Week</div>`;
+  if(hp&&hp.pickers.length) return `<div class="mc-tag">${hp.pickers.map(n=>esc(n)+"'s").join(" & ")} Game of the Week</div>`;
   return odds?`<div class="mc-tag odds">The Odds' Game of the Week</div>`:"";
 }
 // who each host picked to win; ✓ / ✗ once the game is final (winner = team id, 0 = tie, null = not final)

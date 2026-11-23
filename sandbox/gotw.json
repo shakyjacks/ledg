@@ -1,13 +1,45 @@
 {
-  "about": "Hosts' Games of the Week from the LEDG Podcast. Keyed by season, then week. Names are first names. 'calls' = who each host picked to win.",
-  "hosts": ["Adam", "Mike", "Sam"],
+  "about": "Games of the Week from the LEDG Podcast, keyed by season, then week. One entry per pick: 'host' is whoever made the pick (host or guest), 'teams' are the two first names in the matchup, and 'calls' maps each person who called the game to the first name they picked to win. Hosts can be missing in a week, and guests can be added.",
   "2026": {
     "11": {
       "episode": "Ep. 93",
       "games": [
-        {"host": "Adam", "teams": ["Jon", "Eric"], "calls": {"Adam": "Jon", "Mike": "Jon", "Sam": "Jon"}},
-        {"host": "Mike", "teams": ["Calvin", "Nathan"], "calls": {"Adam": "Nathan", "Mike": "Calvin", "Sam": "Nathan"}},
-        {"host": "Sam", "teams": ["Mike", "Spencer"], "calls": {"Adam": "Spencer", "Mike": "Spencer", "Sam": "Spencer"}}
+        {
+          "host": "Adam",
+          "teams": [
+            "Jon",
+            "Eric"
+          ],
+          "calls": {
+            "Adam": "Jon",
+            "Mike": "Jon",
+            "Sam": "Jon"
+          }
+        },
+        {
+          "host": "Mike",
+          "teams": [
+            "Calvin",
+            "Nathan"
+          ],
+          "calls": {
+            "Adam": "Nathan",
+            "Mike": "Calvin",
+            "Sam": "Nathan"
+          }
+        },
+        {
+          "host": "Sam",
+          "teams": [
+            "Mike",
+            "Spencer"
+          ],
+          "calls": {
+            "Adam": "Spencer",
+            "Mike": "Spencer",
+            "Sam": "Spencer"
+          }
+        }
       ]
     }
   }
