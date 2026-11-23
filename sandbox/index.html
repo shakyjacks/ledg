@@ -950,7 +950,7 @@ function recordHTML(D,W){
     const h=H[w]||[0,0], tm=at[w]||[], p=h[1]?h[0]/h[1]:null;
     if(!h[1]&&!tm.length) continue;
     const chips=tm.map(r=>`<span class="tm ${r.id===ME?"me":""}">${esc(D.teams[r.id].team)}${r.t?` ${r.w}-${r.l}-${r.t}`:""}</span>`).join("");
-    const lab=!h[1]?"No LEDG team has been here":h[0]===h[1]?`All ${h[1]} made it`:h[0]===0?`0 of ${h[1]} made it`:`${h[0]} of ${h[1]} made it`;
+    const lab=!h[1]?"No LEDG team has been here":`${h[0]} of ${h[1]}`;
     out+=`<li class="${p===null?"none":""} ${tm.length?"now":""}"><div class="rr"><span class="rk">${w}-${W-w}</span><span class="rt"><i style="width:${p?Math.max(1.5,p*100):0}%"></i></span><span class="rp">${p===null?"–":Math.round(p*100)+"%"}</span></div><div class="rs"><span>${lab}</span>${chips}</div></li>`;
   }
   return out;
