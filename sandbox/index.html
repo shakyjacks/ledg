@@ -978,7 +978,7 @@ function renderOdds(){
 }
 // ---------- GAMES OF THE WEEK ----------
 // gotw.json holds each host's Game of the Week from the podcast (Adam, Mike, Sam) and who each of them picked to win.
-// The Odds' Game of the Week is the game with the most playoff stakes that no host picked, ranked once from the
+// Stat Boy's Game of the Week is the game with the most playoff stakes that no host picked, ranked once from the
 // pregame odds and kept for the rest of the week.
 let GOTW=null, gotwLoading=false, RANKING=false;
 async function loadGOTW(){
@@ -1023,7 +1023,7 @@ function oddsPickRank(D,W){
 }
 function gotwTag(hp,odds,up){
   const left=hp&&hp.pickers.length?`<span class="mc-tag">${hp.pickers.map(n=>esc(n)+"'s").join(" & ")} Game of the Week</span>`
-    :odds?`<span class="mc-tag odds">The Odds' Game of the Week</span>`:"";
+    :odds?`<span class="mc-tag odds">Stat Boy's Game of the Week</span>`:"";
   const right=up==="alert"?`<span class="mc-alert">Upset Alert</span>`:up==="upset"?`<span class="mc-alert">Upset</span>`:"";
   return left||right?`<div class="mc-top">${left||"<span></span>"}${right}</div>`:"";
 }
