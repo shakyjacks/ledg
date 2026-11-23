@@ -269,6 +269,7 @@ body:not([data-tab="podcast"]) .player{display:none}
 .mc[data-a]{cursor:pointer}
 .mc-more{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
 .mc.open .mc-more{display:block}
+.mc-more>.mc-calls{margin:0 0 10px;padding-bottom:10px;border-bottom:1px solid var(--line)}
 .mm-lead{color:var(--white);font-weight:700;font-size:14px;margin:0 0 8px}
 .mm-dl{display:grid;grid-template-columns:repeat(2,auto);justify-content:start;gap:2px 20px;margin:0 0 8px}
 .mm-dl dt{font-size:11px}.mm-dl dd{margin:0;color:var(--white);font:400 15px/1.1 "Chakra Petch",sans-serif}
@@ -1031,8 +1032,7 @@ function renderOdds(){
       <div class="mx-row"><span><span class="mx-n">${esc(A)}</span>${live||fin?` <span class="mx-s">${f2(g.sa)}</span>`:""}</span><span>${live||fin?`<span class="mx-s op">${f2(g.sb)}</span> `:""}<span class="mx-n op">${esc(B)}</span></span></div>
       <div class="mx-bar" role="img" aria-label="${esc(A)} ${pct(pA)} to win, ${esc(B)} ${pct(1-pA)}"><i style="width:${w}%"></i></div>
       <div class="mx-p"><span>${pct(pA)}</span><span>${pct(1-pA)}</span></div>
-      ${callsHTML(D,HP[key(g)],fin?(g.sa>g.sb?g.a:g.sb>g.sa?g.b:0):null,statBoyPick(D,W,g.a,g.b))}
-      <div class="mc-ifs">${side(g.a,g,0)}${side(g.b,g,1)}</div>${mcMore(D,g.a,g.b,W)}</div>`;
+      <div class="mc-ifs">${side(g.a,g,0)}${side(g.b,g,1)}</div>${withCalls(mcMore(D,g.a,g.b,W),callsHTML(D,HP[key(g)],fin?(g.sa>g.sb?g.a:g.sb>g.sa?g.b:0):null,statBoyPick(D,W,g.a,g.b)))}</div>`;
   }).join("");
 }
 // ---------- GAMES OF THE WEEK ----------
@@ -1134,6 +1134,8 @@ function statBoyPick(D,W,a,b){
   let h=0; for(const c of D.season+"-"+W+"-"+n(x)+"|"+n(y)) h=(h*31+c.charCodeAt(0))>>>0;
   return (h>>>3)%2?y:x;
 }
+// podcast picks sit at the top of a matchup's tap-open section
+function withCalls(more,calls){ return more.replace('<div class="mc-more">','<div class="mc-more">'+calls); }
 function callsHTML(D,hp,winner,sb){
   const calls=(hp?hp.calls.slice():[]); if(sb) calls.push(["Stat Boy",sb]);
   if(!calls.length) return "";
@@ -1231,12 +1233,12 @@ function weekCards(D,W,stW){
       const aw=pa>pb, tie=pa===pb, m=Math.abs(pa-pb);
       const UP=stW==="final"?upsetState(D,W,a,b,"final",null,aw?a:tie?0:b):null;
       return `<div class="mc ${UP?"upset":""} ${mOpen.has(a+"-"+b)?"open":""}" data-a="${a}" data-b="${b}" role="button" tabindex="0" aria-expanded="${mOpen.has(a+"-"+b)}">${gotwTag(HP[a+"-"+b],isOP(a,b),UP)}<div class="mx-row"><span><span class="mx-n ${aw||tie?"":"lose"}">${A}</span> <span class="mx-s ${aw||tie?"":"lose"}">${f2(pa)}</span></span><span><span class="mx-s op ${!aw||tie?"":"lose"}">${f2(pb)}</span> <span class="mx-n op ${!aw||tie?"":"lose"}">${B}</span></span></div>
-        <div class="mc-res">${stW==="live"?"Live":tie?"Final · Tie":`Final · ${aw?A:B} by ${f2(m)}`}</div>${callsHTML(D,HP[a+"-"+b],stW==="final"?(aw?a:tie?0:b):null,statBoyPick(D,W,a,b))}${mcMore(D,a,b,W)}</div>`;
+        <div class="mc-res">${stW==="live"?"Live":tie?"Final · Tie":`Final · ${aw?A:B} by ${f2(m)}`}</div>${withCalls(mcMore(D,a,b,W),callsHTML(D,HP[a+"-"+b],stW==="final"?(aw?a:tie?0:b):null,statBoyPick(D,W,a,b)))}</div>`;
     }
     const p=ODDS.mu?Phi((ODDS.mu[a]-ODDS.mu[b])/(ODDS.SD*Math.SQRT2)):.5, w=Math.round(p*1000)/10;
     return `<div class="mc ${mOpen.has(a+"-"+b)?"open":""}" data-a="${a}" data-b="${b}" role="button" tabindex="0" aria-expanded="${mOpen.has(a+"-"+b)}">${gotwTag(HP[a+"-"+b],isOP(a,b))}<div class="mx-row"><span class="mx-n">${A}</span><span class="mx-n op">${B}</span></div>
       <div class="mx-bar" role="img" aria-label="${A} ${pct(p)} to win, ${B} ${pct(1-p)}"><i style="width:${w}%"></i></div>
-      <div class="mx-p"><span>${pct(p)}</span><span>${pct(1-p)}</span></div>${callsHTML(D,HP[a+"-"+b],null,statBoyPick(D,W,a,b))}${mcMore(D,a,b,W)}</div>`;
+      <div class="mx-p"><span>${pct(p)}</span><span>${pct(1-p)}</span></div>${withCalls(mcMore(D,a,b,W),callsHTML(D,HP[a+"-"+b],null,statBoyPick(D,W,a,b)))}</div>`;
   }).join("");
 }
 // What a team is playing for this week, best first: playoffs, then a bye, then the title, then dodging the Mole.
