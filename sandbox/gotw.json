@@ -1,79 +1,677 @@
 {
-  "about": "Games of the Week and picks from the LEDG Podcast, keyed by season, then week. One entry per matchup that was discussed: 'host' (optional) is whoever made it their Game of the Week (host or guest; leave out for regular games), 'teams' are the two first names in the matchup, and 'calls' maps each person to the first name they picked to win. Hosts can be missing in a week, and guests can be added.",
-  "2026": {
-    "11": {
-      "episode": "Ep. 93",
-      "games": [
-        {
-          "host": "Adam",
-          "teams": [
-            "Jon",
-            "Eric"
-          ],
-          "calls": {
-            "Adam": "Jon",
-            "Mike": "Jon",
-            "Sam": "Jon"
-          }
-        },
-        {
-          "host": "Mike",
-          "teams": [
-            "Calvin",
-            "Nathan"
-          ],
-          "calls": {
-            "Adam": "Nathan",
-            "Mike": "Calvin",
-            "Sam": "Nathan"
-          }
-        },
-        {
-          "host": "Sam",
-          "teams": [
-            "Mike",
-            "Spencer"
-          ],
-          "calls": {
-            "Adam": "Spencer",
-            "Mike": "Spencer",
-            "Sam": "Spencer"
-          }
-        },
-        {
-          "teams": [
-            "Adam",
-            "Garren"
-          ],
-          "calls": {
-            "Adam": "Garren",
-            "Mike": "Adam",
-            "Sam": "Adam"
-          }
-        },
-        {
-          "teams": [
-            "Sam",
-            "Jeremy"
-          ],
-          "calls": {
-            "Adam": "Sam",
-            "Mike": "Sam",
-            "Sam": "Sam"
-          }
-        },
-        {
-          "teams": [
-            "Alex",
-            "Jay"
-          ],
-          "calls": {
-            "Adam": "Jay",
-            "Mike": "Jay",
-            "Sam": "Jay"
-          }
-        }
-      ]
+ "about": "Games of the Week and picks from the LEDG Podcast, keyed by season, then week. One entry per matchup that was discussed: 'host' (optional) is whoever made it their Game of the Week (host or guest; leave out for regular games), 'teams' are the two first names in the matchup, and 'calls' maps each person to the first name they picked to win. Hosts can be missing in a week, and guests can be added.",
+ "2026": {
+  "2": {
+   "episode": "Ep. 84",
+   "games": [
+    {
+     "host": "Adam",
+     "teams": [
+      "Nathan",
+      "Alex"
+     ],
+     "calls": {
+      "Adam": "Nathan",
+      "Sam": "Nathan",
+      "Mike": "Nathan"
+     }
+    },
+    {
+     "host": "Mike",
+     "teams": [
+      "Adam",
+      "Eric"
+     ],
+     "calls": {
+      "Adam": "Adam",
+      "Sam": "Eric",
+      "Mike": "Eric"
+     }
+    },
+    {
+     "host": "Sam",
+     "teams": [
+      "Jon",
+      "Spencer"
+     ],
+     "calls": {
+      "Adam": "Spencer",
+      "Sam": "Spencer",
+      "Mike": "Jon"
+     }
+    },
+    {
+     "teams": [
+      "Sam",
+      "Calvin"
+     ],
+     "calls": {
+      "Adam": "Sam",
+      "Sam": "Sam",
+      "Mike": "Calvin"
+     }
+    },
+    {
+     "teams": [
+      "Mike",
+      "Garren"
+     ],
+     "calls": {
+      "Adam": "Garren",
+      "Sam": "Garren",
+      "Mike": "Mike"
+     }
+    },
+    {
+     "teams": [
+      "Jay",
+      "Jeremy"
+     ],
+     "calls": {
+      "Adam": "Jeremy",
+      "Sam": "Jay",
+      "Mike": "Jay"
+     }
     }
+   ]
+  },
+  "3": {
+   "episode": "Ep. 85",
+   "games": [
+    {
+     "host": "Mike",
+     "teams": [
+      "Jeremy",
+      "Eric"
+     ],
+     "calls": {
+      "Adam": "Eric",
+      "Sam": "Eric",
+      "Mike": "Jeremy"
+     }
+    },
+    {
+     "host": "Sam",
+     "teams": [
+      "Adam",
+      "Spencer"
+     ],
+     "calls": {
+      "Adam": "Adam",
+      "Sam": "Adam",
+      "Mike": "Adam"
+     }
+    },
+    {
+     "host": "Adam",
+     "teams": [
+      "Nathan",
+      "Calvin"
+     ],
+     "calls": {
+      "Adam": "Nathan",
+      "Sam": "Nathan",
+      "Mike": "Calvin"
+     }
+    },
+    {
+     "teams": [
+      "Sam",
+      "Alex"
+     ],
+     "calls": {
+      "Adam": "Alex",
+      "Sam": "Sam",
+      "Mike": "Sam"
+     }
+    },
+    {
+     "teams": [
+      "Mike",
+      "Jay"
+     ],
+     "calls": {
+      "Adam": "Mike",
+      "Sam": "Mike",
+      "Mike": "Mike"
+     }
+    },
+    {
+     "teams": [
+      "Jon",
+      "Garren"
+     ],
+     "calls": {
+      "Adam": "Jon",
+      "Sam": "Jon",
+      "Mike": "Garren"
+     }
+    }
+   ]
+  },
+  "4": {
+   "episode": "Ep. 86",
+   "games": [
+    {
+     "host": "Adam",
+     "teams": [
+      "Nathan",
+      "Garren"
+     ],
+     "calls": {
+      "Adam": "Garren",
+      "Sam": "Garren",
+      "Mike": "Garren"
+     }
+    },
+    {
+     "host": "Sam",
+     "teams": [
+      "Adam",
+      "Calvin"
+     ],
+     "calls": {
+      "Adam": "Adam",
+      "Sam": "Adam",
+      "Mike": "Adam"
+     }
+    },
+    {
+     "host": "Mike",
+     "teams": [
+      "Sam",
+      "Jon"
+     ],
+     "calls": {
+      "Adam": "Jon",
+      "Sam": "Sam",
+      "Mike": "Jon"
+     }
+    },
+    {
+     "teams": [
+      "Mike",
+      "Eric"
+     ],
+     "calls": {
+      "Adam": "Eric",
+      "Sam": "Eric",
+      "Mike": "Mike"
+     }
+    },
+    {
+     "teams": [
+      "Jeremy",
+      "Spencer"
+     ],
+     "calls": {
+      "Adam": "Spencer",
+      "Sam": "Spencer",
+      "Mike": "Spencer"
+     }
+    },
+    {
+     "teams": [
+      "Alex",
+      "Jay"
+     ],
+     "calls": {
+      "Adam": "Alex",
+      "Sam": "Alex",
+      "Mike": "Alex"
+     }
+    }
+   ]
+  },
+  "6": {
+   "episode": "Ep. 88",
+   "games": [
+    {
+     "host": "Adam",
+     "teams": [
+      "Jon",
+      "Spencer"
+     ],
+     "calls": {
+      "Adam": "Jon",
+      "Sam": "Jon",
+      "Mike": "Jon"
+     }
+    },
+    {
+     "teams": [
+      "Jay",
+      "Garren"
+     ],
+     "calls": {
+      "Adam": "Garren",
+      "Sam": "Garren",
+      "Mike": "Garren"
+     }
+    },
+    {
+     "host": "Sam",
+     "teams": [
+      "Mike",
+      "Alex"
+     ],
+     "calls": {
+      "Adam": "Alex",
+      "Sam": "Alex",
+      "Mike": "Alex"
+     }
+    },
+    {
+     "teams": [
+      "Nathan",
+      "Jeremy"
+     ],
+     "calls": {
+      "Adam": "Jeremy",
+      "Sam": "Nathan",
+      "Mike": "Jeremy"
+     }
+    },
+    {
+     "teams": [
+      "Calvin",
+      "Eric"
+     ],
+     "calls": {
+      "Adam": "Eric",
+      "Sam": "Eric",
+      "Mike": "Eric"
+     }
+    },
+    {
+     "teams": [
+      "Adam",
+      "Sam"
+     ],
+     "calls": {
+      "Adam": "Adam",
+      "Sam": "Sam",
+      "Mike": "Adam"
+     }
+    }
+   ]
+  },
+  "7": {
+   "episode": "Ep. 89",
+   "games": [
+    {
+     "host": "Adam",
+     "teams": [
+      "Jeremy",
+      "Alex"
+     ],
+     "calls": {
+      "Adam": "Alex",
+      "Sam": "Alex",
+      "Mike": "Alex"
+     }
+    },
+    {
+     "host": "Sam",
+     "teams": [
+      "Garren",
+      "Spencer"
+     ],
+     "calls": {
+      "Adam": "Garren",
+      "Sam": "Garren",
+      "Mike": "Garren"
+     }
+    },
+    {
+     "host": "Mike",
+     "teams": [
+      "Nathan",
+      "Jon"
+     ],
+     "calls": {
+      "Adam": "Nathan",
+      "Sam": "Nathan",
+      "Mike": "Nathan"
+     }
+    },
+    {
+     "teams": [
+      "Adam",
+      "Eric"
+     ],
+     "calls": {
+      "Adam": "Adam",
+      "Sam": "Eric",
+      "Mike": "Eric"
+     }
+    },
+    {
+     "teams": [
+      "Sam",
+      "Jay"
+     ],
+     "calls": {
+      "Adam": "Jay",
+      "Sam": "Sam",
+      "Mike": "Sam"
+     }
+    },
+    {
+     "teams": [
+      "Mike",
+      "Calvin"
+     ],
+     "calls": {
+      "Adam": "Calvin",
+      "Sam": "Mike",
+      "Mike": "Mike"
+     }
+    }
+   ]
+  },
+  "8": {
+   "episode": "Ep. 90",
+   "games": [
+    {
+     "host": "Sam",
+     "teams": [
+      "Jay",
+      "Eric"
+     ],
+     "calls": {
+      "Adam": "Eric",
+      "Sam": "Eric",
+      "Mike": "Eric",
+      "Nate": "Eric"
+     }
+    },
+    {
+     "host": "Nate",
+     "teams": [
+      "Nathan",
+      "Alex"
+     ],
+     "calls": {
+      "Adam": "Alex",
+      "Sam": "Nathan",
+      "Mike": "Nathan",
+      "Nate": "Alex"
+     }
+    },
+    {
+     "teams": [
+      "Adam",
+      "Spencer"
+     ],
+     "calls": {
+      "Adam": "Adam",
+      "Sam": "Spencer",
+      "Mike": "Adam",
+      "Nate": "Adam"
+     }
+    },
+    {
+     "host": "Adam",
+     "teams": [
+      "Sam",
+      "Mike"
+     ],
+     "calls": {
+      "Adam": "Mike",
+      "Sam": "Sam",
+      "Mike": "Mike"
+     }
+    },
+    {
+     "teams": [
+      "Jon",
+      "Calvin"
+     ],
+     "calls": {
+      "Adam": "Calvin",
+      "Sam": "Calvin",
+      "Mike": "Calvin"
+     }
+    },
+    {
+     "teams": [
+      "Jeremy",
+      "Garren"
+     ],
+     "calls": {
+      "Adam": "Jeremy",
+      "Sam": "Garren",
+      "Mike": "Garren"
+     }
+    }
+   ]
+  },
+  "9": {
+   "episode": "Ep. 91",
+   "games": [
+    {
+     "teams": [
+      "Nathan",
+      "Garren"
+     ],
+     "calls": {
+      "Adam": "Garren",
+      "Sam": "Garren",
+      "Mike": "Garren"
+     }
+    },
+    {
+     "teams": [
+      "Adam",
+      "Jay"
+     ],
+     "calls": {
+      "Adam": "Jay",
+      "Sam": "Jay",
+      "Mike": "Jay"
+     }
+    },
+    {
+     "teams": [
+      "Sam",
+      "Eric"
+     ],
+     "calls": {
+      "Adam": "Sam",
+      "Sam": "Sam",
+      "Mike": "Sam"
+     }
+    },
+    {
+     "teams": [
+      "Mike",
+      "Jeremy"
+     ],
+     "calls": {
+      "Adam": "Mike",
+      "Sam": "Mike",
+      "Mike": "Mike"
+     }
+    },
+    {
+     "teams": [
+      "Jon",
+      "Alex"
+     ],
+     "calls": {
+      "Adam": "Jon",
+      "Sam": "Jon",
+      "Mike": "Jon"
+     }
+    },
+    {
+     "teams": [
+      "Calvin",
+      "Spencer"
+     ],
+     "calls": {
+      "Adam": "Calvin",
+      "Sam": "Spencer",
+      "Mike": "Spencer"
+     }
+    }
+   ]
+  },
+  "10": {
+   "episode": "Ep. 92",
+   "games": [
+    {
+     "host": "Adam",
+     "teams": [
+      "Mike",
+      "Eric"
+     ],
+     "calls": {
+      "Adam": "Mike",
+      "Sam": "Eric",
+      "Mike": "Mike"
+     }
+    },
+    {
+     "teams": [
+      "Garren",
+      "Alex"
+     ],
+     "calls": {
+      "Adam": "Alex",
+      "Sam": "Garren",
+      "Mike": "Garren"
+     }
+    },
+    {
+     "host": "Sam",
+     "teams": [
+      "Adam",
+      "Calvin"
+     ],
+     "calls": {
+      "Adam": "Adam",
+      "Sam": "Adam",
+      "Mike": "Adam"
+     }
+    },
+    {
+     "teams": [
+      "Nathan",
+      "Sam"
+     ],
+     "calls": {
+      "Adam": "Sam",
+      "Sam": "Sam",
+      "Mike": "Sam"
+     }
+    },
+    {
+     "teams": [
+      "Jon",
+      "Jeremy"
+     ],
+     "calls": {
+      "Adam": "Jon",
+      "Sam": "Jon",
+      "Mike": "Jon"
+     }
+    },
+    {
+     "host": "Mike",
+     "teams": [
+      "Jay",
+      "Spencer"
+     ],
+     "calls": {
+      "Adam": "Spencer",
+      "Sam": "Spencer",
+      "Mike": "Spencer"
+     }
+    }
+   ]
+  },
+  "11": {
+   "episode": "Ep. 93",
+   "games": [
+    {
+     "host": "Adam",
+     "teams": [
+      "Jon",
+      "Eric"
+     ],
+     "calls": {
+      "Adam": "Jon",
+      "Mike": "Jon",
+      "Sam": "Jon"
+     }
+    },
+    {
+     "host": "Mike",
+     "teams": [
+      "Calvin",
+      "Nathan"
+     ],
+     "calls": {
+      "Adam": "Nathan",
+      "Mike": "Calvin",
+      "Sam": "Nathan"
+     }
+    },
+    {
+     "host": "Sam",
+     "teams": [
+      "Mike",
+      "Spencer"
+     ],
+     "calls": {
+      "Adam": "Spencer",
+      "Mike": "Spencer",
+      "Sam": "Spencer"
+     }
+    },
+    {
+     "teams": [
+      "Adam",
+      "Garren"
+     ],
+     "calls": {
+      "Adam": "Garren",
+      "Mike": "Adam",
+      "Sam": "Adam"
+     }
+    },
+    {
+     "teams": [
+      "Sam",
+      "Jeremy"
+     ],
+     "calls": {
+      "Adam": "Sam",
+      "Mike": "Sam",
+      "Sam": "Sam"
+     }
+    },
+    {
+     "teams": [
+      "Alex",
+      "Jay"
+     ],
+     "calls": {
+      "Adam": "Jay",
+      "Mike": "Jay",
+      "Sam": "Jay"
+     }
+    }
+   ]
   }
+ },
+ "notes": [
+  "Weeks 1 and 5: no rundown in the Drive folder (Ep. 83, Ep. 87).",
+  "Week 4 Mole vs Jay and Week 6 Adam vs Sam: Adam's cell was blank; his picks were filled in from the official Pick 'em Standings.",
+  "Week 6 Mike vs Mole: the rundown has Mike picking Mole ('Mole wins.'), but the standings credit Mike with 4-2 that week, which only works if he took himself.",
+  "Week 8: guest Nate's rundown picks cover 3 of 6 games; the standings have him 1-5 overall.",
+  "Weeks 6 and 8: Mike's Game of the Week isn't marked. Week 9: no Games of the Week marked."
+ ]
 }
