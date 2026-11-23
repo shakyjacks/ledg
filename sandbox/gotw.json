@@ -1,5 +1,10 @@
 {
  "about": "Games of the Week and picks from the LEDG Podcast, keyed by season, then week. One entry per matchup that was discussed: 'host' (optional) is whoever made it their Game of the Week (host or guest; leave out for regular games), 'teams' are the two first names in the matchup, and 'calls' maps each person to the first name they picked to win. Hosts can be missing in a week, and guests can be added.",
+ "hosts": [
+  "Adam",
+  "Mike",
+  "Sam"
+ ],
  "2026": {
   "1": {
    "episode": "Ep. 83",
