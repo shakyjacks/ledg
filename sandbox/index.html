@@ -726,7 +726,7 @@ async function loadProj(D,W){
     for(const x in PROJ) if(!x.startsWith(D.season+":")) delete PROJ[x];
     try{ localStorage.setItem("ledg-proj",JSON.stringify(PROJ)); }catch(e){}
     for(const x in PREGAME) delete PREGAME[x];
-    if(DATA&&W===matchWeek(DATA)){ PROJ_SIG++; runOdds(DATA,LASTLIVE); } renderOdds();
+    if(DATA&&(W===matchWeek(DATA)||W===focusWeek(DATA))){ PROJ_SIG++; runOdds(DATA,LASTLIVE); } renderOdds();
   }catch(e){ console.warn("projections unavailable for week "+W,e); PROJ[k]=PROJ[k]||{tot:null,at:Date.now(),final:false}; }
   finally{ projBusy.delete(k); }
 }
@@ -789,7 +789,7 @@ function moleOf(s,mu,SD){
 const OK=["po","bye","ti","mo"];
 // Runs N simulated seasons in small chunks (keeps the page responsive) and returns the tallies.
 function simulate(D,ctx,N,alive,done){
-  const {base,ids,mu,SD,liveT,left}=ctx, lw=D.liveWeek, nT=ids.length, ix={}; ids.forEach((i,k)=>ix[i]=k);
+  const {base,ids,mu,SD,liveT,left,fw,muF}=ctx, lw=D.liveWeek, nT=ids.length, ix={}; ids.forEach((i,k)=>ix[i]=k);
   const nG=left.reduce((n,x)=>x[3]!=null?n+1:n,0);
   const S={N,ids,nG,cnt:{},seed:ids.map(()=>new Float64Array(nT)),wins:ids.map(()=>({})),pf:new Float64Array(nT),
     cN:Array.from({length:nG},()=>[0,0]),cond:{}};
@@ -803,7 +803,7 @@ function simulate(D,ctx,N,alive,done){
       for(const [w,a,b,gi] of left){
         let pa,pb;
         if(w===lw && liveT[a]){ const A=liveT[a],B=liveT[b]; pa=A.cur+A.mean+A.sd*randn(); pb=B.cur+B.mean+B.sd*randn(); }
-        else { pa=mu[a]+SD*randn(); pb=mu[b]+SD*randn(); }
+        else { const M=(muF&&w===fw)?muF:mu; pa=M[a]+SD*randn(); pb=M[b]+SD*randn(); }
         games.push({week:w,a,pa,b,pb});
         if(gi!=null) fwWin[gi]=pa>=pb?0:1;
       }
@@ -839,11 +839,13 @@ function runOdds(D,LIVE,N=5000){
   const key=D.season+":"+D.lastFinalWeek+":"+Object.keys(D.sched).join(",")+":"+liveSig+":"+matchWeek(D)+":"+PROJ_SIG;
   if(key===ODDS_KEY) return; ODDS_KEY=key; const run=++RUN;
   LASTLIVE=LIVE;
-  const m=modelFor(D,D.lastFinalWeek), liveT=liveState(D,LIVE,m.mu,m.SD,m.ids);
-  const mw=matchWeek(D), muW=mw?weekMu(D,mw,m.mu):m.mu;
-  MATCH=buildMatch(D,muW,m.SD,muW===m.mu?liveT:liveState(D,LIVE,muW,m.SD,m.ids)); render();
-  const fw=focusWeek(D), left=gamesLeft(D,D.lastFinalWeek,fw);
-  simulate(D,{...m,liveT,left},N,()=>run===RUN,S=>{
+  const m=modelFor(D,D.lastFinalWeek), fw=focusWeek(D), mw=matchWeek(D);
+  // the current week's games use the scoring + lineup-projection mix (Week 12 of 2026 on); later weeks and the postseason use scores only
+  const muW=mw?weekMu(D,mw,m.mu):m.mu, muF=fw?weekMu(D,fw,m.mu):m.mu;
+  const liveT=liveState(D,LIVE,muW,m.SD,m.ids);
+  MATCH=buildMatch(D,muW,m.SD,liveT); render();
+  const left=gamesLeft(D,D.lastFinalWeek,fw);
+  simulate(D,{...m,liveT,left,fw,muF},N,()=>run===RUN,S=>{
     const O={}; S.ids.forEach((i,t)=>{
       const o={}; OK.forEach(k=>o[k]=S.cnt[k][t]/N);
       o.seed=Array.from(S.seed[t],x=>x/N);
@@ -1554,7 +1556,7 @@ async function load(first){
     if(first) openDefault(!!d.liveWeek);
     try{ localStorage.setItem("ledg-cache2",JSON.stringify(d)); }catch(e){}
     runOdds(d,LIVE);
-    const pw=matchWeek(d); if(pw) projWeek(d,pw); // checked every minute; refetches when 10+ minutes old
+    [matchWeek(d),focusWeek(d)].forEach(pw=>{ if(pw) projWeek(d,pw); }); // checked every minute; refetches when 10+ minutes old
   }catch(e){ console.error(e); if(!DATA){ const n=document.getElementById("std-note"); n.hidden=false; n.textContent="Couldn't reach Sleeper. Check your connection and reload."; } }
   finally{busy=false;}
 }
