@@ -993,14 +993,14 @@ function mcMore(D,a,b,W){
   if(!mOpen.has(a+"-"+b)) return `<div class="mc-more"></div>`;
   if(!H2H){ loadH2H(); return `<div class="mc-more"><p class="o-empty">Loading the series history…</p></div>`; }
   const post=W>D.regularSeasonWeeks, A=esc(D.teams[a].team), B=esc(D.teams[b].team);
-  const M=meetings(D,a,b).filter(m=>post?m[2]!=="REG":m[2]==="REG");
+  const ALL=meetings(D,a,b), M=ALL.filter(m=>post?m[2]!=="REG":m[2]==="REG");
   if(H2H.failed&&!M.length) return `<div class="mc-more"><p class="o-empty">Couldn't load the series history. Check your connection and try again.</p></div>`;
   if(!M.length) return `<div class="mc-more"><p class="mm-lead">First-ever ${post?"postseason ":""}meeting.</p></div>`;
   const r=M.reduce((r,m)=>(r[m[3]>m[4]?0:m[3]<m[4]?1:2]++,r),[0,0,0]), t=r[2]?"-"+r[2]:"", kind=post?"postseason series":"series";
   const lead=r[0]>r[1]?`${A} leads the ${kind} ${r[0]}-${r[1]}${t}`:r[1]>r[0]?`${B} leads the ${kind} ${r[1]}-${r[0]}${t}`:`${post?"Postseason series":"Series"} tied ${r[0]}-${r[1]}${t}`;
-  // current streak: who won the most recent meetings in a row
-  const last=M[M.length-1], lw=last[3]>last[4]?a:last[3]<last[4]?b:null; let n=0;
-  for(let k=M.length-1;k>=0&&lw&&(lw===a?M[k][3]>M[k][4]:M[k][4]>M[k][3]);k--) n++;
+  // current streak: who won the most recent meetings in a row, regular season and postseason together
+  const last=ALL[ALL.length-1], lw=last[3]>last[4]?a:last[3]<last[4]?b:null; let n=0;
+  for(let k=ALL.length-1;k>=0&&lw&&(lw===a?ALL[k][3]>ALL[k][4]:ALL[k][4]>ALL[k][3]);k--) n++;
   const cur=lw?`${lw===a?A:B} W${n}`:"Tied last time";
   const avg=i=>M.reduce((s,m)=>s+m[i],0)/M.length;
   const when=m=>`${m[0]} - ${m[2]==="REG"?"Week "+m[1]:ROUND[m[2]]||"Postseason"}`;
@@ -1013,8 +1013,8 @@ function mcMore(D,a,b,W){
   // 5+ straight wins: when did the other side last win this matchup?
   let drought="";
   if(lw&&n>=5){ const lo=lw===a?b:a, L=lo===a?A:B, Wn=lw===a?A:B;
-    const lastWin=M.slice().reverse().find(m=>lo===a?m[3]>m[4]:m[4]>m[3]);
-    drought=`<p class="mm-drought">${lastWin?`${L} hasn't beaten ${Wn} since ${when(lastWin)}.`:`${L} has never beaten ${Wn}${post?" in the postseason":""}.`}</p>`; }
+    const lastWin=ALL.slice().reverse().find(m=>lo===a?m[3]>m[4]:m[4]>m[3]);
+    drought=`<p class="mm-drought">${lastWin?`${L} hasn't beaten ${Wn} since ${when(lastWin)}.`:`${L} has never beaten ${Wn}.`}</p>`; }
   return `<div class="mc-more">
     <p class="mm-lead">${lead}</p>
     <dl class="mm-dl"><dt>Current streak</dt><dt>Avg score</dt><dd>${cur}</dd><dd>${avg(3).toFixed(1)} – ${avg(4).toFixed(1)}</dd></dl>
