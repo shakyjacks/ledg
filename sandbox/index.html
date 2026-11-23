@@ -593,7 +593,7 @@ async function fetchSleeper(prev){
   if(liveWeek) sched[G+1]=weeks[G+1];
   return {league_id:LEAGUE,season:league.season,seasonStart:state.season_start_date||null,regularSeasonWeeks:regEnd,
     playoffTeams:s.playoff_teams||6,byes:(s.playoff_teams||6)===6?2:0,
-    lastFinalWeek:G,sleeperFinal:G,liveWeek,updatedAt:new Date().toISOString(),teams,weeks,sched,pp,starters,ppLive};
+    lastFinalWeek:G,sleeperFinal:G,liveWeek,updatedAt:new Date().toISOString(),teams,weeks,sched,pp,starters,ppLive,scoring:league.scoring_settings||null};
 }
 
 // League week flips every Wednesday at 12:30 AM Pacific, counted from the season's start date.
@@ -684,6 +684,49 @@ function matchHTML(D,id){
 function randn(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
 let RUN=0;
 // Scoring model built from games through a given week: each team's mean pulled toward the league average.
+// ---------- PROJECTIONS (matchup odds from Week 12 of 2026 on) ----------
+// A matchup's expected score is half the team's scoring model (season average pulled toward the league average)
+// and half Sleeper's pregame projection for that week's starters, scored with LEDG's settings. Tested on Weeks 2-10
+// of 2026: favorites won 32 of 54 (scores only: 25 of 54). Used for the Scores page odds, Stat Boy's picks and
+// Upset Watch. The playoff odds sims still use scores only. Earlier weeks keep the scores-only odds, so
+// Stat Boy's picks already made don't change. If Sleeper's projections can't be reached, it falls back to scores only.
+const PROJ_FROM={"2026":12}, PROJ_W=0.5, PROJ_TTL=30*60e3;
+let PROJ={}, PROJ_SIG=0, LASTLIVE=null; const projBusy=new Set();
+try{ PROJ=JSON.parse(localStorage.getItem("ledg-proj")||"{}"); }catch(e){}
+function weekMu(D,W,mu){
+  const tot=projWeek(D,W); if(!tot) return mu;
+  const out={}; for(const id in mu) out[id]=tot[id]!=null?(1-PROJ_W)*mu[id]+PROJ_W*tot[id]:mu[id]; return out;
+}
+function projWeek(D,W){
+  if(!D||!(W>=(PROJ_FROM[D.season]||99))) return null;
+  const e=PROJ[D.season+":"+W], fin=W<=D.lastFinalWeek;
+  if(!e||(!e.final&&(fin||Date.now()-e.at>PROJ_TTL))) loadProj(D,W);
+  return e?e.tot:null;
+}
+function projPts(st,S,pos){
+  let p=0; for(const k in st){ if(S[k]!=null&&!k.startsWith("pts_")) p+=st[k]*S[k]; }
+  if(pos==="DEF"&&st.pts_allow!=null){ const a=st.pts_allow;
+    p+=(a<=0?S.pts_allow_0:a<7?S.pts_allow_1_6:a<14?S.pts_allow_7_13:a<21?S.pts_allow_14_20:a<28?S.pts_allow_21_27:a<35?S.pts_allow_28_34:S.pts_allow_35p)||0; }
+  return p;
+}
+async function loadProj(D,W){
+  const k=D.season+":"+W; if(projBusy.has(k)) return; projBusy.add(k);
+  try{
+    const S=D.scoring||(await j(`/league/${LEAGUE}`)).scoring_settings||{};
+    const [mt,pr]=await Promise.all([j(`/league/${LEAGUE}/matchups/${W}`),
+      fetch(`https://api.sleeper.com/projections/nfl/${D.season}/${W}?season_type=regular`+["QB","RB","WR","TE","K","DEF","DL","LB","DB"].map(x=>"&position[]="+x).join("")).then(r=>{if(!r.ok) throw new Error("projections "+r.status); return r.json();})]);
+    const need=new Set(); mt.forEach(t=>(t.starters||[]).forEach(id=>need.add(id)));
+    const P={}; pr.forEach(x=>{ if(need.has(x.player_id)) P[x.player_id]=projPts(x.stats||{},S,x.player&&x.player.position); });
+    const tot={}; mt.forEach(t=>{ if(t.starters&&t.starters.length) tot[t.roster_id]=Math.round((t.starters.reduce((s,id)=>s+(P[id]||0),0))*100)/100; });
+    if(Object.keys(tot).length<2) throw new Error("no lineups yet");
+    PROJ[k]={tot,at:Date.now(),final:W<=D.lastFinalWeek};
+    for(const x in PROJ) if(!x.startsWith(D.season+":")) delete PROJ[x];
+    try{ localStorage.setItem("ledg-proj",JSON.stringify(PROJ)); }catch(e){}
+    for(const x in PREGAME) delete PREGAME[x];
+    if(DATA&&W===matchWeek(DATA)){ PROJ_SIG++; runOdds(DATA,LASTLIVE); } renderOdds();
+  }catch(e){ console.warn("projections unavailable for week "+W,e); PROJ[k]=PROJ[k]||{tot:null,at:Date.now(),final:false}; }
+  finally{ projBusy.delete(k); }
+}
 function modelFor(D,through){
   const base=buildGames(D,through);
   const ids=Object.keys(D.teams).map(Number), sc={}; ids.forEach(i=>sc[i]=[]);
@@ -790,10 +833,12 @@ function clinchStatus(D,left){
 function runOdds(D,LIVE,N=5000){
   const lw=D.liveWeek;
   const liveSig=lw&&LIVE?JSON.stringify([D.weeks[lw],LIVE.rem]):"";
-  const key=D.season+":"+D.lastFinalWeek+":"+Object.keys(D.sched).join(",")+":"+liveSig+":"+matchWeek(D);
+  const key=D.season+":"+D.lastFinalWeek+":"+Object.keys(D.sched).join(",")+":"+liveSig+":"+matchWeek(D)+":"+PROJ_SIG;
   if(key===ODDS_KEY) return; ODDS_KEY=key; const run=++RUN;
+  LASTLIVE=LIVE;
   const m=modelFor(D,D.lastFinalWeek), liveT=liveState(D,LIVE,m.mu,m.SD,m.ids);
-  MATCH=buildMatch(D,m.mu,m.SD,liveT); render();
+  const mw=matchWeek(D), muW=mw?weekMu(D,mw,m.mu):m.mu;
+  MATCH=buildMatch(D,muW,m.SD,muW===m.mu?liveT:liveState(D,LIVE,muW,m.SD,m.ids)); render();
   const fw=focusWeek(D), left=gamesLeft(D,D.lastFinalWeek,fw);
   simulate(D,{...m,liveT,left},N,()=>run===RUN,S=>{
     const O={}; S.ids.forEach((i,t)=>{
@@ -1092,7 +1137,7 @@ function gotwTag(hp,odds,up){
 const UPSET_CUT=0.40; const PREGAME={};
 function pregameP(D,W,a,b){
   const k=D.season+":"+W+":"+D.lastFinalWeek; if(!PREGAME[k]) PREGAME[k]=modelFor(D,Math.max(0,Math.min(W-1,D.lastFinalWeek)));
-  const m=PREGAME[k]; return Phi((m.mu[a]-m.mu[b])/(m.SD*Math.SQRT2));
+  const m=PREGAME[k], mu=weekMu(D,W,m.mu); return Phi((mu[a]-mu[b])/(m.SD*Math.SQRT2));
 }
 // status: "live" | "final" | other; pLive = a's live win chance; winner = team id (0 tie) once final
 function upsetState(D,W,a,b,status,pLive,winner){
@@ -1235,7 +1280,7 @@ function weekCards(D,W,stW){
       return `<div class="mc ${UP?"upset":""} ${mOpen.has(a+"-"+b)?"open":""}" data-a="${a}" data-b="${b}" role="button" tabindex="0" aria-expanded="${mOpen.has(a+"-"+b)}">${gotwTag(HP[a+"-"+b],isOP(a,b),UP)}<div class="mx-row"><span><span class="mx-n ${aw||tie?"":"lose"}">${A}</span> <span class="mx-s ${aw||tie?"":"lose"}">${f2(pa)}</span></span><span><span class="mx-s op ${!aw||tie?"":"lose"}">${f2(pb)}</span> <span class="mx-n op ${!aw||tie?"":"lose"}">${B}</span></span></div>
         <div class="mc-res">${stW==="live"?"Live":tie?"Final · Tie":`Final · ${aw?A:B} by ${f2(m)}`}</div>${withCalls(mcMore(D,a,b,W),callsHTML(D,HP[a+"-"+b],stW==="final"?(aw?a:tie?0:b):null,statBoyPick(D,W,a,b)))}</div>`;
     }
-    const p=ODDS.mu?Phi((ODDS.mu[a]-ODDS.mu[b])/(ODDS.SD*Math.SQRT2)):.5, w=Math.round(p*1000)/10;
+    const mu=ODDS.mu?weekMu(D,W,ODDS.mu):null, p=mu?Phi((mu[a]-mu[b])/(ODDS.SD*Math.SQRT2)):.5, w=Math.round(p*1000)/10;
     return `<div class="mc ${mOpen.has(a+"-"+b)?"open":""}" data-a="${a}" data-b="${b}" role="button" tabindex="0" aria-expanded="${mOpen.has(a+"-"+b)}">${gotwTag(HP[a+"-"+b],isOP(a,b))}<div class="mx-row"><span class="mx-n">${A}</span><span class="mx-n op">${B}</span></div>
       <div class="mx-bar" role="img" aria-label="${A} ${pct(p)} to win, ${B} ${pct(1-p)}"><i style="width:${w}%"></i></div>
       <div class="mx-p"><span>${pct(p)}</span><span>${pct(1-p)}</span></div>${withCalls(mcMore(D,a,b,W),callsHTML(D,HP[a+"-"+b],null,statBoyPick(D,W,a,b)))}</div>`;
