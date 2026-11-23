@@ -952,8 +952,8 @@ function renderOdds(){
   if(!(W===fw&&G.length)){ document.getElementById("mcards").innerHTML=weekCards(D,W,stW); return; }
   // Games of the Week: the hosts' picks from the podcast, then the Odds' pick (locked at the week's first kickoff)
   const HP=hostPicks(D,W), rank=oddsPickRank(D,W)||[], key=g=>g.a+"-"+g.b;
-  const oddsPick=rank.find(k=>!HP[k]);
-  const pos=g=>HP[key(g)]?HP[key(g)].order:key(g)===oddsPick?10:20+Math.max(0,rank.indexOf(key(g)));
+  const picked=k=>HP[k]&&HP[k].pickers.length, oddsPick=rank.find(k=>!picked(k));
+  const pos=g=>picked(key(g))?HP[key(g)].order:key(g)===oddsPick?100:200+Math.max(0,rank.indexOf(key(g)));
   const sorted=G.slice().sort((x,y)=>pos(x)-pos(y));
   // each side shows what this game means for that team: playoff odds, or bye / title / Mole odds once that's settled
   const side=(id,g,s)=>{ const o=ODDS[id], goal=goalFor(o,CL[id]||{});
@@ -1108,9 +1108,9 @@ function weekCards(D,W,stW){
   const byM={}; (stW==="upcoming"?(D.sched[W]||D.weeks[W]||[]):(D.weeks[W]||[])).forEach(([r,m,p])=>(byM[m]=byM[m]||[]).push([r,p||0]));
   const HP=hostPicks(D,W), hk=g=>g[0][0]+"-"+g[1][0];
   let rk=[]; try{ rk=JSON.parse(localStorage.getItem("ledg-gotw-rank")||"{}")[D.season+":"+W]||[]; }catch(e){}
-  const op=rk.find(k=>!HP[k]), isOP=(a,b)=>op===a+"-"+b||op===b+"-"+a;
+  const picked=k=>HP[k]&&HP[k].pickers.length, op=rk.find(k=>!picked(k)), isOP=(a,b)=>op===a+"-"+b||op===b+"-"+a;
   const games=Object.keys(byM).sort((a,b)=>a-b).map(m=>byM[m]).filter(g=>g.length===2)
-    .sort((x,y)=>(HP[hk(x)]?HP[hk(x)].order:isOP(x[0][0],x[1][0])?5:9)-(HP[hk(y)]?HP[hk(y)].order:isOP(y[0][0],y[1][0])?5:9));
+    .sort((x,y)=>(picked(hk(x))?HP[hk(x)].order:isOP(x[0][0],x[1][0])?100:200)-(picked(hk(y))?HP[hk(y)].order:isOP(y[0][0],y[1][0])?100:200));
   if(!games.length) return `<p class="o-empty">No matchups found for Week ${W}.</p>`;
   return games.map(([[a,pa],[b,pb]])=>{
     const A=esc(D.teams[a].team), B=esc(D.teams[b].team);

@@ -1,5 +1,5 @@
 {
-  "about": "Games of the Week from the LEDG Podcast, keyed by season, then week. One entry per pick: 'host' is whoever made the pick (host or guest), 'teams' are the two first names in the matchup, and 'calls' maps each person who called the game to the first name they picked to win. Hosts can be missing in a week, and guests can be added.",
+  "about": "Games of the Week and picks from the LEDG Podcast, keyed by season, then week. One entry per matchup that was discussed: 'host' (optional) is whoever made it their Game of the Week (host or guest; leave out for regular games), 'teams' are the two first names in the matchup, and 'calls' maps each person to the first name they picked to win. Hosts can be missing in a week, and guests can be added.",
   "2026": {
     "11": {
       "episode": "Ep. 93",
@@ -38,6 +38,39 @@
             "Adam": "Spencer",
             "Mike": "Spencer",
             "Sam": "Spencer"
+          }
+        },
+        {
+          "teams": [
+            "Adam",
+            "Garren"
+          ],
+          "calls": {
+            "Adam": "Garren",
+            "Mike": "Adam",
+            "Sam": "Adam"
+          }
+        },
+        {
+          "teams": [
+            "Sam",
+            "Jeremy"
+          ],
+          "calls": {
+            "Adam": "Sam",
+            "Mike": "Sam",
+            "Sam": "Sam"
+          }
+        },
+        {
+          "teams": [
+            "Alex",
+            "Jay"
+          ],
+          "calls": {
+            "Adam": "Jay",
+            "Mike": "Jay",
+            "Sam": "Jay"
           }
         }
       ]
