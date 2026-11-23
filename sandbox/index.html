@@ -253,6 +253,19 @@ body:not([data-tab="podcast"]) .player{display:none}
 #sc-st{font-size:13px;font-weight:700;color:var(--muted)}#sc-st.live{color:var(--red)}
 .mc .mx-n.lose,.mc .mx-s.lose{color:var(--muted)}
 .mc-res{font-size:12px;color:var(--muted);margin-top:8px}
+.mc[data-a]{cursor:pointer}
+.mc-more{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
+.mc.open .mc-more{display:block}
+.mm-lead{color:var(--white);font-weight:700;font-size:14px;margin:0 0 8px}
+.mm-dl{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;gap:2px 20px;margin:0 0 8px}
+.mm-dl dt{font-size:11px}.mm-dl dd{margin:0;color:var(--white);font:400 15px/1.1 "Chakra Petch",sans-serif}
+.mm-note{margin:0 0 4px;line-height:1.45}
+.mm-list{list-style:none;margin:0;padding:0}
+.mm-list li{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
+.mm-list li:last-child{border-bottom:0}
+.mm-when{font-size:11.5px;white-space:nowrap}
+.mm-sc{font:400 12.5px "Chakra Petch",sans-serif;white-space:nowrap;text-align:right}
+.mm-sc .w{color:var(--white)}
 .mcards{display:grid;gap:10px}
 .mc{background:var(--surface);border-radius:14px;padding:12px 14px}
 .mc .mx-n{font-size:15px}
@@ -517,7 +530,7 @@ async function fetchSleeper(prev){
   const G=Math.max(0,...rosters.map(r=>(r.settings.wins||0)+(r.settings.losses||0)+(r.settings.ties||0)));
   const uById={}; users.forEach(u=>uById[u.user_id]=u);
   const teams={};
-  rosters.forEach(r=>{const u=uById[r.owner_id]||{}; const tn=((u.metadata&&u.metadata.team_name)||u.display_name||("Team "+r.roster_id)).trim(); teams[r.roster_id]={team:(MOLE[league.season]===r.owner_id?"Mole":null)||FIRST_NAMES[r.owner_id]||u.display_name||tn,teamName:tn};});
+  rosters.forEach(r=>{const u=uById[r.owner_id]||{}; const tn=((u.metadata&&u.metadata.team_name)||u.display_name||("Team "+r.roster_id)).trim(); teams[r.roster_id]={team:(MOLE[league.season]===r.owner_id?"Mole":null)||FIRST_NAMES[r.owner_id]||u.display_name||tn,teamName:tn,first:FIRST_NAMES[r.owner_id]||null};});
   const same=prev&&prev.season===league.season;
   const weeks={}, sched={}, need=[], pp={}, starters={}; let ppLive=null;
   for(let w=1;w<=regEnd;w++){
@@ -943,12 +956,58 @@ function renderOdds(){
   document.getElementById("mcards").innerHTML=sorted.map(g=>{
     const A=D.teams[g.a].team, B=D.teams[g.b].team, live=g.status==="live", fin=g.status==="final";
     const pA=fin?(g.sa>g.sb?1:0):g.p, w=Math.round(pA*1000)/10;
-    return `<div class="mc ${g===gotw?"gotw":""}">${g===gotw?`<div class="mc-tag">Game of the Week</div>`:""}
+    return `<div class="mc ${g===gotw?"gotw":""} ${mOpen.has(g.a+"-"+g.b)?"open":""}" data-a="${g.a}" data-b="${g.b}" role="button" tabindex="0" aria-expanded="${mOpen.has(g.a+"-"+g.b)}">${g===gotw?`<div class="mc-tag">Game of the Week</div>`:""}
       <div class="mx-row"><span><span class="mx-n">${esc(A)}</span>${live||fin?` <span class="mx-s">${f2(g.sa)}</span>`:""}</span><span>${live||fin?`<span class="mx-s op">${f2(g.sb)}</span> `:""}<span class="mx-n op">${esc(B)}</span></span></div>
       <div class="mx-bar" role="img" aria-label="${esc(A)} ${pct(pA)} to win, ${esc(B)} ${pct(1-pA)}"><i style="width:${w}%"></i></div>
       <div class="mx-p"><span>${pct(pA)}</span><span>${pct(1-pA)}</span></div>
-      <div class="mc-ifs">${side(g.a,g,0)}${side(g.b,g,1)}</div></div>`;
+      <div class="mc-ifs">${side(g.a,g,0)}${side(g.b,g,1)}</div>${mcMore(D,g.a,g.b)}</div>`;
   }).join("");
+}
+// ---------- HEAD-TO-HEAD (tap a matchup on Scores) ----------
+// h2h.json: every meeting between current members from the LEDG Historical Data sheet (2010 through last season),
+// keyed "First|First" (alphabetical) as [year, week, round tag, first name's score, second name's score].
+// This season's meetings are added from Sleeper.
+let H2H=null, h2hLoading=false; const mOpen=new Set();
+const ROUND={CHMP:"Championship",CSF:"Semifinal",CQF:"Quarterfinal","3rdGM":"3rd Place Game","5thGM":"5th Place Game","7thGM":"7th Place Game","9thGM":"9th Place Game",MQF:"Mole Quarterfinal",MSF:"Mole Semifinal",MBWL:"Mole Bowl",POST:"Postseason"};
+async function loadH2H(){
+  if(H2H||h2hLoading) return; h2hLoading=true;
+  try{ const r=await fetch("h2h.json"); if(!r.ok) throw new Error(r.status); H2H=await r.json(); }catch(e){ console.warn("head-to-head unavailable",e); H2H={pairs:{},failed:true}; }
+  renderOdds();
+}
+// every meeting from a's side: [year, week, tag, a's score, b's score], oldest first
+function meetings(D,a,b){
+  const fa=D.teams[a]&&D.teams[a].first, fb=D.teams[b]&&D.teams[b].first; if(!fa||!fb) return [];
+  const flip=fa>fb, key=flip?fb+"|"+fa:fa+"|"+fb;
+  const hist=((H2H&&H2H.pairs[key])||[]).filter(m=>m[0]<+D.season).map(([y,w,t,x,z])=>flip?[y,w,t,z,x]:[y,w,t,x,z]);
+  const cur=[];
+  for(let w=1;w<=D.lastFinalWeek;w++){ const rows=D.weeks[w]||[], ra=rows.find(r=>r[0]===a), rb=rows.find(r=>r[0]===b); if(ra&&rb&&ra[1]===rb[1]) cur.push([+D.season,w,"REG",ra[2],rb[2]]); }
+  return hist.concat(cur);
+}
+function mcMore(D,a,b){
+  if(!mOpen.has(a+"-"+b)) return `<div class="mc-more"></div>`;
+  if(!H2H){ loadH2H(); return `<div class="mc-more"><p class="o-empty">Loading the series history…</p></div>`; }
+  const A=esc(D.teams[a].team), B=esc(D.teams[b].team), M=meetings(D,a,b);
+  if(H2H.failed&&!M.length) return `<div class="mc-more"><p class="o-empty">Couldn't load the series history. Check your connection and try again.</p></div>`;
+  if(!M.length) return `<div class="mc-more"><p class="mm-lead">First-ever meeting.</p></div>`;
+  const rec=arr=>arr.reduce((r,m)=>(r[m[3]>m[4]?0:m[3]<m[4]?1:2]++,r),[0,0,0]), fmt=r=>r[0]+"-"+r[1]+(r[2]?"-"+r[2]:"");
+  const all=rec(M), reg=rec(M.filter(m=>m[2]==="REG")), post=rec(M.filter(m=>m[2]!=="REG"));
+  const lead=all[0]>all[1]?`${A} leads the series ${all[0]}-${all[1]}${all[2]?"-"+all[2]:""}`:all[1]>all[0]?`${B} leads the series ${all[1]}-${all[0]}${all[2]?"-"+all[2]:""}`:`Series tied ${all[0]}-${all[1]}${all[2]?"-"+all[2]:""}`;
+  const avg=i=>M.reduce((s,m)=>s+m[i],0)/M.length;
+  let k=M.length-1; const lw=M[k][3]>M[k][4]?a:M[k][3]<M[k][4]?b:null; let n=0;
+  while(k>=0&&lw&&((M[k][3]>M[k][4])===(lw===a))&&M[k][3]!==M[k][4]){n++;k--;}
+  const streak=lw?`${lw===a?A:B} ${n===1?"won the last meeting":`has won the last ${n}`}`:"The last meeting was a tie";
+  const big=sign=>M.reduce((best,m)=>{const d=(m[3]-m[4])*sign; return d>0&&(!best||d>best.d)?{d,m}:best;},null);
+  const ba=big(1), bb=big(-1), when=m=>`${m[0]} ${m[2]==="REG"?"Wk "+m[1]:ROUND[m[2]]||"Postseason"}`;
+  const line=m=>{ const aw=m[3]>m[4], bw=m[4]>m[3];
+    return `<li><span class="mm-when">${when(m)}</span><span class="mm-sc"><span class="${aw?"w":""}">${A} ${f2(m[3])}</span> – <span class="${bw?"w":""}">${f2(m[4])} ${B}</span></span></li>`; };
+  const posts=M.filter(m=>m[2]!=="REG").reverse(), recent=M.slice(-5).reverse();
+  return `<div class="mc-more">
+    <p class="mm-lead">${lead}</p>
+    <dl class="mm-dl"><dt>Regular season</dt><dt>Postseason</dt><dt>Avg score</dt><dd>${fmt(reg)}</dd><dd>${post.reduce((x,y)=>x+y,0)?fmt(post):"–"}</dd><dd>${avg(3).toFixed(1)} – ${avg(4).toFixed(1)}</dd></dl>
+    <p class="mm-note">${streak}.${ba?` Biggest win for ${A}: ${f2(ba.d)} (${when(ba.m)}).`:""}${bb?` Biggest win for ${B}: ${f2(bb.d)} (${when(bb.m)}).`:""}</p>
+    ${posts.length?`<div class="o-h3">Postseason meetings</div><ul class="mm-list">${posts.map(line).join("")}</ul>`:""}
+    <div class="o-h3">Last ${recent.length===1?"meeting":recent.length+" meetings"}</div><ul class="mm-list">${recent.map(line).join("")}</ul>
+  </div>`;
 }
 // Scoreboard cards for any week other than the one the odds cover: final scores, or the matchup with a pregame win chance.
 function weekCards(D,W,stW){
@@ -959,13 +1018,13 @@ function weekCards(D,W,stW){
     const A=esc(D.teams[a].team), B=esc(D.teams[b].team);
     if(stW!=="upcoming"){
       const aw=pa>pb, tie=pa===pb, m=Math.abs(pa-pb);
-      return `<div class="mc"><div class="mx-row"><span><span class="mx-n ${aw||tie?"":"lose"}">${A}</span> <span class="mx-s ${aw||tie?"":"lose"}">${f2(pa)}</span></span><span><span class="mx-s op ${!aw||tie?"":"lose"}">${f2(pb)}</span> <span class="mx-n op ${!aw||tie?"":"lose"}">${B}</span></span></div>
-        <div class="mc-res">${stW==="live"?"Live":tie?"Final · Tie":`Final · ${aw?A:B} by ${f2(m)}`}</div></div>`;
+      return `<div class="mc ${mOpen.has(a+"-"+b)?"open":""}" data-a="${a}" data-b="${b}" role="button" tabindex="0" aria-expanded="${mOpen.has(a+"-"+b)}"><div class="mx-row"><span><span class="mx-n ${aw||tie?"":"lose"}">${A}</span> <span class="mx-s ${aw||tie?"":"lose"}">${f2(pa)}</span></span><span><span class="mx-s op ${!aw||tie?"":"lose"}">${f2(pb)}</span> <span class="mx-n op ${!aw||tie?"":"lose"}">${B}</span></span></div>
+        <div class="mc-res">${stW==="live"?"Live":tie?"Final · Tie":`Final · ${aw?A:B} by ${f2(m)}`}</div>${mcMore(D,a,b)}</div>`;
     }
     const p=ODDS.mu?Phi((ODDS.mu[a]-ODDS.mu[b])/(ODDS.SD*Math.SQRT2)):.5, w=Math.round(p*1000)/10;
-    return `<div class="mc"><div class="mx-row"><span class="mx-n">${A}</span><span class="mx-n op">${B}</span></div>
+    return `<div class="mc ${mOpen.has(a+"-"+b)?"open":""}" data-a="${a}" data-b="${b}" role="button" tabindex="0" aria-expanded="${mOpen.has(a+"-"+b)}"><div class="mx-row"><span class="mx-n">${A}</span><span class="mx-n op">${B}</span></div>
       <div class="mx-bar" role="img" aria-label="${A} ${pct(p)} to win, ${B} ${pct(1-p)}"><i style="width:${w}%"></i></div>
-      <div class="mx-p"><span>${pct(p)}</span><span>${pct(1-p)}</span></div></div>`;
+      <div class="mx-p"><span>${pct(p)}</span><span>${pct(1-p)}</span></div>${mcMore(D,a,b)}</div>`;
   }).join("");
 }
 // What a team is playing for this week, best first: playoffs, then a bye, then the title, then dodging the Mole.
@@ -1000,6 +1059,13 @@ document.getElementById("olist").addEventListener("click",e=>{
   li.classList.toggle("open"); li.querySelector("button").setAttribute("aria-expanded",oOpen.has(id));
 });
 document.getElementById("oseg").addEventListener("click",e=>{const v=e.target.dataset.o; if(v){OVIEW=v; renderOdds(); window.scrollTo(0,0);}});
+// tap a matchup to open its head-to-head history (one or more can stay open)
+function toggleMatch(e){
+  const c=e.target.closest(".mc[data-a]"); if(!c) return; if(e.type==="keydown"&&e.key!=="Enter"&&e.key!==" ") return; if(e.type==="keydown") e.preventDefault();
+  const k=c.dataset.a+"-"+c.dataset.b; mOpen.has(k)?mOpen.delete(k):mOpen.add(k); renderOdds();
+}
+document.getElementById("mcards").addEventListener("click",toggleMatch);
+document.getElementById("mcards").addEventListener("keydown",toggleMatch);
 document.getElementById("sc-week").addEventListener("change",e=>{ const w=+e.target.value; SW=(w===(matchWeek(DATA)||ODDS&&ODDS.week))?null:w; renderOdds(); });
 document.getElementById("rg-team").addEventListener("change",e=>{
   ME=+e.target.value||null; try{ ME?localStorage.setItem("ledg-me",ME):localStorage.removeItem("ledg-me"); }catch(_){}
