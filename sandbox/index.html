@@ -274,7 +274,11 @@ body:not([data-tab="podcast"]) .player{display:none}
 .mcards{display:grid;gap:10px}
 .mc{background:var(--surface);border-radius:14px;padding:12px 14px}
 .mc .mx-n{font-size:15px}
-.mc.gotw{box-shadow:inset 0 0 0 1px var(--gold)}
+.mc-tag.odds{color:#cfdcf2}
+.mc-calls{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted);margin-top:8px}
+.mc-calls b{color:#dbe4f3;font-weight:700}
+.mc-calls .hit{color:#4ade80}.mc-calls .hit b{color:#4ade80}
+.mc-calls .miss{color:var(--red)}.mc-calls .miss b{color:var(--red)}
 .mc-tag{font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px}
 .mc-ifs{display:flex;justify-content:space-between;gap:10px;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
 .mc-if{font-size:11.5px;color:var(--muted);white-space:nowrap}
@@ -946,12 +950,11 @@ function renderOdds(){
   const stW=W<=D.lastFinalWeek?"final":W===D.liveWeek?"live":"upcoming", st=document.getElementById("sc-st");
   st.textContent={final:"Final",live:"Live",upcoming:""}[stW]; st.className=stW;
   if(!(W===fw&&G.length)){ document.getElementById("mcards").innerHTML=weekCards(D,W,stW); return; }
-  // how much each game moves the whole playoff race
-  // how much is still at stake in each game for the whole playoff race (a nearly decided game counts for little)
-  G.forEach(g=>{ const n=g.n[0]+g.n[1], q=4*g.n[0]*g.n[1]/Math.max(1,n*n);
-    g.lev=q*ids.reduce((s,i)=>{const a=ODDS[i].cond("po",g.g,0),b=ODDS[i].cond("po",g.g,1); return s+(a!=null&&b!=null?Math.abs(a-b):0);},0); });
-  const gotw=G.slice().sort((a,b)=>b.lev-a.lev)[0];
-  const sorted=[gotw,...G.filter(g=>g!==gotw)];
+  // Games of the Week: the hosts' picks from the podcast, then the Odds' pick (locked at the week's first kickoff)
+  const HP=hostPicks(D,W), rank=oddsPickRank(D,W)||[], key=g=>g.a+"-"+g.b;
+  const oddsPick=rank.find(k=>!HP[k]);
+  const pos=g=>HP[key(g)]?HP[key(g)].order:key(g)===oddsPick?10:20+Math.max(0,rank.indexOf(key(g)));
+  const sorted=G.slice().sort((x,y)=>pos(x)-pos(y));
   // each side shows what this game means for that team: playoff odds, or bye / title / Mole odds once that's settled
   const side=(id,g,s)=>{ const o=ODDS[id], goal=goalFor(o,CL[id]||{});
     if(!goal) return `<span class="mc-if"><i>Nothing big at stake</i></span>`;
@@ -961,12 +964,64 @@ function renderOdds(){
   document.getElementById("mcards").innerHTML=sorted.map(g=>{
     const A=D.teams[g.a].team, B=D.teams[g.b].team, live=g.status==="live", fin=g.status==="final";
     const pA=fin?(g.sa>g.sb?1:0):g.p, w=Math.round(pA*1000)/10;
-    return `<div class="mc ${g===gotw?"gotw":""} ${mOpen.has(g.a+"-"+g.b)?"open":""}" data-a="${g.a}" data-b="${g.b}" role="button" tabindex="0" aria-expanded="${mOpen.has(g.a+"-"+g.b)}">${g===gotw?`<div class="mc-tag">Game of the Week</div>`:""}
+    return `<div class="mc ${mOpen.has(g.a+"-"+g.b)?"open":""}" data-a="${g.a}" data-b="${g.b}" role="button" tabindex="0" aria-expanded="${mOpen.has(g.a+"-"+g.b)}">${gotwTag(HP[key(g)],key(g)===oddsPick)}
       <div class="mx-row"><span><span class="mx-n">${esc(A)}</span>${live||fin?` <span class="mx-s">${f2(g.sa)}</span>`:""}</span><span>${live||fin?`<span class="mx-s op">${f2(g.sb)}</span> `:""}<span class="mx-n op">${esc(B)}</span></span></div>
       <div class="mx-bar" role="img" aria-label="${esc(A)} ${pct(pA)} to win, ${esc(B)} ${pct(1-pA)}"><i style="width:${w}%"></i></div>
       <div class="mx-p"><span>${pct(pA)}</span><span>${pct(1-pA)}</span></div>
+      ${callsHTML(D,HP[key(g)],fin?(g.sa>g.sb?g.a:g.sb>g.sa?g.b:0):null)}
       <div class="mc-ifs">${side(g.a,g,0)}${side(g.b,g,1)}</div>${mcMore(D,g.a,g.b,W)}</div>`;
   }).join("");
+}
+// ---------- GAMES OF THE WEEK ----------
+// gotw.json holds each host's Game of the Week from the podcast (Adam, Mike, Sam) and who each of them picked to win.
+// The Odds' Game of the Week is the game with the most playoff stakes that no host picked, ranked once from the
+// pregame odds and kept for the rest of the week.
+let GOTW=null, gotwLoading=false, RANKING=false;
+async function loadGOTW(){
+  if(GOTW||gotwLoading) return; gotwLoading=true;
+  try{ const r=await fetch("gotw.json?ts="+Date.now(),{cache:"no-store"}); if(!r.ok) throw new Error(r.status); GOTW=await r.json(); }catch(e){ console.warn("games of the week unavailable",e); GOTW={}; }
+  renderOdds();
+}
+function idByFirst(D,f){ const k=Object.keys(D.teams).find(k=>D.teams[k].first===f); return k?+k:0; }
+// "a-b" (either order) -> {host, order, calls:[[host, picked team id]]}
+function hostPicks(D,W){
+  if(!GOTW){ loadGOTW(); return {}; }
+  const wk=GOTW[D.season]&&GOTW[D.season][W], out={}; if(!wk) return out;
+  (wk.games||[]).forEach((g,i)=>{ const a=idByFirst(D,g.teams[0]), b=idByFirst(D,g.teams[1]); if(!a||!b) return;
+    const v={host:g.host,order:i,calls:Object.entries(g.calls||{}).map(([h,f])=>[h,idByFirst(D,f)])}; out[a+"-"+b]=v; out[b+"-"+a]=v; });
+  return out;
+}
+function stakesRank(games,cond,ids){ // most at stake first
+  return games.map(g=>{ const n=g.n[0]+g.n[1], q=4*g.n[0]*g.n[1]/Math.max(1,n*n);
+    return [g.a+"-"+g.b, q*ids.reduce((s,i)=>{const x=cond(i,g.g,0),y=cond(i,g.g,1); return s+(x!=null&&y!=null?Math.abs(x-y):0);},0)]; })
+    .sort((x,y)=>y[1]-x[1]).map(x=>x[0]);
+}
+function oddsPickRank(D,W){
+  const key=D.season+":"+W; let c={}; try{ c=JSON.parse(localStorage.getItem("ledg-gotw-rank")||"{}"); }catch(e){}
+  if(c[key]) return c[key];
+  if(!ODDS||ODDS.week!==W) return null;
+  const save=r=>{ try{ localStorage.setItem("ledg-gotw-rank",JSON.stringify({[key]:r})); }catch(e){} return r; };
+  const ids=Object.keys(D.teams).map(Number);
+  if(D.liveWeek!==W) return save(stakesRank(ODDS.games,(i,g,s)=>ODDS[i].cond("po",g,s),ids)); // odds are still pregame
+  // the week is already underway on this phone: rebuild the pregame picture once, without live scores
+  if(RANKING) return null; RANKING=true;
+  const m=modelFor(D,D.lastFinalWeek), left=gamesLeft(D,D.lastFinalWeek,W);
+  simulate(D,{...m,liveT:{},left},3000,()=>true,S=>{
+    const games=left.filter(x=>x[3]!=null).map(([,a,b,g])=>({a,b,g,n:S.cN[g]}));
+    save(stakesRank(games,(i,g,s)=>{const t=S.ids.indexOf(i), n=S.cN[g][s]; return n?S.cond.po[(t*S.nG+g)*2+s]/n:null;},ids));
+    RANKING=false; renderOdds();
+  });
+  return null;
+}
+function gotwTag(hp,odds){
+  if(hp) return `<div class="mc-tag">${esc(hp.host)}'s Game of the Week</div>`;
+  return odds?`<div class="mc-tag odds">The Odds' Game of the Week</div>`:"";
+}
+// who each host picked to win; ✓ / ✗ once the game is final (winner = team id, 0 = tie, null = not final)
+function callsHTML(D,hp,winner){
+  if(!hp||!hp.calls.length) return "";
+  return `<div class="mc-calls">${hp.calls.map(([h,id])=>{ const r=winner==null||!id?"":id===winner?"hit":"miss";
+    return `<span class="${r}">${esc(h)}: <b>${id?esc(D.teams[id].team):"?"}</b>${r==="hit"?" ✓":r==="miss"?" ✗":""}</span>`; }).join("")}</div>`;
 }
 // ---------- HEAD-TO-HEAD (tap a matchup on Scores) ----------
 // h2h.json: every meeting between current members from the LEDG Historical Data sheet (2010 through last season),
@@ -1047,19 +1102,23 @@ function droughtText(L,Wn,m,n){
 // Scoreboard cards for any week other than the one the odds cover: final scores, or the matchup with a pregame win chance.
 function weekCards(D,W,stW){
   const byM={}; (stW==="upcoming"?(D.sched[W]||D.weeks[W]||[]):(D.weeks[W]||[])).forEach(([r,m,p])=>(byM[m]=byM[m]||[]).push([r,p||0]));
-  const games=Object.keys(byM).sort((a,b)=>a-b).map(m=>byM[m]).filter(g=>g.length===2);
+  const HP=hostPicks(D,W), hk=g=>g[0][0]+"-"+g[1][0];
+  let rk=[]; try{ rk=JSON.parse(localStorage.getItem("ledg-gotw-rank")||"{}")[D.season+":"+W]||[]; }catch(e){}
+  const op=rk.find(k=>!HP[k]), isOP=(a,b)=>op===a+"-"+b||op===b+"-"+a;
+  const games=Object.keys(byM).sort((a,b)=>a-b).map(m=>byM[m]).filter(g=>g.length===2)
+    .sort((x,y)=>(HP[hk(x)]?HP[hk(x)].order:isOP(x[0][0],x[1][0])?5:9)-(HP[hk(y)]?HP[hk(y)].order:isOP(y[0][0],y[1][0])?5:9));
   if(!games.length) return `<p class="o-empty">No matchups found for Week ${W}.</p>`;
   return games.map(([[a,pa],[b,pb]])=>{
     const A=esc(D.teams[a].team), B=esc(D.teams[b].team);
     if(stW!=="upcoming"){
       const aw=pa>pb, tie=pa===pb, m=Math.abs(pa-pb);
-      return `<div class="mc ${mOpen.has(a+"-"+b)?"open":""}" data-a="${a}" data-b="${b}" role="button" tabindex="0" aria-expanded="${mOpen.has(a+"-"+b)}"><div class="mx-row"><span><span class="mx-n ${aw||tie?"":"lose"}">${A}</span> <span class="mx-s ${aw||tie?"":"lose"}">${f2(pa)}</span></span><span><span class="mx-s op ${!aw||tie?"":"lose"}">${f2(pb)}</span> <span class="mx-n op ${!aw||tie?"":"lose"}">${B}</span></span></div>
-        <div class="mc-res">${stW==="live"?"Live":tie?"Final · Tie":`Final · ${aw?A:B} by ${f2(m)}`}</div>${mcMore(D,a,b,W)}</div>`;
+      return `<div class="mc ${mOpen.has(a+"-"+b)?"open":""}" data-a="${a}" data-b="${b}" role="button" tabindex="0" aria-expanded="${mOpen.has(a+"-"+b)}">${gotwTag(HP[a+"-"+b],isOP(a,b))}<div class="mx-row"><span><span class="mx-n ${aw||tie?"":"lose"}">${A}</span> <span class="mx-s ${aw||tie?"":"lose"}">${f2(pa)}</span></span><span><span class="mx-s op ${!aw||tie?"":"lose"}">${f2(pb)}</span> <span class="mx-n op ${!aw||tie?"":"lose"}">${B}</span></span></div>
+        <div class="mc-res">${stW==="live"?"Live":tie?"Final · Tie":`Final · ${aw?A:B} by ${f2(m)}`}</div>${callsHTML(D,HP[a+"-"+b],stW==="final"?(aw?a:tie?0:b):null)}${mcMore(D,a,b,W)}</div>`;
     }
     const p=ODDS.mu?Phi((ODDS.mu[a]-ODDS.mu[b])/(ODDS.SD*Math.SQRT2)):.5, w=Math.round(p*1000)/10;
-    return `<div class="mc ${mOpen.has(a+"-"+b)?"open":""}" data-a="${a}" data-b="${b}" role="button" tabindex="0" aria-expanded="${mOpen.has(a+"-"+b)}"><div class="mx-row"><span class="mx-n">${A}</span><span class="mx-n op">${B}</span></div>
+    return `<div class="mc ${mOpen.has(a+"-"+b)?"open":""}" data-a="${a}" data-b="${b}" role="button" tabindex="0" aria-expanded="${mOpen.has(a+"-"+b)}">${gotwTag(HP[a+"-"+b],isOP(a,b))}<div class="mx-row"><span class="mx-n">${A}</span><span class="mx-n op">${B}</span></div>
       <div class="mx-bar" role="img" aria-label="${A} ${pct(p)} to win, ${B} ${pct(1-p)}"><i style="width:${w}%"></i></div>
-      <div class="mx-p"><span>${pct(p)}</span><span>${pct(1-p)}</span></div>${mcMore(D,a,b,W)}</div>`;
+      <div class="mx-p"><span>${pct(p)}</span><span>${pct(1-p)}</span></div>${callsHTML(D,HP[a+"-"+b],null)}${mcMore(D,a,b,W)}</div>`;
   }).join("");
 }
 // What a team is playing for this week, best first: playoffs, then a bye, then the title, then dodging the Mole.
