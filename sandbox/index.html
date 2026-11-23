@@ -1077,8 +1077,14 @@ function pickemHTML(D,W){
     ${order.map(n=>{ const r=rec[n], h=hosts.has(n); if(h) rank++;
       return `<div class="pk-row ${n==="Stat Boy"?"pk-sb":""} ${h?"":"guest"}"><span class="pk-rk">${h?rank:""}</span><span class="pk-n">${esc(n)}${h?"":` <i>guest</i>`}</span><span class="num">${fmt(r.w[wk])}</span><span class="num">${fmt(r.s)} <em>${p3(pctOf(r))}</em></span></div>`; }).join("")}`;
 }
-// Stat Boy (the app) picks the pregame favorite in every game. No pick when it's a dead even coin flip (Week 1).
-function statBoyPick(D,W,a,b){ if(W<2) return 0; const p=pregameP(D,W,a,b); return p>0.5?a:p<0.5?b:0; }
+// Stat Boy (the app) picks the pregame favorite in every game. When the odds are dead even (all of Week 1),
+// he flips a coin: a fixed one per matchup, so every phone gets the same pick and it never changes.
+function statBoyPick(D,W,a,b){
+  const p=W<2?0.5:pregameP(D,W,a,b); if(p>0.5) return a; if(p<0.5) return b;
+  const n=x=>(D.teams[x].first||D.teams[x].team), [x,y]=[a,b].sort((i,j)=>n(i)<n(j)?-1:1);
+  let h=0; for(const c of D.season+"-"+W+"-"+n(x)+"|"+n(y)) h=(h*31+c.charCodeAt(0))>>>0;
+  return (h>>>3)%2?y:x;
+}
 function callsHTML(D,hp,winner,sb){
   const calls=(hp?hp.calls.slice():[]); if(sb) calls.push(["Stat Boy",sb]);
   if(!calls.length) return "";
