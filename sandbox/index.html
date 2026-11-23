@@ -241,7 +241,8 @@ body:not([data-tab="podcast"]) .player{display:none}
 .sb i{display:block;width:100%;border-radius:3px 3px 0 0;background:var(--faint)}
 .sb i.g{background:var(--gold)}.sb i.w{background:var(--white)}.sb i.r{background:var(--red)}
 .sb span{font:600 11px/1 "Chakra Petch",sans-serif;color:var(--muted);margin-top:5px}
-.movers{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:4px 0 14px}
+.movers{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0 0 12px}
+.rg-wk{font-size:13px;font-weight:700;color:var(--muted);margin:0 0 10px}.rg-wk b{color:var(--red)}
 .mv-l{font-size:11px;font-weight:700;color:var(--muted)}
 .mv{font:400 12px/1 "Chakra Petch",sans-serif;padding:4px 7px;border-radius:999px;background:rgba(255,255,255,.08)}
 .mv.up{color:#4ade80}.mv.down{color:var(--red)}
@@ -317,11 +318,19 @@ body:not([data-tab="podcast"]) .player{display:none}
     <div class="key"><span><i style="background:var(--gold)"></i>Bye (Top 2)</span><span><i style="background:var(--white)"></i>Playoffs (Top 6)</span><span><i style="background:var(--red)"></i>Mole-offs bye (Bottom 2)</span><span><b></b>Playoff line</span><span id="odds-note">Odds: calculating…</span></div>
   </section>
   <section class="view" id="v-odds">
+    <div class="subhead">
+      <div class="seg" id="oseg" role="group" aria-label="Odds view"><button data-o="playoffs">Playoffs</button><button data-o="root">Rooting Guide</button></div>
+    </div>
     <div id="o-playoffs">
       <div id="movers"></div>
       <div class="ocols" aria-hidden="true"><span>Team</span><span>Playoffs</span><span>Bye</span><span>Title</span><span>Mole</span></div>
       <ul class="list" id="olist"></ul>
       <div class="key"><span><span style="color:#4ade80">✓</span> Clinched</span><span>– Eliminated</span></div>
+    </div>
+    <div id="o-root" hidden>
+      <p class="rg-wk" id="rg-wk"></p>
+      <label class="rg-pick"><select id="rg-team" aria-label="Team for the rooting guide"></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></label>
+      <div id="root"></div>
     </div>
     <p class="o-note" id="o-note"></p>
   </section>
@@ -336,7 +345,6 @@ body:not([data-tab="podcast"]) .player{display:none}
     <div id="o-week">
       <div class="o-wk"><label class="rg-pick wk-pick"><select id="sc-week" aria-label="Week"></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></label><span id="sc-st"></span></div>
       <div class="mcards" id="mcards"></div>
-      <div id="rg"><h2 class="o-h2">Rooting Guide</h2><label class="rg-pick"><select id="rg-team" aria-label="Team for the rooting guide"></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></label><div id="root"></div></div>
     </div>
   </section>
   <p class="note" id="foot" hidden></p>
@@ -845,6 +853,7 @@ function showTab(t){
 }
 // ---------- ODDS PAGE ----------
 const oOpen=new Set();
+let OVIEW="playoffs"; // Odds page view: playoffs | root
 let SW=null; // week picked on the Scores page (null = the current week)
 let ME=null; try{ ME=+localStorage.getItem("ledg-me")||null; }catch(e){}
 // Percent for odds cells; clinched/eliminated shown as ✓ / –
@@ -878,6 +887,9 @@ function oddsNote(D){
 function renderOdds(){
   const D=DATA; if(!D) return;
   document.getElementById("o-note").textContent=oddsNote(D);
+  document.querySelectorAll("#oseg button").forEach(b=>{const on=b.dataset.o===OVIEW; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on);});
+  document.getElementById("o-playoffs").hidden=OVIEW!=="playoffs";
+  document.getElementById("o-root").hidden=OVIEW!=="root";
   if(!ODDS){ document.getElementById("olist").innerHTML=`<li class="o-empty">Running the numbers…</li>`; document.getElementById("mcards").innerHTML=""; return; }
   const ids=Object.keys(D.teams).map(Number), CL=ODDS.clinch||{};
   const {rows}=standings(D,D.lastFinalWeek); const rec={}; rows.forEach((r,k)=>rec[r.id]={r,seed:k+1});
@@ -896,7 +908,18 @@ function renderOdds(){
         <div class="o-h3">Chance of each final seed (%)</div>${seedBars(o)}
       </div></li>`;
   }).join("");
-  // ---- This Week view
+  // ---- Rooting Guide (Odds page): always about the week the odds cover
+  document.getElementById("rg-wk").innerHTML=ODDS.week?`Week ${ODDS.week}${D.liveWeek===ODDS.week?` · <b>Live</b>`:""}`:"";
+  if(!ODDS.week||!(ODDS.games||[]).length) document.getElementById("root").innerHTML=`<p class="o-empty">The regular season is over, so there's nothing left to root for.</p>`;
+  else { const G=ODDS.games;
+  const chipOrder=rows.map(r=>r.id);
+  // dropdown of teams in standings order; only rebuilt when the order or names change, so an open menu isn't disturbed
+  const sel=document.getElementById("rg-team"), sig=chipOrder.map(id=>id+":"+D.teams[id].team).join("|");
+  if(sel.dataset.sig!==sig){ sel.dataset.sig=sig; sel.innerHTML=`<option value="">Pick a team</option>`+chipOrder.map(id=>`<option value="${id}">${esc(D.teams[id].team)}</option>`).join(""); }
+  sel.value=ME&&D.teams[ME]?String(ME):"";
+  document.getElementById("root").innerHTML=ME&&D.teams[ME]?rootingHTML(D,ME,G,CL):`<p class="o-empty">Pick a team to see which results this week help them most.</p>`;
+  }
+  // ---- Scores page: the weekly scoreboard
   const fw=ODDS.week, G=ODDS.games||[];
   // Week dropdown: opens on the Week pill's week (so a finished week's scores stay up until Wednesday's flip)
   const ws=document.getElementById("sc-week"), nW=D.regularSeasonWeeks;
@@ -904,8 +927,7 @@ function renderOdds(){
   const W=SW||matchWeek(D)||fw||D.lastFinalWeek||1; ws.value=String(W);
   const stW=W<=D.lastFinalWeek?"final":W===D.liveWeek?"live":"upcoming", st=document.getElementById("sc-st");
   st.textContent={final:"Final",live:"Live",upcoming:""}[stW]; st.className=stW;
-  if(!(W===fw&&G.length)){ document.getElementById("rg").hidden=true; document.getElementById("mcards").innerHTML=weekCards(D,W,stW); return; }
-  document.getElementById("rg").hidden=false;
+  if(!(W===fw&&G.length)){ document.getElementById("mcards").innerHTML=weekCards(D,W,stW); return; }
   // how much each game moves the whole playoff race
   // how much is still at stake in each game for the whole playoff race (a nearly decided game counts for little)
   G.forEach(g=>{ const n=g.n[0]+g.n[1], q=4*g.n[0]*g.n[1]/Math.max(1,n*n);
@@ -927,13 +949,6 @@ function renderOdds(){
       <div class="mx-p"><span>${pct(pA)}</span><span>${pct(1-pA)}</span></div>
       <div class="mc-ifs">${side(g.a,g,0)}${side(g.b,g,1)}</div></div>`;
   }).join("");
-  // ---- Rooting guide
-  const chipOrder=rows.map(r=>r.id);
-  // dropdown of teams in standings order; only rebuilt when the order or names change, so an open menu isn't disturbed
-  const sel=document.getElementById("rg-team"), sig=chipOrder.map(id=>id+":"+D.teams[id].team).join("|");
-  if(sel.dataset.sig!==sig){ sel.dataset.sig=sig; sel.innerHTML=`<option value="">Pick a team</option>`+chipOrder.map(id=>`<option value="${id}">${esc(D.teams[id].team)}</option>`).join(""); }
-  sel.value=ME&&D.teams[ME]?String(ME):"";
-  document.getElementById("root").innerHTML=ME&&D.teams[ME]?rootingHTML(D,ME,G,CL):`<p class="o-empty">Pick a team to see which results this week help them most.</p>`;
 }
 // Scoreboard cards for any week other than the one the odds cover: final scores, or the matchup with a pregame win chance.
 function weekCards(D,W,stW){
@@ -984,6 +999,7 @@ document.getElementById("olist").addEventListener("click",e=>{
   oOpen.has(id)?oOpen.delete(id):oOpen.add(id);
   li.classList.toggle("open"); li.querySelector("button").setAttribute("aria-expanded",oOpen.has(id));
 });
+document.getElementById("oseg").addEventListener("click",e=>{const v=e.target.dataset.o; if(v){OVIEW=v; renderOdds(); window.scrollTo(0,0);}});
 document.getElementById("sc-week").addEventListener("change",e=>{ const w=+e.target.value; SW=(w===(matchWeek(DATA)||ODDS&&ODDS.week))?null:w; renderOdds(); });
 document.getElementById("rg-team").addEventListener("change",e=>{
   ME=+e.target.value||null; try{ ME?localStorage.setItem("ledg-me",ME):localStorage.removeItem("ledg-me"); }catch(_){}
