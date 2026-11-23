@@ -277,8 +277,8 @@ body:not([data-tab="podcast"]) .player{display:none}
 .mc-tag.odds{color:#cfdcf2}
 .mc-calls{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted);margin-top:8px}
 .mc-calls b{color:#dbe4f3;font-weight:700}
-.mc-calls .hit{color:#4ade80}.mc-calls .hit b{color:#4ade80}
-.mc-calls .miss{color:var(--red)}.mc-calls .miss b{color:var(--red)}
+.mc-calls .hit b{color:#4ade80}
+.mc-calls .miss b{color:var(--red)}
 .mc-tag{font-size:11px;font-weight:700;color:var(--gold)}
 .mc-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px}
 .mc-alert{font-size:11px;font-weight:800;color:var(--red);white-space:nowrap}
@@ -1047,7 +1047,7 @@ function upsetState(D,W,a,b,status,pLive,winner){
 function callsHTML(D,hp,winner){
   if(!hp||!hp.calls.length) return "";
   return `<div class="mc-calls">${hp.calls.map(([h,id])=>{ const r=winner==null||!id?"":id===winner?"hit":"miss";
-    return `<span class="${r}">${esc(h)}: <b>${id?esc(D.teams[id].team):"?"}</b>${r==="hit"?" ✓":r==="miss"?" ✗":""}</span>`; }).join("")}</div>`;
+    return `<span class="${r}">${esc(h)}: <b>${id?esc(D.teams[id].team):"?"}${r==="hit"?" ✓":r==="miss"?" ✗":""}</b></span>`; }).join("")}</div>`;
 }
 // ---------- HEAD-TO-HEAD (tap a matchup on Scores) ----------
 // h2h.json: every meeting between current members from the LEDG Historical Data sheet (2010 through last season),
