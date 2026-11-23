@@ -690,9 +690,12 @@ let RUN=0;
 // of 2026: favorites won 32 of 54 (scores only: 25 of 54). Used for the Scores page odds, Stat Boy's picks and
 // Upset Watch. The playoff odds sims still use scores only. Earlier weeks keep the scores-only odds, so
 // Stat Boy's picks already made don't change. If Sleeper's projections can't be reached, it falls back to scores only.
-const PROJ_FROM={"2026":12}, PROJ_W=0.5, PROJ_TTL=30*60e3;
+const PROJ_FROM={"2026":12}, PROJ_W=0.5, PROJ_TTL=10*60e3;
 let PROJ={}, PROJ_SIG=0, LASTLIVE=null; const projBusy=new Set();
 try{ PROJ=JSON.parse(localStorage.getItem("ledg-proj")||"{}"); }catch(e){}
+// lineups may have changed while the app was closed or in the background: recheck unfinished weeks on open/return
+function projStale(){ for(const k in PROJ) if(!PROJ[k].final) PROJ[k].at=0; }
+projStale();
 function weekMu(D,W,mu){
   const tot=projWeek(D,W); if(!tot) return mu;
   const out={}; for(const id in mu) out[id]=tot[id]!=null?(1-PROJ_W)*mu[id]+PROJ_W*tot[id]:mu[id]; return out;
@@ -1551,6 +1554,7 @@ async function load(first){
     if(first) openDefault(!!d.liveWeek);
     try{ localStorage.setItem("ledg-cache2",JSON.stringify(d)); }catch(e){}
     runOdds(d,LIVE);
+    const pw=matchWeek(d); if(pw) projWeek(d,pw); // checked every minute; refetches when 10+ minutes old
   }catch(e){ console.error(e); if(!DATA){ const n=document.getElementById("std-note"); n.hidden=false; n.textContent="Couldn't reach Sleeper. Check your connection and reload."; } }
   finally{busy=false;}
 }
@@ -1562,7 +1566,7 @@ document.addEventListener("visibilitychange",()=>{
   if(document.visibilityState==="hidden"){ hiddenAt=Date.now(); return; }
   const reopen=hiddenAt && Date.now()-hiddenAt>30*60e3; hiddenAt=0;
   if(reopen){ PICKED=false; SW=null; }
-  load(reopen);
+  projStale(); load(reopen);
 });
 </script>
 </body>
