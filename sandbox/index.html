@@ -938,7 +938,7 @@ function renderOdds(){
   const side=(id,g,s)=>{ const o=ODDS[id], goal=goalFor(o,CL[id]||{});
     if(!goal) return `<span class="mc-if"><i>Nothing big at stake</i></span>`;
     const w=o.cond(goal.k,g.g,s), l=o.cond(goal.k,g.g,1-s), lab={po:"Playoff odds",bye:"Bye odds",ti:"Title odds",mo:"Mole odds"}[goal.k];
-    if(Math.min(...g.n)<150) return `<span class="mc-if"><i>${lab}</i><b>${pct(o[goal.k])}</b> · all but decided</span>`;
+    if(Math.min(...g.n)<150) return `<span class="mc-if"><i>${lab}</i><b>${pct(o[goal.k])}</b></span>`;
     return `<span class="mc-if"><i>${lab}</i>Win <b>${pct(w)}</b> · Lose <b>${pct(l)}</b></span>`; };
   document.getElementById("mcards").innerHTML=sorted.map(g=>{
     const A=D.teams[g.a].team, B=D.teams[g.b].team, live=g.status==="live", fin=g.status==="final";
