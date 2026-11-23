@@ -290,6 +290,77 @@
     }
    ]
   },
+  "5": {
+   "episode": "No episode (picks only)",
+   "games": [
+    {
+     "teams": [
+      "Adam",
+      "Mike"
+     ],
+     "calls": {
+      "Sam": "Adam",
+      "Mike": "Adam",
+      "Adam": "Adam"
+     }
+    },
+    {
+     "teams": [
+      "Alex",
+      "Spencer"
+     ],
+     "calls": {
+      "Sam": "Spencer",
+      "Mike": "Spencer",
+      "Adam": "Spencer"
+     }
+    },
+    {
+     "teams": [
+      "Calvin",
+      "Jay"
+     ],
+     "calls": {
+      "Sam": "Calvin",
+      "Mike": "Calvin",
+      "Adam": "Calvin"
+     }
+    },
+    {
+     "teams": [
+      "Eric",
+      "Nathan"
+     ],
+     "calls": {
+      "Sam": "Eric",
+      "Mike": "Nathan",
+      "Adam": "Nathan"
+     }
+    },
+    {
+     "teams": [
+      "Garren",
+      "Sam"
+     ],
+     "calls": {
+      "Sam": "Sam",
+      "Mike": "Garren",
+      "Adam": "Garren"
+     }
+    },
+    {
+     "teams": [
+      "Jeremy",
+      "Jon"
+     ],
+     "calls": {
+      "Sam": "Jon",
+      "Mike": "Jon",
+      "Adam": "Jon"
+     }
+    }
+   ]
+  },
   "6": {
    "episode": "Ep. 88",
    "games": [
@@ -766,7 +837,7 @@
   }
  },
  "notes": [
-  "Week 5: no rundown or transcript yet (Ep. 87).",
+  "Week 5: no podcast that week; picks provided by Sam (no Games of the Week).",
   "Week 4 Mole vs Jay: Adam's cell was blank; filled in from the official Pick 'em Standings (he called it right).",
   "Week 6 Adam vs Sam: Adam's cell was blank; filled in from the standings (he took himself).",
   "Week 6 Mike vs Mole: Mike switched to himself during recording (the rundown still says Mole).",
