@@ -257,12 +257,16 @@ body:not([data-tab="podcast"]) .player{display:none}
 .mc-more{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
 .mc.open .mc-more{display:block}
 .mm-lead{color:var(--white);font-weight:700;font-size:14px;margin:0 0 8px}
-.mm-dl{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;gap:2px 20px;margin:0 0 8px}
+.mm-dl{display:grid;grid-template-columns:repeat(2,auto);justify-content:start;gap:2px 20px;margin:0 0 8px}
 .mm-dl dt{font-size:11px}.mm-dl dd{margin:0;color:var(--white);font:400 15px/1.1 "Chakra Petch",sans-serif}
 .mm-note{margin:0 0 4px;line-height:1.45}
 .mm-list{list-style:none;margin:0;padding:0}
 .mm-list li{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
 .mm-list li:last-child{border-bottom:0}
+.mm-list li.bw{display:block}
+.bw-top,.bw-bot{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.bw-top{font-size:12px;font-weight:700;color:#dbe4f3;margin-bottom:2px}
+.bw-d{font:400 13px "Chakra Petch",sans-serif;color:#4ade80}
 .mm-when{font-size:11.5px;white-space:nowrap}
 .mm-sc{font:400 12.5px "Chakra Petch",sans-serif;white-space:nowrap;text-align:right}
 .mm-sc .w{color:var(--white)}
@@ -960,7 +964,7 @@ function renderOdds(){
       <div class="mx-row"><span><span class="mx-n">${esc(A)}</span>${live||fin?` <span class="mx-s">${f2(g.sa)}</span>`:""}</span><span>${live||fin?`<span class="mx-s op">${f2(g.sb)}</span> `:""}<span class="mx-n op">${esc(B)}</span></span></div>
       <div class="mx-bar" role="img" aria-label="${esc(A)} ${pct(pA)} to win, ${esc(B)} ${pct(1-pA)}"><i style="width:${w}%"></i></div>
       <div class="mx-p"><span>${pct(pA)}</span><span>${pct(1-pA)}</span></div>
-      <div class="mc-ifs">${side(g.a,g,0)}${side(g.b,g,1)}</div>${mcMore(D,g.a,g.b)}</div>`;
+      <div class="mc-ifs">${side(g.a,g,0)}${side(g.b,g,1)}</div>${mcMore(D,g.a,g.b,W)}</div>`;
   }).join("");
 }
 // ---------- HEAD-TO-HEAD (tap a matchup on Scores) ----------
@@ -983,29 +987,32 @@ function meetings(D,a,b){
   for(let w=1;w<=D.lastFinalWeek;w++){ const rows=D.weeks[w]||[], ra=rows.find(r=>r[0]===a), rb=rows.find(r=>r[0]===b); if(ra&&rb&&ra[1]===rb[1]) cur.push([+D.season,w,"REG",ra[2],rb[2]]); }
   return hist.concat(cur);
 }
-function mcMore(D,a,b){
+// Regular-season weeks show only regular-season meetings; postseason weeks (15-17) show only postseason meetings.
+function mcMore(D,a,b,W){
   if(!mOpen.has(a+"-"+b)) return `<div class="mc-more"></div>`;
   if(!H2H){ loadH2H(); return `<div class="mc-more"><p class="o-empty">Loading the series history…</p></div>`; }
-  const A=esc(D.teams[a].team), B=esc(D.teams[b].team), M=meetings(D,a,b);
+  const post=W>D.regularSeasonWeeks, A=esc(D.teams[a].team), B=esc(D.teams[b].team);
+  const M=meetings(D,a,b).filter(m=>post?m[2]!=="REG":m[2]==="REG");
   if(H2H.failed&&!M.length) return `<div class="mc-more"><p class="o-empty">Couldn't load the series history. Check your connection and try again.</p></div>`;
-  if(!M.length) return `<div class="mc-more"><p class="mm-lead">First-ever meeting.</p></div>`;
-  const rec=arr=>arr.reduce((r,m)=>(r[m[3]>m[4]?0:m[3]<m[4]?1:2]++,r),[0,0,0]), fmt=r=>r[0]+"-"+r[1]+(r[2]?"-"+r[2]:"");
-  const all=rec(M), reg=rec(M.filter(m=>m[2]==="REG")), post=rec(M.filter(m=>m[2]!=="REG"));
-  const lead=all[0]>all[1]?`${A} leads the series ${all[0]}-${all[1]}${all[2]?"-"+all[2]:""}`:all[1]>all[0]?`${B} leads the series ${all[1]}-${all[0]}${all[2]?"-"+all[2]:""}`:`Series tied ${all[0]}-${all[1]}${all[2]?"-"+all[2]:""}`;
+  if(!M.length) return `<div class="mc-more"><p class="mm-lead">First-ever ${post?"postseason ":""}meeting.</p></div>`;
+  const r=M.reduce((r,m)=>(r[m[3]>m[4]?0:m[3]<m[4]?1:2]++,r),[0,0,0]), t=r[2]?"-"+r[2]:"", kind=post?"postseason series":"series";
+  const lead=r[0]>r[1]?`${A} leads the ${kind} ${r[0]}-${r[1]}${t}`:r[1]>r[0]?`${B} leads the ${kind} ${r[1]}-${r[0]}${t}`:`${post?"Postseason series":"Series"} tied ${r[0]}-${r[1]}${t}`;
+  // current streak: who won the most recent meetings in a row
+  const last=M[M.length-1], lw=last[3]>last[4]?a:last[3]<last[4]?b:null; let n=0;
+  for(let k=M.length-1;k>=0&&lw&&(lw===a?M[k][3]>M[k][4]:M[k][4]>M[k][3]);k--) n++;
+  const cur=lw?`${lw===a?A:B} W${n}`:"Tied last time";
   const avg=i=>M.reduce((s,m)=>s+m[i],0)/M.length;
-  let k=M.length-1; const lw=M[k][3]>M[k][4]?a:M[k][3]<M[k][4]?b:null; let n=0;
-  while(k>=0&&lw&&((M[k][3]>M[k][4])===(lw===a))&&M[k][3]!==M[k][4]){n++;k--;}
-  const streak=lw?`${lw===a?A:B} ${n===1?"won the last meeting":`has won the last ${n}`}`:"The last meeting was a tie";
+  const when=m=>m[2]==="REG"?`Week ${m[1]}, ${m[0]}`:`${ROUND[m[2]]||"Postseason"}, ${m[0]}`;
   const big=sign=>M.reduce((best,m)=>{const d=(m[3]-m[4])*sign; return d>0&&(!best||d>best.d)?{d,m}:best;},null);
-  const ba=big(1), bb=big(-1), when=m=>`${m[0]} ${m[2]==="REG"?"Wk "+m[1]:ROUND[m[2]]||"Postseason"}`;
-  const line=m=>{ const aw=m[3]>m[4], bw=m[4]>m[3];
-    return `<li><span class="mm-when">${when(m)}</span><span class="mm-sc"><span class="${aw?"w":""}">${A} ${f2(m[3])}</span> – <span class="${bw?"w":""}">${f2(m[4])} ${B}</span></span></li>`; };
-  const posts=M.filter(m=>m[2]!=="REG").reverse(), recent=M.slice(-5).reverse();
+  const sc=(m,aw)=>`<span class="${m[3]>m[4]?"w":""}">${A} ${f2(m[3])}</span> – <span class="${m[4]>m[3]?"w":""}">${f2(m[4])} ${B}</span>`;
+  const bw=(x,name)=>x?`<li class="bw"><div class="bw-top"><span>${name}'s biggest win</span><span class="bw-d">+${f2(x.d)}</span></div><div class="bw-bot"><span class="mm-when">${when(x.m)}</span><span class="mm-sc">${sc(x.m)}</span></div></li>`
+                       :`<li class="bw"><div class="bw-top"><span>${name}'s biggest win</span></div><div class="bw-bot"><span class="mm-when">No wins yet</span></div></li>`;
+  const line=m=>`<li><span class="mm-when">${when(m)}</span><span class="mm-sc">${sc(m)}</span></li>`;
+  const recent=M.slice(-5).reverse();
   return `<div class="mc-more">
     <p class="mm-lead">${lead}</p>
-    <dl class="mm-dl"><dt>Regular season</dt><dt>Postseason</dt><dt>Avg score</dt><dd>${fmt(reg)}</dd><dd>${post.reduce((x,y)=>x+y,0)?fmt(post):"–"}</dd><dd>${avg(3).toFixed(1)} – ${avg(4).toFixed(1)}</dd></dl>
-    <p class="mm-note">${streak}.${ba?` Biggest win for ${A}: ${f2(ba.d)} (${when(ba.m)}).`:""}${bb?` Biggest win for ${B}: ${f2(bb.d)} (${when(bb.m)}).`:""}</p>
-    ${posts.length?`<div class="o-h3">Postseason meetings</div><ul class="mm-list">${posts.map(line).join("")}</ul>`:""}
+    <dl class="mm-dl"><dt>Current streak</dt><dt>Avg score</dt><dd>${cur}</dd><dd>${avg(3).toFixed(1)} – ${avg(4).toFixed(1)}</dd></dl>
+    <ul class="mm-list">${bw(big(1),A)}${bw(big(-1),B)}</ul>
     <div class="o-h3">Last ${recent.length===1?"meeting":recent.length+" meetings"}</div><ul class="mm-list">${recent.map(line).join("")}</ul>
   </div>`;
 }
@@ -1019,12 +1026,12 @@ function weekCards(D,W,stW){
     if(stW!=="upcoming"){
       const aw=pa>pb, tie=pa===pb, m=Math.abs(pa-pb);
       return `<div class="mc ${mOpen.has(a+"-"+b)?"open":""}" data-a="${a}" data-b="${b}" role="button" tabindex="0" aria-expanded="${mOpen.has(a+"-"+b)}"><div class="mx-row"><span><span class="mx-n ${aw||tie?"":"lose"}">${A}</span> <span class="mx-s ${aw||tie?"":"lose"}">${f2(pa)}</span></span><span><span class="mx-s op ${!aw||tie?"":"lose"}">${f2(pb)}</span> <span class="mx-n op ${!aw||tie?"":"lose"}">${B}</span></span></div>
-        <div class="mc-res">${stW==="live"?"Live":tie?"Final · Tie":`Final · ${aw?A:B} by ${f2(m)}`}</div>${mcMore(D,a,b)}</div>`;
+        <div class="mc-res">${stW==="live"?"Live":tie?"Final · Tie":`Final · ${aw?A:B} by ${f2(m)}`}</div>${mcMore(D,a,b,W)}</div>`;
     }
     const p=ODDS.mu?Phi((ODDS.mu[a]-ODDS.mu[b])/(ODDS.SD*Math.SQRT2)):.5, w=Math.round(p*1000)/10;
     return `<div class="mc ${mOpen.has(a+"-"+b)?"open":""}" data-a="${a}" data-b="${b}" role="button" tabindex="0" aria-expanded="${mOpen.has(a+"-"+b)}"><div class="mx-row"><span class="mx-n">${A}</span><span class="mx-n op">${B}</span></div>
       <div class="mx-bar" role="img" aria-label="${A} ${pct(p)} to win, ${B} ${pct(1-p)}"><i style="width:${w}%"></i></div>
-      <div class="mx-p"><span>${pct(p)}</span><span>${pct(1-p)}</span></div>${mcMore(D,a,b)}</div>`;
+      <div class="mx-p"><span>${pct(p)}</span><span>${pct(1-p)}</span></div>${mcMore(D,a,b,W)}</div>`;
   }).join("");
 }
 // What a team is playing for this week, best first: playoffs, then a bye, then the title, then dodging the Mole.
