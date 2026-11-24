@@ -819,7 +819,13 @@ function simulate(D,ctx,N,alive,done){
     done(S);
   })();
 }
-// Exact clinch / elimination by wins alone (worst case: every tiebreak lost / won). 1 clinched, -1 eliminated.
+// Clinch / elimination. 1 clinched, -1 eliminated, 0 still open.
+// First a quick check by wins alone. Then, with few enough games left, every remaining outcome is checked with the
+// LEDG tiebreakers, so games between other teams count (e.g. two rivals who play each other can't both win).
+// Points scored can't be known ahead, so a team must make it even losing every points tiebreak (clinch), and
+// misses even winning every points tiebreak (eliminated). A team's own wins never hurt it, so its own games are
+// fixed as all losses (clinch test) or all wins (elimination test) and only the other games are enumerated.
+const CLINCH_MAX_GAMES=16; // other teams' games enumerated per check (2^16 = 65,536 outcomes)
 function clinchStatus(D,left){
   const T=buildTable(D,buildGames(D,D.lastFinalWeek)), ids=Object.keys(T).map(Number), rem={};
   ids.forEach(i=>rem[i]=0); left.forEach(([,a,b])=>{rem[a]++;rem[b]++;});
@@ -830,6 +836,53 @@ function clinchStatus(D,left){
     const canReach=ids.filter(j=>j!==i&&T[j].w+rem[j]>=mn).length, surelyAbove=ids.filter(j=>j!==i&&T[j].w>mx).length;
     const st=k=>canReach<=k-1?1:surelyAbove>=k?-1:0;
     out[i]={po:st(D.playoffTeams),bye:st(D.byes)};
+  });
+  // exact check by enumeration
+  const n=ids.length, ix={}; ids.forEach((id,k)=>ix[id]=k);
+  const pts0=ids.map(id=>2*T[id].w+T[id].t), pf=ids.map(id=>T[id].pf);
+  const W0=Array.from({length:n},()=>new Int8Array(n)), G0=Array.from({length:n},()=>new Int8Array(n));
+  buildGames(D,D.lastFinalWeek).forEach(g=>{ const a=ix[g.a],b=ix[g.b]; G0[a][b]++; G0[b][a]++; if(g.pa>g.pb) W0[a][b]++; else if(g.pb>g.pa) W0[b][a]++; });
+  const games=left.map(([,a,b])=>[ix[a],ix[b]]);
+  const pts=new Int16Array(n), W=W0.map(r=>new Int8Array(r)), G=G0.map(r=>new Int8Array(r));
+  function order(group,pfr){
+    if(group.length===1) return group;
+    if(group.length===2){ const [a,b]=group; if(W[a][b]!==W[b][a]) return W[a][b]>W[b][a]?[a,b]:[b,a]; return pfr(a)>pfr(b)?[a,b]:[b,a]; }
+    const sw=group.find(x=>group.every(y=>y===x||(G[x][y]>0&&W[x][y]===G[x][y])));
+    if(sw!=null) return [sw,...order(group.filter(x=>x!==sw),pfr)];
+    const sd=group.find(x=>group.every(y=>y===x||(G[x][y]>0&&W[y][x]===G[x][y])));
+    if(sd!=null) return [...order(group.filter(x=>x!==sd),pfr),sd];
+    return group.slice().sort((a,b)=>pfr(b)-pfr(a));
+  }
+  function place(X,best){
+    let above=0; const tied=[];
+    for(let t=0;t<n;t++){ if(pts[t]>pts[X]) above++; else if(pts[t]===pts[X]) tied.push(t); }
+    if(tied.length===1) return above+1;
+    const pfr=t=>t===X?(best?Infinity:-Infinity):pf[t];
+    return above+order(tied,pfr).indexOf(X)+1;
+  }
+  // does some outcome (X's games fixed: xWins) give place test true?
+  function exists(X,xWins,test){
+    const mine=[], other=[];
+    games.forEach(g=>(g[0]===X||g[1]===X?mine:other).push(g));
+    if(other.length>CLINCH_MAX_GAMES) return null;
+    for(let m=0,N=1<<other.length;m<N;m++){
+      for(let t=0;t<n;t++){ pts[t]=pts0[t]; W[t].set(W0[t]); G[t].set(G0[t]); }
+      const play=(w,l)=>{ pts[w]+=2; W[w][l]++; G[w][l]++; G[l][w]++; };
+      mine.forEach(([a,b])=>{ const o=a===X?b:a; xWins?play(X,o):play(o,X); });
+      other.forEach(([a,b],i)=>(m>>i)&1?play(a,b):play(b,a));
+      if(test()) return true;
+    }
+    return false;
+  }
+  ids.forEach(id=>{
+    const X=ix[id];
+    [["po",D.playoffTeams],["bye",D.byes]].forEach(([key,k])=>{
+      if(!k||out[id][key]!==0) return;
+      const miss=exists(X,false,()=>place(X,false)>k);   // can X miss, losing out and every points tiebreak?
+      if(miss===false){ out[id][key]=1; return; }
+      const make=exists(X,true,()=>place(X,true)<=k);    // can X get in, winning out and every points tiebreak?
+      if(make===false) out[id][key]=-1;
+    });
   });
   return out;
 }
