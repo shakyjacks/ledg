@@ -222,8 +222,8 @@ body:not([data-tab="podcast"]) .player{display:none}
 .orow>button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) 50px 38px 38px 38px;align-items:center;column-gap:9px;width:100%;padding:11px 2px;cursor:pointer}
 .orow .num{font-size:15px}
 .orow.elim .name{color:#dbe4f3}
-.orow .num .ok{color:#4ade80;font-weight:600}
-.orow .num .x{color:var(--faint)}
+.orow .num .ok,.row .num .ok,.row dd .ok,#cl-key .ok{color:#4ade80;font-weight:600}
+.orow .num .x,.row .num .x,.row dd .x,#cl-key .x{color:var(--faint)}
 .orow .num.mo{color:var(--muted)}
 .orow .num.mo.hot{color:var(--red)}
 .o-more{display:none;padding:2px 2px 14px;color:var(--muted);font-size:12.5px}
@@ -362,7 +362,7 @@ body:not([data-tab="podcast"]) .player{display:none}
     </div>
     <div class="cols" aria-hidden="true"><span></span><span>Team</span><span>Record</span><span>PF</span><span>Odds</span></div>
     <ul class="list" id="list"></ul>
-    <div class="key"><span><i style="background:var(--gold)"></i>Bye (Top 2)</span><span><i style="background:var(--white)"></i>Playoffs (Top 6)</span><span><i style="background:var(--red)"></i>Mole-offs bye (Bottom 2)</span><span><b></b>Playoff line</span><span id="odds-note">Odds: calculating…</span></div>
+    <div class="key"><span><i style="background:var(--gold)"></i>Bye (Top 2)</span><span><i style="background:var(--white)"></i>Playoffs (Top 6)</span><span><i style="background:var(--red)"></i>Mole-offs bye (Bottom 2)</span><span><b></b>Playoff line</span><span id="cl-key" hidden><span class="ok">✓</span> Clinched&nbsp; <span class="x">–</span> Eliminated</span><span id="odds-note">Odds: calculating…</span></div>
   </section>
   <section class="view" id="v-odds">
     <div class="subhead">
@@ -817,7 +817,13 @@ function simulate(D,ctx,N,alive,done){
     done(S);
   })();
 }
-// Exact clinch / elimination by wins alone (worst case: every tiebreak lost / won). 1 clinched, -1 eliminated.
+// Clinch / elimination. 1 clinched, -1 eliminated, 0 still open.
+// First a quick check by wins alone. Then, with few enough games left, every remaining outcome is checked with the
+// LEDG tiebreakers, so games between other teams count (e.g. two rivals who play each other can't both win).
+// Points scored can't be known ahead, so a team must make it even losing every points tiebreak (clinch), and
+// misses even winning every points tiebreak (eliminated). A team's own wins never hurt it, so its own games are
+// fixed as all losses (clinch test) or all wins (elimination test) and only the other games are enumerated.
+const CLINCH_MAX_GAMES=16; // other teams' games enumerated per check (2^16 = 65,536 outcomes)
 function clinchStatus(D,left){
   const T=buildTable(D,buildGames(D,D.lastFinalWeek)), ids=Object.keys(T).map(Number), rem={};
   ids.forEach(i=>rem[i]=0); left.forEach(([,a,b])=>{rem[a]++;rem[b]++;});
@@ -828,6 +834,53 @@ function clinchStatus(D,left){
     const canReach=ids.filter(j=>j!==i&&T[j].w+rem[j]>=mn).length, surelyAbove=ids.filter(j=>j!==i&&T[j].w>mx).length;
     const st=k=>canReach<=k-1?1:surelyAbove>=k?-1:0;
     out[i]={po:st(D.playoffTeams),bye:st(D.byes)};
+  });
+  // exact check by enumeration
+  const n=ids.length, ix={}; ids.forEach((id,k)=>ix[id]=k);
+  const pts0=ids.map(id=>2*T[id].w+T[id].t), pf=ids.map(id=>T[id].pf);
+  const W0=Array.from({length:n},()=>new Int8Array(n)), G0=Array.from({length:n},()=>new Int8Array(n));
+  buildGames(D,D.lastFinalWeek).forEach(g=>{ const a=ix[g.a],b=ix[g.b]; G0[a][b]++; G0[b][a]++; if(g.pa>g.pb) W0[a][b]++; else if(g.pb>g.pa) W0[b][a]++; });
+  const games=left.map(([,a,b])=>[ix[a],ix[b]]);
+  const pts=new Int16Array(n), W=W0.map(r=>new Int8Array(r)), G=G0.map(r=>new Int8Array(r));
+  function order(group,pfr){
+    if(group.length===1) return group;
+    if(group.length===2){ const [a,b]=group; if(W[a][b]!==W[b][a]) return W[a][b]>W[b][a]?[a,b]:[b,a]; return pfr(a)>pfr(b)?[a,b]:[b,a]; }
+    const sw=group.find(x=>group.every(y=>y===x||(G[x][y]>0&&W[x][y]===G[x][y])));
+    if(sw!=null) return [sw,...order(group.filter(x=>x!==sw),pfr)];
+    const sd=group.find(x=>group.every(y=>y===x||(G[x][y]>0&&W[y][x]===G[x][y])));
+    if(sd!=null) return [...order(group.filter(x=>x!==sd),pfr),sd];
+    return group.slice().sort((a,b)=>pfr(b)-pfr(a));
+  }
+  function place(X,best){
+    let above=0; const tied=[];
+    for(let t=0;t<n;t++){ if(pts[t]>pts[X]) above++; else if(pts[t]===pts[X]) tied.push(t); }
+    if(tied.length===1) return above+1;
+    const pfr=t=>t===X?(best?Infinity:-Infinity):pf[t];
+    return above+order(tied,pfr).indexOf(X)+1;
+  }
+  // does some outcome (X's games fixed: xWins) give place test true?
+  function exists(X,xWins,test){
+    const mine=[], other=[];
+    games.forEach(g=>(g[0]===X||g[1]===X?mine:other).push(g));
+    if(other.length>CLINCH_MAX_GAMES) return null;
+    for(let m=0,N=1<<other.length;m<N;m++){
+      for(let t=0;t<n;t++){ pts[t]=pts0[t]; W[t].set(W0[t]); G[t].set(G0[t]); }
+      const play=(w,l)=>{ pts[w]+=2; W[w][l]++; G[w][l]++; G[l][w]++; };
+      mine.forEach(([a,b])=>{ const o=a===X?b:a; xWins?play(X,o):play(o,X); });
+      other.forEach(([a,b],i)=>(m>>i)&1?play(a,b):play(b,a));
+      if(test()) return true;
+    }
+    return false;
+  }
+  ids.forEach(id=>{
+    const X=ix[id];
+    [["po",D.playoffTeams],["bye",D.byes]].forEach(([key,k])=>{
+      if(!k||out[id][key]!==0) return;
+      const miss=exists(X,false,()=>place(X,false)>k);   // can X miss, losing out and every points tiebreak?
+      if(miss===false){ out[id][key]=1; return; }
+      const make=exists(X,true,()=>place(X,true)<=k);    // can X get in, winning out and every points tiebreak?
+      if(make===false) out[id][key]=-1;
+    });
   });
   return out;
 }
@@ -904,19 +957,20 @@ function render(){
   rows.forEach((r,i)=>{
     const seed=i+1, t=D.teams[r.id];
     const n=rows.length, cls=seed<=D.byes?"bye in":seed<=D.playoffTeams?"in":seed>n-D.byes?"out molebye":"out";
-    const o=ODDS&&ODDS[r.id];
+    const o=ODDS&&ODDS[r.id], c=(ODDS&&ODDS.clinch&&ODDS.clinch[r.id])||{};
 
     html.push(`<li class="row ${cls} ${open.has(r.id)?"open":""}" data-id="${r.id}">
       <button aria-expanded="${open.has(r.id)}"><span class="seed">${seed}</span>
         <span class="who"><span class="name">${esc(t.team)}</span>${scorePill(r.id)}</span>
         <span class="num">${r.w}-${r.l}${r.t?"-"+r.t:""}</span>
         <span class="num pf">${r.pf.toFixed(2)}</span>
-        <span class="num odds ${o&&o.po<0.1?"lo":""}">${pct(o&&o.po)}</span></button>
-      <div class="more"><div class="tname">${esc(t.teamName)}</div><dl><dt>Points for</dt><dt>Points against</dt><dt>Streak</dt><dt>Bye odds</dt><dd>${f2(r.pf)}</dd><dd>${f2(r.pa)}</dd><dd>${streak(r.results)||"–"}</dd><dd>${pct(o&&o.bye)}</dd></dl>
+        <span class="num odds ${o&&o.po<0.1&&c.po!==1?"lo":""}">${o?oCell(o.po,c.po):pct(null)}</span></button>
+      <div class="more"><div class="tname">${esc(t.teamName)}</div><dl><dt>Points for</dt><dt>Points against</dt><dt>Streak</dt><dt>Bye odds</dt><dd>${f2(r.pf)}</dd><dd>${f2(r.pa)}</dd><dd>${streak(r.results)||"–"}</dd><dd>${o?oCell(o.bye,c.bye):pct(null)}</dd></dl>
         ${r.note?`<div class="why">${esc(r.note)}.</div>`:""}${matchHTML(D,r.id)}</div></li>`);
     if(seed===D.playoffTeams) html.push(`<li class="cut" aria-label="Playoff line"></li>`);
   });
   document.getElementById("list").innerHTML=html.join("");
+  const CLs=Object.values((ODDS&&ODDS.clinch)||{}); document.getElementById("cl-key").hidden=!CLs.some(c=>c&&(c.po||c.bye));
   document.getElementById("odds-note").textContent= !ODDS?"Odds: calculating…" : !ODDS.left?"Odds: regular season complete" : ODDS.live?`Live odds: Week ${D.liveWeek} scores and game clocks included`:`Odds: 5,000 simulations of the ${ODDS.left} games left`;
 
   document.getElementById("foot").textContent=`Live from Sleeper · updated ${ago(D.updatedAt)}`;
@@ -1033,7 +1087,7 @@ function renderOdds(){
     const st=c.po===1?(c.bye===1?"Clinched a first-round bye.":"Clinched a playoff spot."):c.po===-1?"Eliminated from the playoffs.":"";
     return `<li class="orow ${oOpen.has(id)?"open":""} ${c.po===-1?"elim":""}" data-id="${id}">
       <button aria-expanded="${oOpen.has(id)}"><span class="who"><span class="name">${esc(t.team)}</span>${scorePill(id)}</span>
-        <span class="num">${oCell(o.po,c.po)}</span><span class="num">${oCell(o.bye,c.bye)}</span><span class="num">${pct(o.ti)}</span><span class="num mo ${Math.round(o.mo*100)>=25?"hot":""}">${pct(o.mo)}</span></button>
+        <span class="num">${oCell(o.po,c.po)}</span><span class="num">${oCell(o.bye,c.bye)}</span><span class="num">${oCell(o.ti,c.po===-1?-1:0)}</span><span class="num mo ${c.po!==1&&Math.round(o.mo*100)>=25?"hot":""}">${oCell(o.mo,c.po===1?-1:0)}</span></button>
       <div class="o-more">
         <dl><dt>Record now</dt><dt>Likely finish</dt><dt>Proj. points</dt><dd>${r.w}-${r.l}${r.t?"-"+r.t:""}</dd><dd>${o.likelyW}-${D.regularSeasonWeeks-o.likelyW}</dd><dd>${Math.round(o.pf).toLocaleString("en-US")}</dd></dl>
         ${st?`<div class="o-st">${st}</div>`:""}
