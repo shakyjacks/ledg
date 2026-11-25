@@ -839,6 +839,79 @@
      }
     }
    ]
+  },
+  "12": {
+   "episode": "Ep. 94",
+   "games": [
+    {
+     "host": "Adam",
+     "teams": [
+      "Spencer",
+      "Sam"
+     ],
+     "calls": {
+      "Adam": "Spencer",
+      "Mike": "Spencer",
+      "Sam": "Sam"
+     }
+    },
+    {
+     "host": "Sam",
+     "teams": [
+      "Jon",
+      "Jay"
+     ],
+     "calls": {
+      "Adam": "Jay",
+      "Mike": "Jon",
+      "Sam": "Jon"
+     }
+    },
+    {
+     "teams": [
+      "Garren",
+      "Eric"
+     ],
+     "calls": {
+      "Adam": "Garren",
+      "Mike": "Eric",
+      "Sam": "Garren"
+     }
+    },
+    {
+     "teams": [
+      "Mike",
+      "Nathan"
+     ],
+     "calls": {
+      "Adam": "Mike",
+      "Mike": "Mike",
+      "Sam": "Mike"
+     }
+    },
+    {
+     "teams": [
+      "Calvin",
+      "Jeremy"
+     ],
+     "calls": {
+      "Adam": "Calvin",
+      "Mike": "Calvin",
+      "Sam": "Calvin"
+     }
+    },
+    {
+     "teams": [
+      "Adam",
+      "Alex"
+     ],
+     "calls": {
+      "Adam": "Adam",
+      "Mike": "Adam",
+      "Sam": "Adam"
+     }
+    }
+   ]
   }
  },
  "notes": [
@@ -846,6 +919,7 @@
   "Week 4 Mole vs Jay: Adam's cell was blank; filled in from the official Pick 'em Standings (he called it right).",
   "Week 6 Adam vs Sam: Adam's cell was blank; filled in from the standings (he took himself).",
   "Week 6 Mike vs Mole: Mike switched to himself during recording (the rundown still says Mole).",
-  "Week 1 has Sam and Adam only (Mike was out). Week 8 includes guest Nate."
+  "Week 1 has Sam and Adam only (Mike was out). Week 8 includes guest Nate.",
+  "Week 12: Mike missed the episode but sent in his picks (no Mike Game of the Week)."
  ]
 }
