@@ -5,6 +5,14 @@
  },
  "episodes": [
   {
+   "title": "Ep. 94 - Thankful Turkeys",
+   "date": "2026-11-25T19:56:52.000Z",
+   "audio": "https://api.substack.com/feed/podcast/226556494/b160c0c82c3b3152bbefed5419215102.mp3",
+   "duration": 6846,
+   "desc": "Mike refuses to show up to the recording session after a loss… are we surprised any more by these antics? That didn’t stop Adam and Sam from taking time away from their families to record for our loyal listeners.",
+   "link": "https://theledgpodcast.substack.com/p/ep-94-thankful-turkeys"
+  },
+  {
    "title": "Ep. 93 - You’re Only As Good As Your Schedule (2026 - Week 11)",
    "date": "2026-11-19T20:09:26.000Z",
    "audio": "https://api.substack.com/feed/podcast/225704363/544ac8f0d70d9963fac50beea7aec9ce.mp3",
@@ -93,5 +101,5 @@
    "link": "https://theledgpodcast.substack.com/p/ep-83-blood-and-revenge-are-hammering"
   }
  ],
- "updated": "2026-11-20T19:15:23.125Z"
+ "updated": "2026-11-26T01:32:32.422Z"
 }
